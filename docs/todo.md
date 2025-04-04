@@ -21,12 +21,15 @@
 
 - [x] Define Exercise data model
 - [x] Create useExercises hook with basic operations
-- [ ] Implement ExerciseList component
-- [ ] Implement ExerciseItem component
-- [ ] Implement AddExerciseForm component
+- [x] Implement ExerciseList component
+- [x] Implement ExerciseItem component (integrated in ExerciseList)
+- [x] Implement AddExerciseForm component
+- [x] Implement AddExerciseDialog component
+- [x] Create ExerciseScreen component
+- [x] Add exercise search functionality
+- [x] Implement exercise delete operations UI
 - [ ] Create exercise category filtering
-- [ ] Add exercise search functionality
-- [ ] Implement exercise edit/delete operations UI
+- [ ] Implement exercise edit operations UI
 
 ## Program Management Feature
 
@@ -85,8 +88,9 @@
 
 ## Testing and Optimization
 
+- [x] Write unit tests for Exercise components
 - [ ] Write unit tests for hooks and utilities
-- [ ] Implement component tests
+- [ ] Implement more component tests
 - [ ] Add end-to-end testing
 - [ ] Optimize bundle size
 - [ ] Implement performance monitoring

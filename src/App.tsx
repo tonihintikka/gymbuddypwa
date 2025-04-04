@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 
-// Import hooks
-import { useExercises } from './features/exercise'
+// Import hooks and components
+import { useExercises, ExerciseScreen } from './features/exercise'
 import { usePrograms } from './features/program'
 import { useWorkout } from './features/workout'
 import { useHistory } from './features/history'
+
+// Import CSS for features
+import './features/exercise/components/Exercise.css'
 
 // Import database initialization
 import { initDatabase } from './services/db'
@@ -53,10 +56,7 @@ function App() {
         )}
 
         {activeTab === 'exercises' && (
-          <div>
-            <h2>Exercises</h2>
-            <p>Here you'll manage your exercise library.</p>
-          </div>
+          <ExerciseScreen />
         )}
 
         {activeTab === 'programs' && (
