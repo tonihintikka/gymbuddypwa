@@ -14,6 +14,7 @@
 - [x] Set up IndexedDB service with CRUD operations
 - [x] Create generic IndexedDB hook for data access
 - [x] Implement feature-specific data hooks (useExercises, usePrograms, useWorkout, useHistory)
+- [x] Fix IndexedDB connection management for reliable data persistence
 - [ ] Add data migration support for future updates
 - [ ] Implement data backup/restore functionality
 
