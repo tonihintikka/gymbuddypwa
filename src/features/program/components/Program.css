@@ -1,0 +1,225 @@
+/* Program List Styles */
+.program-list-container {
+  width: 100%;
+  max-width: 100%;
+}
+
+.program-list-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.program-search {
+  width: 100%;
+}
+
+.program-search input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--divider-color);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.add-program-btn {
+  align-self: flex-start;
+}
+
+.program-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.program-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  background-color: var(--card-color);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.program-item:hover {
+  background-color: var(--primary-light);
+}
+
+.program-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.program-name {
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.program-exercises-count {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.delete-program-btn {
+  background-color: transparent;
+  color: var(--error-color);
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.delete-program-btn:hover {
+  background-color: rgba(244, 67, 54, 0.1);
+}
+
+.no-programs {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+  background-color: var(--card-color);
+  border-radius: 4px;
+}
+
+/* Program Detail Styles */
+.program-detail {
+  width: 100%;
+}
+
+.program-detail-header {
+  margin-bottom: 2rem;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  padding: 0.5rem 0;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.back-button:hover {
+  text-decoration: underline;
+}
+
+.program-description {
+  margin-top: 0.5rem;
+  color: var(--text-secondary);
+}
+
+.program-exercises-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.program-exercises-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.program-exercise-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1rem;
+  background-color: var(--card-color);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.program-exercise-info {
+  flex: 1;
+}
+
+.program-exercise-name {
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+}
+
+.program-exercise-targets {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.program-exercise-notes {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.program-exercise-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.edit-program-exercise-btn,
+.remove-program-exercise-btn {
+  background: none;
+  border: none;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.edit-program-exercise-btn {
+  color: var(--primary-color);
+}
+
+.remove-program-exercise-btn {
+  color: var(--error-color);
+}
+
+.edit-program-exercise-btn:hover {
+  background-color: rgba(63, 81, 181, 0.1);
+}
+
+.remove-program-exercise-btn:hover {
+  background-color: rgba(244, 67, 54, 0.1);
+}
+
+.missing-exercise {
+  padding: 1rem;
+  background-color: var(--card-color);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  color: var(--error-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Add Exercise to Program Form Styles */
+.add-exercise-to-program-form {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.add-exercise-to-program-form h2 {
+  margin-bottom: 1.5rem;
+}
+
+/* Add Program Form Styles */
+.add-program-form {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.add-program-form h2 {
+  margin-bottom: 1.5rem;
+}

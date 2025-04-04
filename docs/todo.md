@@ -35,13 +35,18 @@
 
 - [x] Define Program data model
 - [x] Create usePrograms hook with basic operations
-- [ ] Implement ProgramList component
-- [ ] Implement ProgramItem component
-- [ ] Create ProgramEditor component
-- [ ] Implement exercise selection for programs
-- [ ] Add target sets/reps configuration UI
+- [x] Implement ProgramList component
+- [x] Implement ProgramItem component (integrated in ProgramList)
+- [x] Create ProgramDetail component for viewing and editing programs
+- [x] Implement AddProgramForm component
+- [x] Implement AddProgramDialog component
+- [x] Create AddExerciseToProgramForm component
+- [x] Create AddExerciseToProgramDialog component
+- [x] Implement ProgramExerciseItem component
+- [x] Implement exercise selection for programs
+- [x] Add target sets/reps configuration UI
+- [x] Create program delete confirmation
 - [ ] Implement program copy functionality
-- [ ] Create program delete confirmation
 
 ## Workout Execution Feature
 
@@ -89,6 +94,7 @@
 ## Testing and Optimization
 
 - [x] Write unit tests for Exercise components
+- [x] Write unit tests for Program components
 - [ ] Write unit tests for hooks and utilities
 - [ ] Implement more component tests
 - [ ] Add end-to-end testing

@@ -3,12 +3,13 @@ import './App.css'
 
 // Import hooks and components
 import { useExercises, ExerciseScreen } from './features/exercise'
-import { usePrograms } from './features/program'
+import { usePrograms, ProgramScreen } from './features/program'
 import { useWorkout } from './features/workout'
 import { useHistory } from './features/history'
 
 // Import CSS for features
 import './features/exercise/components/Exercise.css'
+import './features/program/components/Program.css'
 
 // Import database initialization
 import { initDatabase } from './services/db'
@@ -60,10 +61,7 @@ function App() {
         )}
 
         {activeTab === 'programs' && (
-          <div>
-            <h2>Programs</h2>
-            <p>Create and manage your workout programs here.</p>
-          </div>
+          <ProgramScreen />
         )}
 
         {activeTab === 'history' && (
