@@ -1,0 +1,155 @@
+---
+Description: UI Design and Implementation Guidelines for GymTrack PWA
+Globs: 
+  - src/components/**/*.tsx
+  - src/features/*/components/**/*.tsx
+---
+
+# UI Implementation Guidelines
+
+## Design Principles
+
+Always follow these core UI principles:
+
+- **Large Touch Targets**: All interactive elements should be at least 48×48px
+- **Visual Feedback**: Provide immediate visual feedback for all interactions
+- **Minimal Steps**: Minimize the number of steps to complete common actions
+- **Consistent UI**: Maintain consistent patterns throughout the application
+- **Progressive Disclosure**: Show most important information first, details on demand
+
+## Material UI Usage
+
+### Theme Customization
+
+Define a consistent theme:
+
+```typescript
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#f50057',
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+        },
+      },
+    },
+  },
+});
+```
+
+### Component Selection Guidelines
+
+Choose appropriate Material UI components:
+
+- Use `Button` for primary actions
+- Use `IconButton` for secondary actions
+- Use `TextField` for text input
+- Use `Card` to group related information
+- Use `AppBar` for navigation headers
+- Use `BottomNavigation` for mobile navigation
+- Use `Dialog` for important interactions
+- Use `List` for displaying collection data
+
+## Workout-Specific UI Patterns
+
+### Exercise Selection
+
+- Display exercise name prominently
+- Show clearly if exercise is custom or built-in
+- Provide quick-select options for common exercises
+- Implement search functionality for large exercise lists
+
+### Set Logging
+
+Optimize the set logging interface:
+
+- Pre-fill weight from previous set
+- Provide large +/- buttons for weight and rep adjustments
+- Allow quick entry of common rep patterns (8, 10, 12, etc.)
+- Show set history for the current exercise
+- Implement large "Log Set" button for quick logging
+
+### Example Pattern
+
+```jsx
+<Card>
+  <CardContent>
+    <Typography variant="h6">{exercise.name}</Typography>
+    
+    {/* Weight/Rep Entry */}
+    <Box sx={{ display: 'flex', gap: 2, my: 2 }}>
+      <WeightInput value={weight} onChange={setWeight} />
+      <RepInput value={reps} onChange={setReps} />
+    </Box>
+    
+    {/* Quick Options */}
+    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+      <Chip label="Failure" onClick={() => setIsFailure(!isFailure)} />
+      <Chip label="Paused" onClick={() => setIsPaused(!isPaused)} />
+    </Box>
+    
+    {/* Log Button */}
+    <Button 
+      variant="contained" 
+      size="large" 
+      fullWidth 
+      onClick={handleLogSet}
+    >
+      Log Set
+    </Button>
+  </CardContent>
+</Card>
+```
+
+## Responsive Design Requirements
+
+Implement these responsive patterns:
+
+### Mobile-First Approach
+
+- Design for smallest screens first (320px width)
+- Gradually enhance for larger screens
+- Use `Box`, `Grid`, and `Container` for flexible layouts
+
+### Media Query Usage
+
+Use theme breakpoints for consistency:
+
+```jsx
+<Box sx={{ 
+  flexDirection: { 
+    xs: 'column', 
+    sm: 'row' 
+  }
+}}>
+  {/* Content */}
+</Box>
+```
+
+### Touch vs Mouse Interactions
+
+- Increase element size on touch devices
+- Provide hover states only on non-touch devices
+- Implement swipe gestures for common actions on mobile
+
+## Loading States & Error Handling
+
+### Loading Indicators
+
+- Show loading indicators for all async operations
+- Preserve layout during loading to prevent jumps
+- Use skeleton loaders for content where appropriate
+
+### Error States
+
+- Display user-friendly error messages
+- Provide retry options for failed operations
+- Implement fallbacks for critical features

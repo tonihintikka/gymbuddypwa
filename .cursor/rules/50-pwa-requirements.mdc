@@ -1,0 +1,181 @@
+---
+Description: Progressive Web App Requirements for GymTrack PWA
+Globs:
+  - public/**/*
+  - src/service-worker.ts
+  - src/serviceWorkerRegistration.ts
+---
+
+# PWA Implementation Requirements
+
+## Core PWA Features
+
+Implement these essential PWA features:
+
+- **Offline Functionality**: App must work entirely offline after initial load
+- **Installability**: App must be installable on supported devices
+- **Responsive Design**: UI must adapt to all screen sizes
+- **App-like Navigation**: Implement app-like navigation without page refreshes
+- **Push Notifications**: Prepare for workout reminders (future feature)
+
+## Web App Manifest
+
+Create a proper manifest.json:
+
+```json
+{
+  "name": "GymTrack",
+  "short_name": "GymTrack",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1976d2",
+  "icons": [
+    {
+      "src": "icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+```
+
+## Service Worker
+
+Implement a service worker with these caching strategies:
+
+### Cache First Strategy
+
+Use for static assets:
+- CSS files
+- JavaScript files
+- Images and icons
+- HTML templates
+
+### Network First Strategy
+
+Use for dynamic data (API responses)
+
+### Service Worker Registration
+
+Register service worker in index.tsx:
+
+```javascript
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js');
+  });
+}
+```
+
+## Offline Experience
+
+Implement these offline patterns:
+
+### Asset Precaching
+
+- Precache all critical assets during installation
+- Include all routes, images, and core functionality
+- Implement a loading screen during initial cache population
+
+### Offline Indicator
+
+- Display a visible indicator when offline
+- Allow all core functionality to work offline
+- Queue synchronization operations for when online
+
+### Example Service Worker Caching Strategy
+
+```javascript
+// Cache static assets
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open('static-assets-v1').then((cache) => {
+      return cache.addAll([
+        '/',
+        '/index.html',
+        '/static/js/main.js',
+        '/static/css/main.css',
+        '/icons/icon-192x192.png',
+      ]);
+    })
+  );
+});
+
+// Serve cached content when offline
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
+    })
+  );
+});
+```
+
+## App Installation
+
+Implement these installation features:
+
+### Install Prompt
+
+- Detect when app can be installed
+- Provide custom install button in UI
+- Store user preference regarding installation
+
+### App Icons
+
+- Create all required icon sizes
+- Use maskable icons for Android
+- Include proper favicon for browsers
+
+## Performance Requirements
+
+Meet these performance targets:
+
+### Core Web Vitals
+
+- First Contentful Paint: < 1.8s
+- Largest Contentful Paint: < 2.5s
+- Cumulative Layout Shift: < 0.1
+- First Input Delay: < 100ms
+
+### Bundle Size Optimization
+
+- Implement code splitting at route level
+- Keep main bundle under 150KB (gzipped)
+- Lazy load non-critical components

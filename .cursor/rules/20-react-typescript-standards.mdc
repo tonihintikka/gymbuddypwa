@@ -1,0 +1,168 @@
+---
+Description: React and TypeScript Standards for GymTrack PWA
+Globs: 
+  - src/**/*.tsx
+  - src/**/*.ts
+---
+
+# React and TypeScript Standards
+
+## Component Patterns
+
+### Functional Components Only
+
+Always use functional components with hooks:
+
+```typescript
+// Correct
+const ExerciseItem: React.FC<ExerciseItemProps> = ({ exercise, onSelect }) => {
+  // Implementation
+};
+
+// Incorrect - Do not use class components
+class ExerciseItem extends React.Component<ExerciseItemProps> {
+  // Implementation
+}
+```
+
+### Component Props Pattern
+
+Always define and export props interfaces:
+
+```typescript
+export interface ExerciseItemProps {
+  exercise: Exercise;
+  onSelect: (exercise: Exercise) => void;
+  isSelected?: boolean;
+}
+```
+
+### Component Organization
+
+Structure components consistently:
+
+1. Imports
+2. Type definitions
+3. Component definition
+4. Helper functions
+5. Styled components (if using styled-components)
+
+## Hook Patterns
+
+### Custom Hook Creation
+
+- Start all custom hooks with "use" prefix
+- Return named objects for multi-value returns
+- Handle loading, error, and data states
+
+```typescript
+export function useExercises() {
+  const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  // Implementation...
+  
+  return { exercises, isLoading, error, addExercise, deleteExercise };
+}
+```
+
+### Effect Dependencies
+
+Always specify complete dependency arrays for useEffect:
+
+```typescript
+// Correct
+useEffect(() => {
+  fetchExercises();
+}, [fetchExercises]);
+
+// Incorrect
+useEffect(() => {
+  fetchExercises();
+}, []); // Missing dependency
+```
+
+## TypeScript Usage
+
+### Type vs Interface
+
+- Use `interface` for object shapes that may be extended
+- Use `type` for unions, complex types, or primitives
+- Export all shared types/interfaces
+
+### Strict Type Usage
+
+- Avoid using `any` type
+- Use proper type guards for nullable values
+- Use discriminated unions for complex state
+
+```typescript
+// Discriminated union example
+type WorkoutState = 
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'active', currentExercise: Exercise }
+  | { status: 'complete', summary: WorkoutSummary }
+  | { status: 'error', error: string };
+```
+
+### Null Handling
+
+- Use undefined instead of null when possible
+- Use optional chaining and nullish coalescing
+
+```typescript
+// Correct
+const exerciseName = currentExercise?.name ?? 'Unknown Exercise';
+
+// Avoid
+const exerciseName = currentExercise ? currentExercise.name : 'Unknown Exercise';
+```
+
+## State Management
+
+### Local State
+
+Use appropriate state patterns:
+
+- `useState` for simple values
+- `useReducer` for complex state logic
+- React Context for shared state
+
+### Context Structure
+
+Follow this pattern for context:
+
+```typescript
+// 1. Create context with undefined default
+const ExerciseContext = createContext<ExerciseContextValue | undefined>(undefined);
+
+// 2. Create hook for using context
+export function useExerciseContext() {
+  const context = useContext(ExerciseContext);
+  if (context === undefined) {
+    throw new Error('useExerciseContext must be used within ExerciseProvider');
+  }
+  return context;
+}
+
+// 3. Create provider component
+export function ExerciseProvider({ children }: { children: React.ReactNode }) {
+  // State and handlers...
+  
+  const value = {
+    exercises,
+    isLoading,
+    error,
+    addExercise,
+    deleteExercise
+  };
+  
+  return (
+    <ExerciseContext.Provider value={value}>
+      {children}
+    </ExerciseContext.Provider>
+  );
+}
+```

@@ -1,0 +1,55 @@
+---
+Description: GymTrack PWA Application Overview and Core Principles
+alwaysApply: true
+---
+
+# GymTrack PWA Application Overview
+
+## Core Application Purpose
+
+GymTrack PWA is a Progressive Web Application for tracking weightlifting workouts with prioritization on:
+- Simplicity and ease of use during active workouts
+- Fast user interactions with minimal steps
+- Full offline functionality
+- Cross-device compatibility
+
+## Technology Stack Requirements
+
+- React with TypeScript for component development
+- Material UI for consistent UI components
+- IndexedDB for client-side storage
+- Service Worker for offline capability
+- Web App Manifest for installability
+
+## Development Principles
+
+Always adhere to these core principles:
+
+- **Mobile-First**: Design all interfaces for mobile first, then adapt for larger screens
+- **Offline-First**: All core functionality must work without network connectivity
+- **Performance-Focused**: Optimize for speed on lower-end mobile devices
+- **Type Safety**: Leverage TypeScript for complete type safety throughout the codebase
+- **Progressive Enhancement**: Core functionality works in all browsers, enhanced features in modern ones
+
+## Key Features
+
+The application must implement these core features:
+
+- Exercise management (built-in and custom exercises)
+- Workout program management (templates and routines)
+- Active workout logging with flexibility to deviate from planned workouts
+- Workout history and statistics
+- Data export capability
+- Full offline support
+
+## User Experience Priorities
+
+When implementing any feature, prioritize these UX considerations:
+
+1. Fast workout logging with minimal taps
+2. Large, easily tappable controls during workouts
+3. Ability to quickly adjust weights and reps
+4. Clear visual indicators for logged sets
+5. Straightforward navigation between exercises
+
+Always optimize for the core use case: quickly logging workout sets while actively exercising.

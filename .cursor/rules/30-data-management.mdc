@@ -1,0 +1,148 @@
+---
+Description: Data Model and Storage Management Guidelines for GymTrack PWA
+Globs: 
+  - src/types/*.ts
+  - src/services/db/*.ts
+  - src/hooks/useIndexedDB.ts
+---
+
+# Data Management Standards
+
+## Core Data Models
+
+Implement these core data models as TypeScript interfaces:
+
+```typescript
+interface Exercise {
+  id: string;
+  name: string;
+  isCustom: boolean;
+}
+
+interface SetLog {
+  weight: number;
+  reps: number;
+  isFailure?: boolean;
+  isPaused?: boolean;
+  isSlowEccentric?: boolean;
+}
+
+interface LoggedExercise {
+  exerciseId: string;
+  exerciseName: string; // Denormalized for historical consistency
+  sets: SetLog[];
+}
+
+interface WorkoutLog {
+  id: string;
+  date: Date; // Must be serialized for IndexedDB storage
+  loggedExercises: LoggedExercise[];
+  programId?: string;
+  notes?: string;
+}
+
+interface ProgramExercise {
+  exerciseId: string;
+  targetSets?: number;
+  targetReps?: string; // Can be a range like "8-12"
+  notes?: string;
+}
+
+interface Program {
+  id: string;
+  name: string;
+  description?: string;
+  exercises: ProgramExercise[];
+  isCustom: boolean;
+}
+```
+
+## IndexedDB Integration
+
+### Database Structure
+
+Use this database configuration:
+
+```typescript
+const DB_NAME = 'gymtrack-db';
+const DB_VERSION = 1;
+
+const OBJECT_STORES = [
+  { name: 'exercises', keyPath: 'id' },
+  { name: 'programs', keyPath: 'id' },
+  { name: 'workoutLogs', keyPath: 'id' },
+  { name: 'settings', keyPath: 'id' }
+];
+```
+
+### Data Access Patterns
+
+Create a custom hook for IndexedDB access:
+
+- All database operations must be asynchronous
+- Handle serialization of complex types (e.g., Date objects)
+- Implement proper error handling
+- Return loading/error states with data
+
+### Example Pattern
+
+Follow this pattern for data access layers:
+
+```typescript
+// Hook usage pattern
+function useExercises() {
+  // Implement IndexedDB access through abstraction
+  return {
+    exercises, // Data
+    isLoading, // Loading state
+    error,     // Error state
+    addExercise,
+    updateExercise,
+    deleteExercise
+  };
+}
+```
+
+## Serialization Requirements
+
+Implement these serialization patterns:
+
+### Date Handling
+
+```typescript
+// When storing
+const serializedWorkout = {
+  ...workout,
+  date: workout.date.toISOString()
+};
+
+// When retrieving
+const parsedWorkout = {
+  ...storedWorkout,
+  date: new Date(storedWorkout.date)
+};
+```
+
+## Data Validation
+
+Implement validation at the service layer:
+
+- Validate input data before storage
+- Return specific validation errors
+- Implement constraint validation for all models
+
+### Default Data
+
+Include default built-in exercises and programs:
+
+- Provide at least 20 common exercises across categories
+- Include at least 3 example workout programs
+- Seed database on first application load
+
+## Offline Data Synchronization
+
+For future expansion (not in V1):
+
+- Design for eventual consistency
+- Prepare timestamp-based conflict resolution
+- Store modification timestamps for all entities

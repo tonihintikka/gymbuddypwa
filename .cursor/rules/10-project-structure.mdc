@@ -1,0 +1,70 @@
+---
+Description: Project Structure and Organization Guidelines for GymTrack PWA
+Globs: src/**/*
+---
+
+# Project Structure Guidelines
+
+## Directory Organization
+
+Follow this feature-based organization pattern:
+
+```
+src/
+├── components/       # Shared UI components
+├── features/         # Feature modules
+├── hooks/            # Shared custom hooks
+├── services/         # App-wide services
+├── types/            # TypeScript interfaces/types
+├── utils/            # Utility functions
+├── App.tsx           # Main app component
+└── index.tsx         # Entry point
+```
+
+## Feature Module Structure
+
+Organize each feature module with clear separation of concerns:
+
+```
+features/exercise/
+├── components/       # Feature-specific components
+├── hooks/            # Feature-specific hooks
+├── types.ts          # Feature-specific types
+└── index.ts          # Public exports
+```
+
+## File Naming Conventions
+
+- **Components**: PascalCase with `.tsx` extension (e.g., `ExerciseList.tsx`)
+- **Hooks**: camelCase with `use` prefix (e.g., `useExercises.ts`)
+- **Utilities**: camelCase, descriptive of function (e.g., `dateFormatters.ts`)
+- **Types**: camelCase, descriptive of domain (e.g., `workoutTypes.ts`)
+
+## Import/Export Patterns
+
+- Use named exports for all components, hooks, and utilities
+- Avoid default exports except for pages/routes
+- Re-export from index.ts files for cleaner imports:
+
+```typescript
+// features/exercise/index.ts
+export * from './components/ExerciseList';
+export * from './components/ExerciseForm';
+export * from './hooks/useExercises';
+export * from './types';
+```
+
+## Local Storage Structure
+
+Organize IndexedDB with these object stores:
+
+- `exercises` - Exercise definitions
+- `programs` - Workout program templates
+- `workoutLogs` - Completed workout records
+- `settings` - User preferences
+
+## Public Asset Organization
+
+- Place icons in `public/icons/` directory
+- Place manifest and service worker in `public/` root
+- Follow PWA asset naming conventions for icons

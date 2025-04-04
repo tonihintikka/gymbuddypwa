@@ -1,0 +1,566 @@
+---
+Description: Data Model Implementation Guidelines for GymTrack PWA
+Globs: src/types/*.ts
+---
+
+# Data Model Implementation Guidelines
+
+This document outlines the requirements and best practices for implementing the data models in the GymTrack PWA application. These models form the foundation of the app's data layer and must be implemented correctly to ensure data integrity and application functionality.
+
+## Core Data Models
+
+The GymTrack PWA application is built around these primary data models defined as TypeScript interfaces:
+
+### Exercise
+
+Represents a single exercise that can be performed during a workout.
+
+```typescript
+export interface Exercise {
+  id: string;
+  name: string;
+  isCustom: boolean;
+  // Optional: category, muscleGroup, notes, etc.
+}
+```
+
+### SetLog
+
+Represents a single set performed during a workout, with optional performance flags.
+
+```typescript
+export interface SetLog {
+  weight: number;
+  reps: number;
+  isFailure?: boolean;
+  isPaused?: boolean;
+  isSlowEccentric?: boolean;
+}
+```
+
+### LoggedExercise
+
+Represents an exercise performed during a workout, containing multiple sets.
+
+```typescript
+export interface LoggedExercise {
+  exerciseId: string;
+  exerciseName: string; // Denormalized for historical consistency
+  sets: SetLog[];
+}
+```
+
+### WorkoutLog
+
+Represents a completed workout session.
+
+```typescript
+export interface WorkoutLog {
+  id: string;
+  date: Date;
+  loggedExercises: LoggedExercise[];
+  programId?: string; // Optional: Link to the program used
+  notes?: string; // Optional: User notes on workout
+}
+```
+
+### ProgramExercise
+
+Represents an exercise template within a program.
+
+```typescript
+export interface ProgramExercise {
+  exerciseId: string;
+  targetSets?: number;
+  targetReps?: string; // Can be a range like "8-12"
+  notes?: string;
+}
+```
+
+### Program
+
+Represents a workout routine template.
+
+```typescript
+export interface Program {
+  id: string;
+  name: string;
+  description?: string;
+  exercises: ProgramExercise[];
+  isCustom: boolean; // Distinguishes user-created from built-in
+}
+```
+
+## Implementation Guidelines
+
+### Type Organization
+
+Define all core data model interfaces in a central location:
+
+```typescript
+// src/types/models.ts
+export interface Exercise { /* ... */ }
+export interface SetLog { /* ... */ }
+export interface LoggedExercise { /* ... */ }
+export interface WorkoutLog { /* ... */ }
+export interface ProgramExercise { /* ... */ }
+export interface Program { /* ... */ }
+```
+
+Export all types from a central index file:
+
+```typescript
+// src/types/index.ts
+export * from './models';
+export * from './api';
+// Additional type exports...
+```
+
+### Feature-specific Types
+
+For types that are specific to a feature, place them in the feature directory:
+
+```typescript
+// src/features/exercises/types.ts
+import { Exercise } from '../../types';
+
+export interface ExerciseFormData {
+  name: string;
+  isCustom: boolean;
+}
+
+export interface ExerciseFilterOptions {
+  category?: string;
+  showCustomOnly?: boolean;
+}
+
+export interface UseExercisesResult {
+  exercises: Exercise[];
+  isLoading: boolean;
+  error?: string;
+  addExercise: (data: ExerciseFormData) => Promise<void>;
+  deleteExercise: (id: string) => Promise<void>;
+}
+```
+
+### ID Generation
+
+Implement a consistent approach to generating unique IDs:
+
+```typescript
+// src/utils/id.ts
+export const generateId = (): string => {
+  return Date.now().toString(36) + Math.random().toString(36).substring(2);
+};
+```
+
+### Type Guards
+
+Implement type guards to ensure type safety when working with data:
+
+```typescript
+// src/utils/type-guards.ts
+import { Exercise, Program, WorkoutLog } from '../types';
+
+export const isExercise = (obj: any): obj is Exercise => {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    typeof obj.id === 'string' &&
+    typeof obj.name === 'string' &&
+    typeof obj.isCustom === 'boolean'
+  );
+};
+
+export const isWorkoutLog = (obj: any): obj is WorkoutLog => {
+  return (
+    typeof obj === 'object' &&
+    obj !== null &&
+    typeof obj.id === 'string' &&
+    obj.date instanceof Date &&
+    Array.isArray(obj.loggedExercises)
+  );
+};
+
+// Additional type guards as needed...
+```
+
+### Data Validation
+
+Implement validation functions for data models:
+
+```typescript
+// src/utils/validation.ts
+import { Exercise, SetLog, Program } from '../types';
+
+export const validateExercise = (exercise: Partial<Exercise>): string[] => {
+  const errors: string[] = [];
+  
+  if (!exercise.name || exercise.name.trim() === '') {
+    errors.push('Exercise name is required');
+  }
+  
+  if (exercise.name && exercise.name.length > 50) {
+    errors.push('Exercise name must be 50 characters or less');
+  }
+  
+  return errors;
+};
+
+export const validateSetLog = (setLog: Partial<SetLog>): string[] => {
+  const errors: string[] = [];
+  
+  if (setLog.weight === undefined || setLog.weight < 0) {
+    errors.push('Weight must be a non-negative number');
+  }
+  
+  if (setLog.reps === undefined || setLog.reps < 0) {
+    errors.push('Reps must be a non-negative number');
+  }
+  
+  return errors;
+};
+
+// Additional validation functions as needed...
+```
+
+### Date Handling
+
+Implement consistent date handling for WorkoutLog objects:
+
+```typescript
+// src/utils/date.ts
+export const formatDate = (date: Date): string => {
+  return date.toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+};
+
+export const formatTime = (date: Date): string => {
+  return date.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};
+
+export const serializedToDate = (dateStr: string): Date => {
+  return new Date(dateStr);
+};
+
+export const dateToISOString = (date: Date): string => {
+  return date.toISOString();
+};
+
+// For IndexedDB serialization/deserialization
+export const prepareWorkoutLogForStorage = (workoutLog: WorkoutLog): any => {
+  return {
+    ...workoutLog,
+    date: dateToISOString(workoutLog.date),
+  };
+};
+
+export const prepareWorkoutLogFromStorage = (storedLog: any): WorkoutLog => {
+  return {
+    ...storedLog,
+    date: serializedToDate(storedLog.date),
+  };
+};
+```
+
+### Factory Functions
+
+Create factory functions to generate new instances of data models:
+
+```typescript
+// src/utils/factories.ts
+import { Exercise, SetLog, WorkoutLog, Program } from '../types';
+import { generateId } from './id';
+
+export const createExercise = (name: string, isCustom = true): Exercise => {
+  return {
+    id: generateId(),
+    name: name.trim(),
+    isCustom,
+  };
+};
+
+export const createSetLog = (
+  weight: number,
+  reps: number,
+  options?: {
+    isFailure?: boolean;
+    isPaused?: boolean;
+    isSlowEccentric?: boolean;
+  }
+): SetLog => {
+  return {
+    weight,
+    reps,
+    ...options,
+  };
+};
+
+export const createWorkoutLog = (
+  loggedExercises: LoggedExercise[] = [],
+  options?: {
+    programId?: string;
+    notes?: string;
+  }
+): WorkoutLog => {
+  return {
+    id: generateId(),
+    date: new Date(),
+    loggedExercises,
+    ...options,
+  };
+};
+
+// Additional factory functions as needed...
+```
+
+### Utility Functions
+
+Implement utility functions for working with data models:
+
+```typescript
+// src/utils/workout.ts
+import { WorkoutLog, LoggedExercise, SetLog } from '../types';
+
+export const getTotalVolume = (workoutLog: WorkoutLog): number => {
+  return workoutLog.loggedExercises.reduce((totalVolume, exercise) => {
+    const exerciseVolume = exercise.sets.reduce((volume, set) => {
+      return volume + set.weight * set.reps;
+    }, 0);
+    return totalVolume + exerciseVolume;
+  }, 0);
+};
+
+export const getTotalSets = (workoutLog: WorkoutLog): number => {
+  return workoutLog.loggedExercises.reduce((totalSets, exercise) => {
+    return totalSets + exercise.sets.length;
+  }, 0);
+};
+
+export const getExerciseMaxWeight = (exercise: LoggedExercise): number => {
+  if (exercise.sets.length === 0) {
+    return 0;
+  }
+  
+  return Math.max(...exercise.sets.map(set => set.weight));
+};
+
+// Additional utility functions as needed...
+```
+
+### Sample Data
+
+Implement sample/default data for built-in exercises and programs:
+
+```typescript
+// src/data/default-exercises.ts
+import { Exercise } from '../types';
+
+export const DEFAULT_EXERCISES: Exercise[] = [
+  {
+    id: 'barbell-squat',
+    name: 'Barbell Squat',
+    isCustom: false,
+  },
+  {
+    id: 'bench-press',
+    name: 'Bench Press',
+    isCustom: false,
+  },
+  {
+    id: 'deadlift',
+    name: 'Deadlift',
+    isCustom: false,
+  },
+  // Additional built-in exercises...
+];
+
+// src/data/default-programs.ts
+import { Program } from '../types';
+
+export const DEFAULT_PROGRAMS: Program[] = [
+  {
+    id: 'full-body',
+    name: 'Full Body Workout',
+    description: 'A comprehensive full-body workout for all major muscle groups',
+    isCustom: false,
+    exercises: [
+      {
+        exerciseId: 'barbell-squat',
+        targetSets: 4,
+        targetReps: '5',
+      },
+      {
+        exerciseId: 'bench-press',
+        targetSets: 3,
+        targetReps: '8-10',
+      },
+      // Additional exercises...
+    ],
+  },
+  // Additional built-in programs...
+];
+```
+
+## Data Storage Considerations
+
+### IndexedDB Schema
+
+Define a consistent schema structure for IndexedDB:
+
+```typescript
+// src/services/db/schema.ts
+export interface DBSchema {
+  exercises: {
+    key: string;
+    value: any; // Will be Exercise but needs to be serializable
+  };
+  programs: {
+    key: string;
+    value: any; // Will be Program but needs to be serializable
+  };
+  workoutLogs: {
+    key: string;
+    value: any; // Will be WorkoutLog with date serialized
+  };
+  settings: {
+    key: string;
+    value: any;
+  };
+}
+
+export const DB_VERSION = 1;
+export const DB_NAME = 'gymtrack-db';
+
+export const getObjectStores = (): Array<{
+  name: keyof DBSchema;
+  options?: IDBObjectStoreParameters;
+}> => {
+  return [
+    { name: 'exercises', options: { keyPath: 'id' } },
+    { name: 'programs', options: { keyPath: 'id' } },
+    { name: 'workoutLogs', options: { keyPath: 'id' } },
+    { name: 'settings', options: { keyPath: 'id' } },
+  ];
+};
+```
+
+### Serialization Helpers
+
+Implement helpers to ensure proper serialization for IndexedDB:
+
+```typescript
+// src/utils/serialization.ts
+import { WorkoutLog, Program } from '../types';
+import { serializedToDate, dateToISOString } from './date';
+
+export const serializeWorkoutLog = (workoutLog: WorkoutLog): any => {
+  return {
+    ...workoutLog,
+    date: dateToISOString(workoutLog.date),
+  };
+};
+
+export const deserializeWorkoutLog = (data: any): WorkoutLog => {
+  return {
+    ...data,
+    date: serializedToDate(data.date),
+  };
+};
+
+// Additional serialization helpers as needed...
+```
+
+## Example Implementation
+
+Here's an example of how these models would be used in a feature-specific hook:
+
+```typescript
+// src/features/workouts/hooks/useWorkoutLogs.ts
+import { useState, useEffect, useCallback } from 'react';
+import { WorkoutLog, LoggedExercise } from '../../../types';
+import { useIndexedDB } from '../../../hooks/useIndexedDB';
+import { serializeWorkoutLog, deserializeWorkoutLog } from '../../../utils/serialization';
+import { createWorkoutLog } from '../../../utils/factories';
+
+interface UseWorkoutLogsResult {
+  workoutLogs: WorkoutLog[];
+  isLoading: boolean;
+  error?: string;
+  addWorkoutLog: (loggedExercises: LoggedExercise[], programId?: string) => Promise<string>;
+  deleteWorkoutLog: (id: string) => Promise<void>;
+}
+
+export const useWorkoutLogs = (): UseWorkoutLogsResult => {
+  const [workoutLogs, setWorkoutLogs] = useState<WorkoutLog[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | undefined>(undefined);
+  
+  const { getAll, add, remove } = useIndexedDB('workoutLogs');
+  
+  const fetchWorkoutLogs = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const data = await getAll();
+      const deserializedLogs = data.map(deserializeWorkoutLog);
+      // Sort by date, newest first
+      deserializedLogs.sort((a, b) => b.date.getTime() - a.date.getTime());
+      setWorkoutLogs(deserializedLogs);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to fetch workout logs';
+      setError(message);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [getAll]);
+  
+  useEffect(() => {
+    fetchWorkoutLogs();
+  }, [fetchWorkoutLogs]);
+  
+  const addWorkoutLog = async (
+    loggedExercises: LoggedExercise[],
+    programId?: string
+  ): Promise<string> => {
+    try {
+      const workoutLog = createWorkoutLog(loggedExercises, { programId });
+      const serialized = serializeWorkoutLog(workoutLog);
+      await add(serialized);
+      await fetchWorkoutLogs(); // Refresh the list
+      return workoutLog.id;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to add workout log';
+      setError(message);
+      throw new Error(message);
+    }
+  };
+  
+  const deleteWorkoutLog = async (id: string): Promise<void> => {
+    try {
+      await remove(id);
+      await fetchWorkoutLogs(); // Refresh the list
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to delete workout log';
+      setError(message);
+      throw new Error(message);
+    }
+  };
+  
+  return {
+    workoutLogs,
+    isLoading,
+    error,
+    addWorkoutLog,
+    deleteWorkoutLog,
+  };
+};
+```
+
+By following these data model implementation guidelines, the GymTrack PWA will maintain consistent, type-safe data structures throughout the application, ensuring reliability and making it easier to develop and maintain the codebase.

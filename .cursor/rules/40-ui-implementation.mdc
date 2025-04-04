@@ -1,0 +1,947 @@
+---
+Description: UI Implementation Guidelines for GymTrack PWA Application
+Globs: 
+  - src/components/**/*.tsx
+  - src/features/*/components/**/*.tsx
+---
+
+# UI Implementation Guidelines
+
+This document outlines the UI design patterns and implementation guidelines for the GymTrack PWA application. The UI follows Material Design principles and is implemented using React, TypeScript, and Material UI (MUI) components.
+
+## Design Philosophy
+
+The GymTrack PWA's UI follows these core design principles:
+
+1. **Efficiency First**: UI elements are designed to minimize the time and effort required for common actions, especially during active workouts.
+2. **Large, Tappable Targets**: Interactive elements are sized for easy tapping on mobile devices.
+3. **Clear Visual Hierarchy**: Important information and actions are visually prominent.
+4. **Consistent Patterns**: UI patterns are consistent across the application to reduce cognitive load.
+5. **Responsive Design**: UI adapts seamlessly to different screen sizes, prioritizing mobile-first approach.
+
+## Material UI Usage
+
+### Component Structure
+
+Use Material UI components as the foundation for your UI, extending them as needed:
+
+```tsx
+// src/components/ui/Button.tsx
+import React from 'react';
+import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/material';
+
+export interface ButtonProps extends MuiButtonProps {
+  // Additional prop definitions if needed
+}
+
+export const Button: React.FC<ButtonProps> = (props) => {
+  return <MuiButton {...props} />;
+};
+```
+
+### Theme Customization
+
+Extend the Material UI theme to match the application's design requirements:
+
+```tsx
+// src/theme.ts
+import { createTheme } from '@mui/material/styles';
+
+export const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+      light: '#63a4ff',
+      dark: '#004ba0',
+      contrastText: '#ffffff',
+    },
+    secondary: {
+      main: '#f50057',
+      light: '#ff5983',
+      dark: '#bb002f',
+      contrastText: '#ffffff',
+    },
+    background: {
+      default: '#f5f5f5',
+      paper: '#ffffff',
+    },
+  },
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    h1: {
+      fontSize: '2rem',
+      fontWeight: 500,
+    },
+    h2: {
+      fontSize: '1.75rem',
+      fontWeight: 500,
+    },
+    h3: {
+      fontSize: '1.5rem',
+      fontWeight: 500,
+    },
+    h4: {
+      fontSize: '1.25rem',
+      fontWeight: 500,
+    },
+    h5: {
+      fontSize: '1.1rem',
+      fontWeight: 500,
+    },
+    h6: {
+      fontSize: '1rem',
+      fontWeight: 500,
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+          borderRadius: 8,
+        },
+        contained: {
+          boxShadow: 'none',
+          '&:hover': {
+            boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
+          },
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+          boxShadow: '0px 3px 6px rgba(0, 0, 0, 0.1)',
+        },
+      },
+    },
+    // Additional component customizations...
+  },
+});
+```
+
+### Styled Components
+
+Use the `styled` API for component-specific styling:
+
+```tsx
+// src/components/ExerciseCard.tsx
+import { styled } from '@mui/material/styles';
+import { Card, Typography, Button, Box } from '@mui/material';
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+  padding: theme.spacing(2),
+  position: 'relative',
+}));
+
+const CategoryBadge = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  top: theme.spacing(1),
+  right: theme.spacing(1),
+  background: theme.palette.primary.main,
+  color: theme.palette.primary.contrastText,
+  padding: theme.spacing(0.5, 1),
+  borderRadius: theme.shape.borderRadius,
+  fontSize: '0.75rem',
+}));
+
+export const ExerciseCard: React.FC<ExerciseCardProps> = ({ 
+  exercise, 
+  onSelect 
+}) => {
+  return (
+    <StyledCard>
+      <Typography variant="h6">{exercise.name}</Typography>
+      {exercise.category && (
+        <CategoryBadge>{exercise.category}</CategoryBadge>
+      )}
+      <Button 
+        variant="contained" 
+        color="primary"
+        onClick={() => onSelect(exercise)}
+        fullWidth
+        sx={{ mt: 2 }}
+      >
+        Select
+      </Button>
+    </StyledCard>
+  );
+};
+```
+
+## Component Guidelines
+
+### Buttons
+
+Buttons should be easily tappable and clearly indicate their purpose:
+
+```tsx
+// Primary action buttons
+<Button 
+  variant="contained" 
+  color="primary"
+  size="large"
+  fullWidth
+  onClick={handleAction}
+>
+  Start Workout
+</Button>
+
+// Secondary action buttons
+<Button 
+  variant="outlined" 
+  color="primary"
+  onClick={handleSecondaryAction}
+>
+  Cancel
+</Button>
+
+// Icon buttons with labels for clarity
+<Button
+  variant="contained"
+  color="primary"
+  startIcon={<AddIcon />}
+  onClick={handleAddExercise}
+>
+  Add Exercise
+</Button>
+
+// Floating action button for primary actions
+<Fab
+  color="primary"
+  aria-label="add"
+  onClick={handleAddExercise}
+  sx={{ position: 'fixed', bottom: 16, right: 16 }}
+>
+  <AddIcon />
+</Fab>
+```
+
+### Input Fields
+
+Input fields should be optimized for the data being collected:
+
+```tsx
+// Text input
+<TextField
+  label="Exercise Name"
+  value={name}
+  onChange={(e) => setName(e.target.value)}
+  fullWidth
+  margin="normal"
+  error={!!nameError}
+  helperText={nameError}
+/>
+
+// Number input with incrementers for weight/reps
+<Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+  <IconButton 
+    onClick={() => setWeight(Math.max(0, weight - 2.5))}
+    disabled={weight <= 0}
+  >
+    <RemoveIcon />
+  </IconButton>
+  <TextField
+    label="Weight (kg)"
+    type="number"
+    value={weight}
+    onChange={(e) => setWeight(Number(e.target.value))}
+    inputProps={{ 
+      min: 0, 
+      step: 2.5,
+      inputMode: 'decimal'  // Better mobile keyboard
+    }}
+    sx={{ width: 100 }}
+  />
+  <IconButton onClick={() => setWeight(weight + 2.5)}>
+    <AddIcon />
+  </IconButton>
+</Box>
+```
+
+### Lists
+
+Lists should be efficient and provide clear visual separation:
+
+```tsx
+// Basic list
+<List>
+  {exercises.map((exercise) => (
+    <ListItem
+      key={exercise.id}
+      button
+      onClick={() => onSelectExercise(exercise)}
+    >
+      <ListItemText 
+        primary={exercise.name} 
+        secondary={exercise.isCustom ? 'Custom' : 'Built-in'} 
+      />
+      <ListItemSecondaryAction>
+        <IconButton edge="end" onClick={() => onEditExercise(exercise)}>
+          <EditIcon />
+        </IconButton>
+      </ListItemSecondaryAction>
+    </ListItem>
+  ))}
+</List>
+
+// List with dividers and icons
+<List>
+  {programs.map((program) => (
+    <React.Fragment key={program.id}>
+      <ListItem button onClick={() => onSelectProgram(program)}>
+        <ListItemIcon>
+          <FitnessCenterIcon />
+        </ListItemIcon>
+        <ListItemText 
+          primary={program.name} 
+          secondary={`${program.exercises.length} exercises`} 
+        />
+        <ListItemSecondaryAction>
+          <IconButton edge="end" onClick={() => onEditProgram(program)}>
+            <EditIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>
+      <Divider />
+    </React.Fragment>
+  ))}
+</List>
+
+// Empty state for lists
+{workouts.length === 0 && (
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      py: 4,
+    }}
+  >
+    <FitnessCenterIcon sx={{ fontSize: 48, color: 'text.disabled', mb: 2 }} />
+    <Typography variant="h6" color="text.secondary">
+      No workouts yet
+    </Typography>
+    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+      Start your first workout to see it here
+    </Typography>
+    <Button 
+      variant="contained" 
+      color="primary"
+      onClick={handleStartWorkout}
+      startIcon={<AddIcon />}
+    >
+      Start Workout
+    </Button>
+  </Box>
+)}
+```
+
+### Cards
+
+Cards should be used to group related information:
+
+```tsx
+<Card sx={{ mb: 2 }}>
+  <CardHeader 
+    title="Full Body Workout"
+    subheader="Last performed: 2 days ago"
+    action={
+      <IconButton onClick={handleMenuOpen}>
+        <MoreVertIcon />
+      </IconButton>
+    }
+  />
+  <CardContent>
+    <Typography variant="body2" color="text.secondary">
+      A comprehensive workout targeting all major muscle groups
+    </Typography>
+    <Box sx={{ mt: 2, display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+      <Chip label="Squat" size="small" />
+      <Chip label="Bench Press" size="small" />
+      <Chip label="Deadlift" size="small" />
+      <Chip label="+2 more" size="small" variant="outlined" />
+    </Box>
+  </CardContent>
+  <CardActions>
+    <Button size="small" startIcon={<EditIcon />}>
+      Edit
+    </Button>
+    <Button 
+      size="small" 
+      color="primary"
+      variant="contained"
+      startIcon={<PlayArrowIcon />}
+    >
+      Start
+    </Button>
+  </CardActions>
+</Card>
+```
+
+## Screen-Specific Guidelines
+
+### Exercise Management Screen
+
+```tsx
+export const ExerciseManagementScreen: React.FC = () => {
+  const { exercises, isLoading, error, addExercise, deleteExercise } = useExercises();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  
+  // Filter exercises based on search term
+  const filteredExercises = exercises.filter(
+    (exercise) => exercise.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  
+  return (
+    <Box sx={{ p: 2 }}>
+      <Typography variant="h4" sx={{ mb: 2 }}>
+        Exercises
+      </Typography>
+      
+      {/* Search bar */}
+      <TextField
+        fullWidth
+        label="Search exercises"
+        variant="outlined"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchIcon />
+            </InputAdornment>
+          ),
+        }}
+        sx={{ mb: 2 }}
+      />
+      
+      {/* Exercise list */}
+      {isLoading ? (
+        <CircularProgress />
+      ) : error ? (
+        <Alert severity="error">{error}</Alert>
+      ) : (
+        <List>
+          {filteredExercises.map((exercise) => (
+            <ListItem
+              key={exercise.id}
+              secondaryAction={
+                exercise.isCustom && (
+                  <IconButton edge="end" onClick={() => deleteExercise(exercise.id)}>
+                    <DeleteIcon />
+                  </IconButton>
+                )
+              }
+            >
+              <ListItemText 
+                primary={exercise.name} 
+                secondary={exercise.isCustom ? 'Custom' : 'Built-in'} 
+              />
+            </ListItem>
+          ))}
+        </List>
+      )}
+      
+      {/* Empty state */}
+      {!isLoading && !error && filteredExercises.length === 0 && (
+        <Box textAlign="center" sx={{ py: 4 }}>
+          <Typography variant="body1">
+            {searchTerm 
+              ? 'No exercises match your search' 
+              : 'No exercises available'}
+          </Typography>
+        </Box>
+      )}
+      
+      {/* Add exercise button */}
+      <Fab
+        color="primary"
+        aria-label="add exercise"
+        onClick={() => setShowAddDialog(true)}
+        sx={{ position: 'fixed', bottom: 16, right: 16 }}
+      >
+        <AddIcon />
+      </Fab>
+      
+      {/* Add exercise dialog */}
+      <AddExerciseDialog
+        open={showAddDialog}
+        onClose={() => setShowAddDialog(false)}
+        onAdd={addExercise}
+      />
+    </Box>
+  );
+};
+```
+
+### Program Management Screen
+
+```tsx
+export const ProgramManagementScreen: React.FC = () => {
+  const { programs, isLoading, error, addProgram, copyProgram, deleteProgram } = usePrograms();
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'builtin' | 'custom'>('all');
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  
+  // Filter programs based on selected category
+  const filteredPrograms = programs.filter((program) => {
+    if (selectedCategory === 'all') return true;
+    if (selectedCategory === 'builtin') return !program.isCustom;
+    if (selectedCategory === 'custom') return program.isCustom;
+    return true;
+  });
+  
+  return (
+    <Box sx={{ p: 2 }}>
+      <Typography variant="h4" sx={{ mb: 2 }}>
+        Workout Programs
+      </Typography>
+      
+      {/* Category filter */}
+      <Paper sx={{ mb: 2 }}>
+        <Tabs
+          value={selectedCategory}
+          onChange={(e, newValue) => setSelectedCategory(newValue)}
+          indicatorColor="primary"
+          textColor="primary"
+          variant="fullWidth"
+        >
+          <Tab label="All" value="all" />
+          <Tab label="Built-in" value="builtin" />
+          <Tab label="Custom" value="custom" />
+        </Tabs>
+      </Paper>
+      
+      {/* Program list */}
+      {isLoading ? (
+        <CircularProgress />
+      ) : error ? (
+        <Alert severity="error">{error}</Alert>
+      ) : (
+        <Grid container spacing={2}>
+          {filteredPrograms.map((program) => (
+            <Grid item xs={12} sm={6} md={4} key={program.id}>
+              <ProgramCard 
+                program={program}
+                onStart={() => navigateToWorkout(program.id)}
+                onEdit={program.isCustom ? () => navigateToEditor(program.id) : undefined}
+                onCopy={() => copyProgram(program.id)}
+                onDelete={program.isCustom ? () => deleteProgram(program.id) : undefined}
+              />
+            </Grid>
+          ))}
+        </Grid>
+      )}
+      
+      {/* Empty state */}
+      {!isLoading && !error && filteredPrograms.length === 0 && (
+        <Box textAlign="center" sx={{ py: 4 }}>
+          <Typography variant="body1">
+            {selectedCategory === 'custom' 
+              ? 'No custom programs yet' 
+              : 'No programs available'}
+          </Typography>
+        </Box>
+      )}
+      
+      {/* Add program button */}
+      <Fab
+        color="primary"
+        aria-label="add program"
+        onClick={() => setShowAddDialog(true)}
+        sx={{ position: 'fixed', bottom: 16, right: 16 }}
+      >
+        <AddIcon />
+      </Fab>
+      
+      {/* Add program dialog */}
+      <AddProgramDialog
+        open={showAddDialog}
+        onClose={() => setShowAddDialog(false)}
+        onAdd={navigateToNewProgramEditor}
+      />
+    </Box>
+  );
+};
+```
+
+### Workout Execution Screen
+
+The workout execution screen is the most critical interface and should optimize for speed and ease of use during active workouts:
+
+```tsx
+export const WorkoutExecutionScreen: React.FC = () => {
+  const { workoutState, logSet, addExercise, finishWorkout } = useWorkoutExecution();
+  const [weight, setWeight] = useState<number>(0);
+  const [reps, setReps] = useState<number>(0);
+  const [isFailure, setIsFailure] = useState<boolean>(false);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [isSlowEccentric, setIsSlowEccentric] = useState<boolean>(false);
+  
+  // Get current exercise info
+  const currentExercise = workoutState.currentExerciseIndex !== undefined
+    ? workoutState.loggedExercises[workoutState.currentExerciseIndex]
+    : null;
+  
+  // Pre-fill weight from previous set if available
+  useEffect(() => {
+    if (currentExercise && currentExercise.sets.length > 0) {
+      const lastSet = currentExercise.sets[currentExercise.sets.length - 1];
+      setWeight(lastSet.weight);
+    }
+  }, [currentExercise?.exerciseId]);
+  
+  const handleLogSet = () => {
+    if (!currentExercise) return;
+    
+    logSet({
+      exerciseId: currentExercise.exerciseId,
+      set: {
+        weight,
+        reps,
+        isFailure,
+        isPaused,
+        isSlowEccentric
+      }
+    });
+    
+    // Keep weight the same for next set
+    setReps(0);
+    setIsFailure(false);
+    setIsPaused(false);
+    setIsSlowEccentric(false);
+  };
+  
+  return (
+    <Box sx={{ p: 2 }}>
+      {/* Workout header */}
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center',
+          mb: 2
+        }}
+      >
+        <Typography variant="h5">
+          {workoutState.programId ? 'Program Workout' : 'Quick Workout'}
+        </Typography>
+        <Button 
+          variant="contained" 
+          color="primary"
+          onClick={finishWorkout}
+        >
+          Finish
+        </Button>
+      </Box>
+      
+      {currentExercise ? (
+        <>
+          {/* Current exercise */}
+          <Paper sx={{ p: 2, mb: 3 }}>
+            <Typography variant="h6" sx={{ mb: 1 }}>
+              {currentExercise.exerciseName}
+            </Typography>
+            
+            {/* Previous sets */}
+            {currentExercise.sets.length > 0 && (
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                  Previous Sets:
+                </Typography>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                  {currentExercise.sets.map((set, index) => (
+                    <Chip 
+                      key={index}
+                      label={`${set.weight}kg × ${set.reps}`}
+                      color={set.isFailure ? 'secondary' : 'default'}
+                      size="small"
+                    />
+                  ))}
+                </Box>
+              </Box>
+            )}
+            
+            {/* Log set form */}
+            <Box sx={{ mt: 2 }}>
+              <Grid container spacing={2} sx={{ mb: 2 }}>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Weight (kg)"
+                    type="number"
+                    value={weight}
+                    onChange={(e) => setWeight(Number(e.target.value))}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <IconButton 
+                            size="small"
+                            onClick={() => setWeight(Math.max(0, weight - 2.5))}
+                            disabled={weight <= 0}
+                          >
+                            <RemoveIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton 
+                            size="small"
+                            onClick={() => setWeight(weight + 2.5)}
+                          >
+                            <AddIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    label="Reps"
+                    type="number"
+                    value={reps}
+                    onChange={(e) => setReps(Number(e.target.value))}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <IconButton 
+                            size="small"
+                            onClick={() => setReps(Math.max(0, reps - 1))}
+                            disabled={reps <= 0}
+                          >
+                            <RemoveIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton 
+                            size="small"
+                            onClick={() => setReps(reps + 1)}
+                          >
+                            <AddIcon />
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    fullWidth
+                  />
+                </Grid>
+              </Grid>
+              
+              {/* Advanced options */}
+              <Box sx={{ mb: 2 }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isFailure}
+                      onChange={(e) => setIsFailure(e.target.checked)}
+                    />
+                  }
+                  label="Failure"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isPaused}
+                      onChange={(e) => setIsPaused(e.target.checked)}
+                    />
+                  }
+                  label="Paused"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isSlowEccentric}
+                      onChange={(e) => setIsSlowEccentric(e.target.checked)}
+                    />
+                  }
+                  label="Slow Eccentric"
+                />
+              </Box>
+              
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                fullWidth
+                onClick={handleLogSet}
+                disabled={weight <= 0 || reps <= 0}
+              >
+                Log Set
+              </Button>
+            </Box>
+          </Paper>
+          
+          {/* Exercise navigation (if program workout) */}
+          {workoutState.programId && (
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                justifyContent: 'space-between',
+                mb: 2
+              }}
+            >
+              <Button
+                variant="outlined"
+                startIcon={<ArrowBackIcon />}
+                onClick={() => navigateToPreviousExercise()}
+                disabled={workoutState.currentExerciseIndex === 0}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outlined"
+                endIcon={<ArrowForwardIcon />}
+                onClick={() => navigateToNextExercise()}
+                disabled={workoutState.currentExerciseIndex === workoutState.loggedExercises.length - 1}
+              >
+                Next
+              </Button>
+            </Box>
+          )}
+        </>
+      ) : (
+        // No exercise selected yet
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center',
+            justifyContent: 'center',
+            py: 4
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            No exercise selected
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={() => setShowExerciseSelector(true)}
+          >
+            Add Exercise
+          </Button>
+        </Box>
+      )}
+      
+      {/* Add exercise button */}
+      <Fab
+        color="primary"
+        aria-label="add exercise"
+        onClick={() => setShowExerciseSelector(true)}
+        sx={{ position: 'fixed', bottom: 16, right: 16 }}
+      >
+        <AddIcon />
+      </Fab>
+      
+      {/* Exercise selector dialog */}
+      <ExerciseSelectorDialog
+        open={showExerciseSelector}
+        onClose={() => setShowExerciseSelector(false)}
+        onSelect={(exercise) => {
+          addExercise(exercise.id);
+          setShowExerciseSelector(false);
+        }}
+      />
+    </Box>
+  );
+};
+```
+
+### Workout History Screen
+
+```tsx
+export const WorkoutHistoryScreen: React.FC = () => {
+  const { workoutLogs, isLoading, error } = useWorkoutLogs();
+  
+  // Group workouts by month for better organization
+  const groupedWorkouts = useMemo(() => {
+    const groups: Record<string, WorkoutLog[]> = {};
+    
+    workoutLogs.forEach((workout) => {
+      const date = new Date(workout.date);
+      const key = `${date.getFullYear()}-${date.getMonth()+1}`;
+      
+      if (!groups[key]) {
+        groups[key] = [];
+      }
+      
+      groups[key].push(workout);
+    });
+    
+    return groups;
+  }, [workoutLogs]);
+  
+  // Sort months in descending order
+  const sortedMonths = useMemo(() => {
+    return Object.keys(groupedWorkouts).sort((a, b) => b.localeCompare(a));
+  }, [groupedWorkouts]);
+  
+  const formatMonthTitle = (key: string) => {
+    const [year, month] = key.split('-').map(Number);
+    return new Date(year, month-1).toLocaleDateString('en-US', { 
+      month: 'long', 
+      year: 'numeric' 
+    });
+  };
+  
+  return (
+    <Box sx={{ p: 2 }}>
+      <Typography variant="h4" sx={{ mb: 2 }}>
+        Workout History
+      </Typography>
+      
+      {isLoading ? (
+        <CircularProgress />
+      ) : error ? (
+        <Alert severity="error">{error}</Alert>
+      ) : workoutLogs.length === 0 ? (
+        <Box 
+          sx={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center',
+            justifyContent: 'center',
+            py: 4
+          }}
+        >
+          <FitnessCenterIcon sx={{ fontSize: 48, color: 'text.disabled', mb: 2 }} />
+          <Typography variant="h6" color="text.secondary">
+            No workout history yet
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Complete a workout to see it here
+          </Typography>
+          <Button 
+            variant="contained" 
+            color="primary"
+            onClick={() => navigateToNewWorkout()}
+            startIcon={<AddIcon />}
+          >
+            Start Workout
+          </Button>
+        </Box>
+      ) : (
+        <List>
+          {sortedMonths.map((month) => (
+            <React.Fragment key={month}>
+              <ListSubheader>{formatMonthTitle(month)}</ListSubheader>
+              {groupedWorkouts[month].map((workout) => (
+                <ListItem 
+                  key={workout.id}
+                  button
+                  onClick={() => navigateToWorkoutDetails(workout.id)}
+                >
+                  <ListItemText
+                    primary={formatDate(workout.date)}
+                    secondary={`${workout.loggedExercises.length} exercises, ${getTotalSets(workout)} sets`}
+                  />
+                  {workout.program
