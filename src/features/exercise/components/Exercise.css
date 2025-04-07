@@ -1,6 +1,7 @@
 /* Exercise List Styles */
 .exercise-list-container {
   width: 100%;
+  box-sizing: border-box;
 }
 
 /* Exercise screen styles */
@@ -8,6 +9,7 @@
 .exercise-search {
   width: 100%;
   margin-bottom: 1rem;
+  box-sizing: border-box;
 }
 
 .exercise-search input {
@@ -21,6 +23,7 @@
 
 .add-exercise-btn {
   margin-bottom: 1.5rem;
+  width: 100%;
 }
 
 .exercise-list {
@@ -42,6 +45,7 @@
   cursor: pointer;
   transition: background-color 0.2s;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .exercise-item:hover {
