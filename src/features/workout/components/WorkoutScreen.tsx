@@ -7,6 +7,8 @@ import { ActiveWorkoutScreen } from './ActiveWorkoutScreen';
 import { WorkoutSummary } from './WorkoutSummary';
 import { AddExerciseToWorkoutDialog } from './AddExerciseToWorkoutDialog';
 import { SetLog } from '../../../types/models';
+import { useIndexedDB } from '../../../hooks/useIndexedDB';
+import { STORES } from '../../../services/db';
 
 export const WorkoutScreen = () => {
   const { 
@@ -24,6 +26,7 @@ export const WorkoutScreen = () => {
   
   const { programs } = usePrograms();
   const { exercises } = useExercises();
+  const { loadItems: refreshPrograms } = useIndexedDB(STORES.PROGRAMS);
   
   const [workoutComplete, setWorkoutComplete] = useState(false);
   const [workoutDuration, setWorkoutDuration] = useState('00:00:00');
@@ -34,6 +37,13 @@ export const WorkoutScreen = () => {
   const programObject = activeProgram 
     ? programs.find(p => p.id === activeProgram) 
     : null;
+  
+  // Refresh programs when needed
+  useEffect(() => {
+    if (!currentWorkout && !workoutComplete) {
+      refreshPrograms();
+    }
+  }, [currentWorkout, workoutComplete, refreshPrograms]);
   
   // Handle starting a workout from a program
   const handleStartProgram = async (programId: string) => {
@@ -101,23 +111,24 @@ export const WorkoutScreen = () => {
   const handleCloseSummary = () => {
     setWorkoutComplete(false);
     setActiveProgram(null);
+    refreshPrograms(); // Explicitly refresh programs when closing the summary
   };
 
-  return (
-    <div className="workout-screen feature-container">
-      {!currentWorkout && !workoutComplete && (
-        <WorkoutStartScreen
-          programs={programs}
-          onStartProgram={handleStartProgram}
-          onStartEmpty={handleStartEmpty}
-        />
-      )}
-      
-      {currentWorkout && !workoutComplete && (
+  useEffect(() => {
+    // When workout is completed and then closed, make sure to refresh the programs
+    if (!workoutComplete) {
+      refreshPrograms();
+    }
+  }, [workoutComplete, refreshPrograms]);
+  
+  // Determine what to render based on current state
+  if (currentWorkout && !workoutComplete) {
+    return (
+      <>
         <ActiveWorkoutScreen
           workout={currentWorkout}
-          program={programObject}
           exercises={exercises}
+          program={programObject}
           activeExerciseIndex={activeExerciseIndex}
           onLogSet={handleLogSet}
           onDeleteSet={handleDeleteSet}
@@ -126,24 +137,34 @@ export const WorkoutScreen = () => {
           onAddExercise={() => setIsAddExerciseDialogOpen(true)}
           onFinishWorkout={handleFinishWorkout}
         />
-      )}
-      
-      {workoutComplete && currentWorkout && (
-        <WorkoutSummary
-          workout={currentWorkout}
+        
+        <AddExerciseToWorkoutDialog
+          isOpen={isAddExerciseDialogOpen}
           exercises={exercises}
-          programName={programObject?.name}
-          duration={workoutDuration}
-          onClose={handleCloseSummary}
+          onAddExercise={handleAddExercise}
+          onClose={() => setIsAddExerciseDialogOpen(false)}
         />
-      )}
-      
-      <AddExerciseToWorkoutDialog
-        isOpen={isAddExerciseDialogOpen}
-        onClose={() => setIsAddExerciseDialogOpen(false)}
+      </>
+    );
+  }
+  
+  if (workoutComplete && currentWorkout) {
+    return (
+      <WorkoutSummary
+        workout={currentWorkout}
         exercises={exercises}
-        onAddExercise={handleAddExercise}
+        programName={programObject?.name}
+        duration={workoutDuration}
+        onClose={handleCloseSummary}
       />
-    </div>
+    );
+  }
+  
+  return (
+    <WorkoutStartScreen
+      programs={programs}
+      onStartProgram={handleStartProgram}
+      onStartEmpty={handleStartEmpty}
+    />
   );
 };
