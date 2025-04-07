@@ -20,12 +20,12 @@ export const WorkoutDetailView = ({
       return exerciseTotal + (set.weight * set.reps);
     }, 0);
   }, 0);
-  
+
   // Calculate total sets
   const totalSets = workout.loggedExercises.reduce((total, loggedExercise) => {
     return total + loggedExercise.sets.length;
   }, 0);
-  
+
   // Calculate total reps
   const totalReps = workout.loggedExercises.reduce((total, loggedExercise) => {
     return total + loggedExercise.sets.reduce((exerciseTotal, set) => {
@@ -35,8 +35,9 @@ export const WorkoutDetailView = ({
 
   return (
     <div className="workout-detail-view">
+      <div className="workout-detail-content">
       <div className="workout-detail-header">
-        <button 
+        <button
           className="back-button"
           onClick={onBack}
         >
@@ -53,7 +54,7 @@ export const WorkoutDetailView = ({
           </div>
         )}
       </div>
-      
+
       <div className="workout-summary-stats">
         <div className="stat-item">
           <div className="stat-value">{workout.loggedExercises.length}</div>
@@ -72,23 +73,23 @@ export const WorkoutDetailView = ({
           <div className="stat-label">Volume (kg)</div>
         </div>
       </div>
-      
+
       <div className="workout-exercises">
         <h3>Exercises</h3>
-        
+
         {workout.loggedExercises.map((loggedExercise, index) => {
           const exercise = exercises.find(e => e.id === loggedExercise.exerciseId);
-          
+
           if (!exercise) return (
             <div key={index} className="missing-exercise">
               Exercise not found (ID: {loggedExercise.exerciseId})
             </div>
           );
-          
+
           return (
             <div key={index} className="exercise-detail">
               <h4 className="exercise-name">{exercise.name}</h4>
-              
+
               <table className="sets-table">
                 <thead>
                   <tr>
@@ -119,7 +120,7 @@ export const WorkoutDetailView = ({
                   ))}
                 </tbody>
               </table>
-              
+
               <div className="exercise-summary">
                 <div className="exercise-volume">
                   Volume: {loggedExercise.sets.reduce((total, set) => total + (set.weight * set.reps), 0).toLocaleString()} kg
@@ -128,6 +129,7 @@ export const WorkoutDetailView = ({
             </div>
           );
         })}
+      </div>
       </div>
     </div>
   );

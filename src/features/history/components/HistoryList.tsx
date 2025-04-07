@@ -16,7 +16,7 @@ export const HistoryList = ({
   loading = false,
 }: HistoryListProps) => {
   const [dateFilter, setDateFilter] = useState<string>('');
-  
+
   // Filter workouts based on date
   const filteredWorkoutLogs = dateFilter
     ? workoutLogs.filter(log => {
@@ -36,10 +36,10 @@ export const HistoryList = ({
 
   return (
     <div className="history-list-container">
-      <div className="history-list-header">
-        <h2>Workout History</h2>
-        <div className="date-filter">
-          <label htmlFor="date-filter">Filter by date:</label>
+      <h2>Workout History</h2>
+      <div className="date-filter">
+        <label htmlFor="date-filter">Filter by date:</label>
+        <div className="filter-input-row">
           <input
             id="date-filter"
             type="date"
@@ -47,7 +47,7 @@ export const HistoryList = ({
             onChange={(e) => setDateFilter(e.target.value)}
           />
           {dateFilter && (
-            <button 
+            <button
               className="clear-filter-btn"
               onClick={() => setDateFilter('')}
             >
@@ -66,8 +66,8 @@ export const HistoryList = ({
       ) : (
         <ul className="workout-list">
           {filteredWorkoutLogs.map(workout => (
-            <li 
-              key={workout.id} 
+            <li
+              key={workout.id}
               className="workout-item"
               onClick={() => onSelectWorkout(workout.id)}
             >
@@ -92,7 +92,7 @@ export const HistoryList = ({
                 )}
               </div>
               {onDeleteWorkout && (
-                <button 
+                <button
                   className="delete-workout-btn"
                   onClick={(e) => {
                     e.stopPropagation();
