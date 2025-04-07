@@ -104,7 +104,7 @@ export const WorkoutScreen = () => {
   };
 
   return (
-    <div className="workout-screen">
+    <div className="workout-screen feature-container">
       {!currentWorkout && !workoutComplete && (
         <WorkoutStartScreen
           programs={programs}

@@ -85,7 +85,7 @@ export const ActiveWorkoutScreen = ({
   };
 
   return (
-    <div className="active-workout-screen feature-container">
+    <div className="active-workout-screen">
       <div className="workout-header">
         <div className="workout-info">
           <h2>{program?.name || 'Workout'}</h2>

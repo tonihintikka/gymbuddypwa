@@ -26,7 +26,7 @@ export const WorkoutStartScreen = ({
   }
 
   return (
-    <div className="workout-start-screen feature-container">
+    <div className="workout-start-screen">
       <div className="workout-start-header">
         <h2>Start Workout</h2>
         <button
