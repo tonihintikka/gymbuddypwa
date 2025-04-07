@@ -13,6 +13,8 @@
   --success-color: #4caf50;
   --warning-color: #ff9800;
   --error-color: #f44336;
+  --content-width: 100%;
+  --max-content-width: 600px;
 }
 
 * {
@@ -86,15 +88,16 @@ body {
   align-items: center;
   width: 100%;
   box-sizing: border-box;
+  max-width: 100%;
 }
 
 /* Common container for all feature screens */
 .feature-container {
-  width: 100%;
-  max-width: 600px;
+  width: var(--content-width);
+  max-width: var(--max-content-width);
   margin: 0 auto;
   box-sizing: border-box;
-  padding: 0 0.5rem;
+  padding: 0;
 }
 
 /* Ensure all direct children of feature-container take full width */
