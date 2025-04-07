@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { WorkoutLog } from '../../../types/models';
+import { WorkoutLog, Program } from '../../../types/models';
 import { formatDate, formatTime } from '../../../utils/dateFormatters';
 
 interface HistoryListProps {
   workoutLogs: WorkoutLog[];
+  programs: Program[];
   onSelectWorkout: (workoutId: string) => void;
   onDeleteWorkout?: (workoutId: string) => void;
   loading?: boolean;
@@ -11,11 +12,18 @@ interface HistoryListProps {
 
 export const HistoryList = ({
   workoutLogs,
+  programs,
   onSelectWorkout,
   onDeleteWorkout,
   loading = false,
 }: HistoryListProps) => {
   const [dateFilter, setDateFilter] = useState<string>('');
+
+  // Find program name by ID
+  const getProgramName = (programId: string): string => {
+    const program = programs.find(p => p.id === programId);
+    return program ? program.name : programId;
+  };
 
   // Filter workouts based on date
   const filteredWorkoutLogs = dateFilter
@@ -87,7 +95,7 @@ export const HistoryList = ({
                 {workout.programId && (
                   <div className="workout-program">
                     <span className="program-label">Program:</span>
-                    <span className="program-id">{workout.programId}</span>
+                    <span className="program-name">{getProgramName(workout.programId)}</span>
                   </div>
                 )}
               </div>

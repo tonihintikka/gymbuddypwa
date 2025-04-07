@@ -106,6 +106,14 @@
   margin-right: 0.5rem;
 }
 
+.program-name {
+  color: var(--text-primary);
+  font-weight: 400;
+  word-break: break-word;
+  max-width: 250px;
+  display: inline-block;
+}
+
 .delete-workout-btn {
   background-color: transparent;
   color: var(--error-color);

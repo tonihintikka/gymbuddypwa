@@ -71,6 +71,7 @@ export const HistoryScreen = () => {
         <>
           <HistoryList
             workoutLogs={workoutLogs}
+            programs={programs}
             loading={loading}
             onSelectWorkout={handleSelectWorkout}
             onDeleteWorkout={handleDeleteWorkout}
