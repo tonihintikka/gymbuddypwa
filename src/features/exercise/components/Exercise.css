@@ -1,18 +1,13 @@
 /* Exercise List Styles */
 .exercise-list-container {
   width: 100%;
-  max-width: 100%;
 }
 
-.exercise-list-header {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
+/* Exercise screen styles */
 
 .exercise-search {
   width: 100%;
+  margin-bottom: 1rem;
 }
 
 .exercise-search input {
@@ -24,7 +19,7 @@
 }
 
 .add-exercise-btn {
-  align-self: flex-start;
+  margin-bottom: 1.5rem;
 }
 
 .exercise-list {

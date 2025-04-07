@@ -17,9 +17,9 @@ export const ProgramList = ({
   loading = false,
 }: ProgramListProps) => {
   const [filter, setFilter] = useState('');
-  
+
   // Filter programs based on search input
-  const filteredPrograms = programs.filter(program => 
+  const filteredPrograms = programs.filter(program =>
     program.name.toLowerCase().includes(filter.toLowerCase())
   );
 
@@ -29,35 +29,33 @@ export const ProgramList = ({
 
   return (
     <div className="program-list-container">
-      <div className="program-list-header">
-        <h2>Workout Programs</h2>
-        <div className="program-search">
-          <input
-            type="text"
-            placeholder="Search programs..."
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-          />
-        </div>
-        <button 
-          className="add-program-btn"
-          onClick={onAddProgram}
-        >
-          Create Program
-        </button>
+      <h2>Workout Programs</h2>
+      <div className="program-search">
+        <input
+          type="text"
+          placeholder="Search programs..."
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        />
       </div>
+      <button
+        className="add-program-btn"
+        onClick={onAddProgram}
+      >
+        Create Program
+      </button>
 
       {filteredPrograms.length === 0 ? (
         <div className="no-programs">
-          {filter ? 
-            `No programs found matching "${filter}"` : 
+          {filter ?
+            `No programs found matching "${filter}"` :
             'No programs available. Create your first workout program!'}
         </div>
       ) : (
         <ul className="program-list">
           {filteredPrograms.map(program => (
-            <li 
-              key={program.id} 
+            <li
+              key={program.id}
               className="program-item"
               onClick={() => onSelectProgram && onSelectProgram(program)}
             >
@@ -68,7 +66,7 @@ export const ProgramList = ({
                 </span>
               </div>
               {onDeleteProgram && (
-                <button 
+                <button
                   className="delete-program-btn"
                   onClick={(e) => {
                     e.stopPropagation();

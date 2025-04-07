@@ -103,9 +103,10 @@
 - [x] Write unit tests for Exercise components
 - [x] Write unit tests for Program components
 - [x] Write unit tests for Workout components
+- [x] Create comprehensive Puppeteer testing instructions
 - [ ] Write unit tests for hooks and utilities
 - [ ] Implement more component tests
-- [ ] Add end-to-end testing
+- [x] Add end-to-end testing documentation
 - [ ] Optimize bundle size
 - [ ] Implement performance monitoring
 - [ ] Add analytics (optional)
@@ -114,6 +115,7 @@
 
 - [x] Create initial project documentation
 - [x] Document data models
+- [x] Create testing documentation with Puppeteer instructions
 - [ ] Add component documentation
 - [ ] Create user guide
 - [ ] Document API and hooks

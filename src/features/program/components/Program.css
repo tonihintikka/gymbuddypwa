@@ -1,18 +1,13 @@
 /* Program List Styles */
 .program-list-container {
   width: 100%;
-  max-width: 100%;
 }
 
-.program-list-header {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
+/* Program screen styles */
 
 .program-search {
   width: 100%;
+  margin-bottom: 1rem;
 }
 
 .program-search input {
@@ -24,7 +19,7 @@
 }
 
 .add-program-btn {
-  align-self: flex-start;
+  margin-bottom: 1.5rem;
 }
 
 .program-list {

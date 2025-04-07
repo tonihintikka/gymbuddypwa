@@ -17,9 +17,9 @@ export const ExerciseList = ({
   loading = false,
 }: ExerciseListProps) => {
   const [filter, setFilter] = useState('');
-  
+
   // Filter exercises based on search input
-  const filteredExercises = exercises.filter(exercise => 
+  const filteredExercises = exercises.filter(exercise =>
     exercise.name.toLowerCase().includes(filter.toLowerCase())
   );
 
@@ -29,41 +29,39 @@ export const ExerciseList = ({
 
   return (
     <div className="exercise-list-container">
-      <div className="exercise-list-header">
-        <h2>Exercises</h2>
-        <div className="exercise-search">
-          <input
-            type="text"
-            placeholder="Search exercises..."
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-          />
-        </div>
-        <button 
-          className="add-exercise-btn"
-          onClick={onAddExercise}
-        >
-          Add Exercise
-        </button>
+      <h2>Exercises</h2>
+      <div className="exercise-search">
+        <input
+          type="text"
+          placeholder="Search exercises..."
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        />
       </div>
+      <button
+        className="add-exercise-btn"
+        onClick={onAddExercise}
+      >
+        Add Exercise
+      </button>
 
       {filteredExercises.length === 0 ? (
         <div className="no-exercises">
-          {filter ? 
-            `No exercises found matching "${filter}"` : 
+          {filter ?
+            `No exercises found matching "${filter}"` :
             'No exercises available. Add your first exercise!'}
         </div>
       ) : (
         <ul className="exercise-list">
           {filteredExercises.map(exercise => (
-            <li 
-              key={exercise.id} 
+            <li
+              key={exercise.id}
               className={`exercise-item ${exercise.isCustom ? 'custom' : ''}`}
               onClick={() => onSelectExercise && onSelectExercise(exercise)}
             >
               <span className="exercise-name">{exercise.name}</span>
               {exercise.isCustom && onDeleteExercise && (
-                <button 
+                <button
                   className="delete-exercise-btn"
                   onClick={(e) => {
                     e.stopPropagation();
