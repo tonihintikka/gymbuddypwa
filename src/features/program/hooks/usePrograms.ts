@@ -1,7 +1,7 @@
 /**
  * Custom hook for managing workout programs
  */
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useIndexedDB } from '../../../hooks/useIndexedDB';
 import { Program, ProgramExercise } from '../../../types/models';
@@ -136,11 +136,43 @@ export function usePrograms() {
     error, 
     saveItem, 
     getItem,
-    deleteItem 
+    deleteItem,
+    loadItems 
   } = useIndexedDB<Program>(STORES.PROGRAMS);
 
   // Combine built-in and custom programs
   const allPrograms = [...builtInPrograms, ...customPrograms];
+
+  // Initialize built-in programs in the database
+  useEffect(() => {
+    const initializeBuiltInPrograms = async () => {
+      // Only run if we have custom programs loaded (after initial load) and no built-in programs saved
+      if (!loading && customPrograms.length >= 0) {
+        const savedBuiltInPrograms = customPrograms.filter(p => 
+          builtInPrograms.some(bp => bp.id === p.id)
+        );
+        
+        // Check which built-in programs need to be saved
+        const programsToSave = builtInPrograms.filter(p => 
+          !savedBuiltInPrograms.some(sp => sp.id === p.id)
+        );
+        
+        console.log(`Saving ${programsToSave.length} built-in programs to database`);
+        
+        // Save each missing built-in program
+        for (const program of programsToSave) {
+          await saveItem(program);
+        }
+        
+        // Reload programs to update the list
+        if (programsToSave.length > 0) {
+          await loadItems();
+        }
+      }
+    };
+    
+    initializeBuiltInPrograms();
+  }, [loading, customPrograms, saveItem, loadItems]);
 
   // Create a new program
   const createProgram = useCallback(async (name: string, description?: string) => {

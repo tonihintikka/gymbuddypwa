@@ -31,24 +31,30 @@ export function useWorkout() {
 
   // Start a workout from a program
   const startProgramWorkout = useCallback(async (programId: string) => {
+    console.log("startProgramWorkout called with programId:", programId);
     const program = await getProgram(programId);
+    console.log("Retrieved program:", program);
 
     if (!program) {
+      console.error("Program not found with ID:", programId);
       return null;
     }
 
     const newWorkout = startWorkout(programId);
+    console.log("Started new workout:", newWorkout);
 
     // Initialize logged exercises from program
     const loggedExercises: LoggedExercise[] = program.exercises.map(exercise => ({
       exerciseId: exercise.exerciseId,
       sets: [],
     }));
+    console.log("Created logged exercises:", loggedExercises);
 
     setCurrentWorkout({
       ...newWorkout,
       loggedExercises,
     });
+    console.log("Set current workout with exercises");
 
     return newWorkout;
   }, [getProgram, startWorkout]);

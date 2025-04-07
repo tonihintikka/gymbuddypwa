@@ -47,7 +47,12 @@ export const WorkoutScreen = () => {
   
   // Handle starting a workout from a program
   const handleStartProgram = async (programId: string) => {
-    await startProgramWorkout(programId);
+    console.log("Starting program with ID:", programId);
+    console.log("Found program:", programs.find(p => p.id === programId));
+    
+    const result = await startProgramWorkout(programId);
+    console.log("Start program workout result:", result);
+    
     setActiveProgram(programId);
   };
   
