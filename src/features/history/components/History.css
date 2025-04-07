@@ -99,6 +99,8 @@
 .workout-program {
   margin-top: 0.5rem;
   font-size: 0.9rem;
+  display: flex;
+  align-items: center;
 }
 
 .program-label {
@@ -111,10 +113,6 @@
   font-weight: 400;
   word-break: break-word;
   max-width: 250px;
-  display: inline-block;
-  vertical-align: baseline;
-  font-size: 0.9rem;
-  line-height: normal;
 }
 
 .delete-workout-btn {
