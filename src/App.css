@@ -82,6 +82,11 @@ body {
   margin: 0 auto;
 }
 
+/* Ensure all direct children of feature-container take full width */
+.feature-container > * {
+  width: 100%;
+}
+
 .app-nav {
   display: flex;
   justify-content: space-around;
