@@ -56,7 +56,13 @@ function App() {
       <PWAInstallPrompt />
 
       <header className="app-header">
-        <h1>GymTrack PWA</h1>
+        <h1>
+          <img src="/icons/icon.svg" alt="GymTrack" className="app-logo" />
+          GymTrack
+        </h1>
+        <div className="header-actions">
+          {/* Add any header actions here if needed */}
+        </div>
       </header>
 
       <main className="app-content">
