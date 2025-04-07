@@ -5,14 +5,14 @@ import { AddExerciseDialog } from './AddExerciseDialog';
 import { Exercise } from '../../../types/models';
 
 export const ExerciseScreen = () => {
-  const { 
-    exercises, 
-    loading, 
-    error, 
-    addExercise, 
-    removeExercise 
+  const {
+    exercises,
+    loading,
+    error,
+    addExercise,
+    removeExercise
   } = useExercises();
-  
+
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
 
@@ -34,32 +34,32 @@ export const ExerciseScreen = () => {
   };
 
   return (
-    <div className="exercise-screen">
+    <div className="exercise-screen feature-container">
       {error && (
         <div className="error-banner">
           Error: {error}
         </div>
       )}
-      
-      <ExerciseList 
+
+      <ExerciseList
         exercises={exercises}
         loading={loading}
         onSelectExercise={setSelectedExercise}
         onAddExercise={() => setIsAddDialogOpen(true)}
         onDeleteExercise={handleDeleteExercise}
       />
-      
-      <AddExerciseDialog 
+
+      <AddExerciseDialog
         isOpen={isAddDialogOpen}
         onClose={() => setIsAddDialogOpen(false)}
         onAdd={handleAddExercise}
       />
-      
+
       {selectedExercise && (
         <div className="exercise-details">
           <h3>{selectedExercise.name}</h3>
           <p>Type: {selectedExercise.isCustom ? 'Custom' : 'Built-in'}</p>
-          <button 
+          <button
             className="close-details"
             onClick={() => setSelectedExercise(null)}
           >

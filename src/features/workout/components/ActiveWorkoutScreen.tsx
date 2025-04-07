@@ -29,28 +29,28 @@ export const ActiveWorkoutScreen = ({
 }: ActiveWorkoutScreenProps) => {
   const [startTime] = useState<Date>(new Date());
   const [elapsedTime, setElapsedTime] = useState<string>('00:00:00');
-  
+
   // Update elapsed time every second
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date();
       const diff = now.getTime() - startTime.getTime();
-      
+
       const hours = Math.floor(diff / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-      
+
       setElapsedTime(
         `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
       );
     }, 1000);
-    
+
     return () => clearInterval(timer);
   }, [startTime]);
-  
+
   // Get current exercise
   const currentLoggedExercise = workout.loggedExercises[activeExerciseIndex];
-  
+
   if (!currentLoggedExercise) {
     return (
       <div className="no-exercises-message">
@@ -59,9 +59,9 @@ export const ActiveWorkoutScreen = ({
       </div>
     );
   }
-  
+
   const currentExercise = exercises.find(e => e.id === currentLoggedExercise.exerciseId);
-  
+
   if (!currentExercise) {
     return (
       <div className="error-message">
@@ -70,22 +70,22 @@ export const ActiveWorkoutScreen = ({
       </div>
     );
   }
-  
+
   // Find program exercise if available
   const programExercise = program?.exercises[activeExerciseIndex];
-  
+
   // Handle logging a set for the current exercise
   const handleLogSet = (weight: number, reps: number, isFailure?: boolean, isPaused?: boolean, isSlowEccentric?: boolean) => {
     onLogSet(activeExerciseIndex, weight, reps, isFailure, isPaused, isSlowEccentric);
   };
-  
+
   // Handle deleting a set from the current exercise
   const handleDeleteSet = (setIndex: number) => {
     onDeleteSet(activeExerciseIndex, setIndex);
   };
 
   return (
-    <div className="active-workout-screen">
+    <div className="active-workout-screen feature-container">
       <div className="workout-header">
         <div className="workout-info">
           <h2>{program?.name || 'Workout'}</h2>
@@ -94,17 +94,17 @@ export const ActiveWorkoutScreen = ({
             <span className="time-value">{elapsedTime}</span>
           </div>
         </div>
-        
-        <button 
+
+        <button
           className="finish-workout-btn"
           onClick={onFinishWorkout}
         >
           Finish Workout
         </button>
       </div>
-      
+
       <div className="exercise-navigation">
-        <button 
+        <button
           className="prev-exercise-btn"
           onClick={onPreviousExercise}
           disabled={activeExerciseIndex === 0}
@@ -114,7 +114,7 @@ export const ActiveWorkoutScreen = ({
         <div className="exercise-position">
           {activeExerciseIndex + 1} / {workout.loggedExercises.length}
         </div>
-        <button 
+        <button
           className="next-exercise-btn"
           onClick={onNextExercise}
           disabled={activeExerciseIndex === workout.loggedExercises.length - 1}
@@ -122,7 +122,7 @@ export const ActiveWorkoutScreen = ({
           Next
         </button>
       </div>
-      
+
       <ExerciseView
         exercise={currentExercise}
         loggedExercise={currentLoggedExercise}
@@ -130,9 +130,9 @@ export const ActiveWorkoutScreen = ({
         onLogSet={handleLogSet}
         onDeleteSet={handleDeleteSet}
       />
-      
+
       <div className="workout-actions">
-        <button 
+        <button
           className="add-exercise-btn"
           onClick={onAddExercise}
         >

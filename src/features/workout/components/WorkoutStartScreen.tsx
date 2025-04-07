@@ -15,9 +15,9 @@ export const WorkoutStartScreen = ({
   loading = false,
 }: WorkoutStartScreenProps) => {
   const [filter, setFilter] = useState('');
-  
+
   // Filter programs based on search input
-  const filteredPrograms = programs.filter(program => 
+  const filteredPrograms = programs.filter(program =>
     program.name.toLowerCase().includes(filter.toLowerCase())
   );
 
@@ -26,20 +26,20 @@ export const WorkoutStartScreen = ({
   }
 
   return (
-    <div className="workout-start-screen">
+    <div className="workout-start-screen feature-container">
       <div className="workout-start-header">
         <h2>Start Workout</h2>
-        <button 
+        <button
           className="start-empty-workout-btn"
           onClick={onStartEmpty}
         >
           Start Empty Workout
         </button>
       </div>
-      
+
       <div className="workout-program-section">
         <h3>Or select a program:</h3>
-        
+
         <div className="program-search">
           <input
             type="text"
@@ -48,18 +48,18 @@ export const WorkoutStartScreen = ({
             onChange={(e) => setFilter(e.target.value)}
           />
         </div>
-        
+
         {filteredPrograms.length === 0 ? (
           <div className="no-programs">
-            {filter ? 
-              `No programs found matching "${filter}"` : 
+            {filter ?
+              `No programs found matching "${filter}"` :
               'No programs available. Create a program first.'}
           </div>
         ) : (
           <ul className="program-list">
             {filteredPrograms.map(program => (
-              <li 
-                key={program.id} 
+              <li
+                key={program.id}
                 className="program-item"
                 onClick={() => onStartProgram(program.id)}
               >
@@ -69,7 +69,7 @@ export const WorkoutStartScreen = ({
                     {program.exercises.length} {program.exercises.length === 1 ? 'exercise' : 'exercises'}
                   </span>
                 </div>
-                <button 
+                <button
                   className="start-program-btn"
                   onClick={(e) => {
                     e.stopPropagation();

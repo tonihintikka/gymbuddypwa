@@ -1,16 +1,9 @@
 /* History List Styles */
 .history-list-container {
   width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
 }
 
-.history-screen {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
+/* History screen styles */
 
 .date-filter {
   display: flex;
@@ -158,13 +151,10 @@
 /* Workout Detail View Styles */
 .workout-detail-view {
   width: 100%;
-  display: flex;
-  justify-content: center;
 }
 
 .workout-detail-content {
   width: 100%;
-  max-width: 600px;
 }
 
 .workout-detail-header {

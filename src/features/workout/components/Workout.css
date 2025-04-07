@@ -1,7 +1,6 @@
 /* Workout Start Screen Styles */
 .workout-start-screen {
   width: 100%;
-  max-width: 100%;
 }
 
 .workout-start-header {
@@ -39,7 +38,6 @@
 /* Active Workout Screen Styles */
 .active-workout-screen {
   width: 100%;
-  max-width: 100%;
 }
 
 .workout-header {

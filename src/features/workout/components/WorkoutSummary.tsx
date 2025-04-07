@@ -22,12 +22,12 @@ export const WorkoutSummary = ({
       return exerciseTotal + (set.weight * set.reps);
     }, 0);
   }, 0);
-  
+
   // Calculate total sets
   const totalSets = workout.loggedExercises.reduce((total, loggedExercise) => {
     return total + loggedExercise.sets.length;
   }, 0);
-  
+
   // Calculate total reps
   const totalReps = workout.loggedExercises.reduce((total, loggedExercise) => {
     return total + loggedExercise.sets.reduce((exerciseTotal, set) => {
@@ -36,61 +36,61 @@ export const WorkoutSummary = ({
   }, 0);
 
   return (
-    <div className="workout-summary">
+    <div className="workout-summary feature-container">
       <h2>Workout Complete!</h2>
-      
+
       <div className="summary-info">
         <div className="summary-row">
           <span className="summary-label">Date:</span>
           <span className="summary-value">{formatDate(workout.date)}</span>
         </div>
-        
+
         <div className="summary-row">
           <span className="summary-label">Time:</span>
           <span className="summary-value">{formatTime(workout.date)}</span>
         </div>
-        
+
         <div className="summary-row">
           <span className="summary-label">Duration:</span>
           <span className="summary-value">{duration}</span>
         </div>
-        
+
         {programName && (
           <div className="summary-row">
             <span className="summary-label">Program:</span>
             <span className="summary-value">{programName}</span>
           </div>
         )}
-        
+
         <div className="summary-row">
           <span className="summary-label">Exercises:</span>
           <span className="summary-value">{workout.loggedExercises.length}</span>
         </div>
-        
+
         <div className="summary-row">
           <span className="summary-label">Total Sets:</span>
           <span className="summary-value">{totalSets}</span>
         </div>
-        
+
         <div className="summary-row">
           <span className="summary-label">Total Reps:</span>
           <span className="summary-value">{totalReps}</span>
         </div>
-        
+
         <div className="summary-row">
           <span className="summary-label">Total Volume:</span>
           <span className="summary-value">{totalVolume.toLocaleString()} kg</span>
         </div>
       </div>
-      
+
       <div className="exercise-summary">
         <h3>Exercises</h3>
-        
+
         {workout.loggedExercises.map((loggedExercise, index) => {
           const exercise = exercises.find(e => e.id === loggedExercise.exerciseId);
-          
+
           if (!exercise) return null;
-          
+
           return (
             <div key={index} className="exercise-summary-item">
               <h4>{exercise.name}</h4>
@@ -115,8 +115,8 @@ export const WorkoutSummary = ({
           );
         })}
       </div>
-      
-      <button 
+
+      <button
         className="close-summary-btn"
         onClick={onClose}
       >

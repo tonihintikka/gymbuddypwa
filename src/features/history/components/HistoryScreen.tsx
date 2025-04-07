@@ -7,59 +7,59 @@ import { WorkoutDetailView } from './WorkoutDetailView';
 import { WorkoutLog } from '../../../types/models';
 
 export const HistoryScreen = () => {
-  const { 
-    workoutLogs, 
-    loading, 
-    error, 
+  const {
+    workoutLogs,
+    loading,
+    error,
     refreshHistory,
     deleteWorkoutLog,
     exportWorkoutLogs
   } = useHistory();
-  
+
   const { exercises } = useExercises();
   const { programs } = usePrograms();
-  
+
   const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(null);
-  
+
   // Find the selected workout
-  const selectedWorkout = selectedWorkoutId 
-    ? workoutLogs.find(log => log.id === selectedWorkoutId) 
+  const selectedWorkout = selectedWorkoutId
+    ? workoutLogs.find(log => log.id === selectedWorkoutId)
     : null;
-  
+
   // Find the program for the selected workout
-  const workoutProgram = selectedWorkout?.programId 
-    ? programs.find(program => program.id === selectedWorkout.programId) 
+  const workoutProgram = selectedWorkout?.programId
+    ? programs.find(program => program.id === selectedWorkout.programId)
     : null;
-  
+
   // Handle selecting a workout
   const handleSelectWorkout = (workoutId: string) => {
     setSelectedWorkoutId(workoutId);
   };
-  
+
   // Handle deleting a workout
   const handleDeleteWorkout = async (workoutId: string) => {
     await deleteWorkoutLog(workoutId);
-    
+
     if (selectedWorkoutId === workoutId) {
       setSelectedWorkoutId(null);
     }
-    
+
     await refreshHistory();
   };
-  
+
   // Handle going back to the list
   const handleBack = () => {
     setSelectedWorkoutId(null);
   };
 
   return (
-    <div className="history-screen">
+    <div className="history-screen feature-container">
       {error && (
         <div className="error-banner">
           Error: {error}
         </div>
       )}
-      
+
       {selectedWorkout ? (
         <WorkoutDetailView
           workout={selectedWorkout}
@@ -69,16 +69,16 @@ export const HistoryScreen = () => {
         />
       ) : (
         <>
-          <HistoryList 
+          <HistoryList
             workoutLogs={workoutLogs}
             loading={loading}
             onSelectWorkout={handleSelectWorkout}
             onDeleteWorkout={handleDeleteWorkout}
           />
-          
+
           {workoutLogs.length > 0 && (
             <div className="history-actions">
-              <button 
+              <button
                 className="export-btn"
                 onClick={exportWorkoutLogs}
               >

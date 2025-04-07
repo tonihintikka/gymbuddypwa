@@ -7,18 +7,18 @@ import { ProgramDetail } from './ProgramDetail';
 import { Program } from '../../../types/models';
 
 export const ProgramScreen = () => {
-  const { 
-    programs, 
-    loading: programsLoading, 
-    error: programsError, 
-    createProgram, 
+  const {
+    programs,
+    loading: programsLoading,
+    error: programsError,
+    createProgram,
     deleteProgram,
     addExerciseToProgram,
     removeExerciseFromProgram
   } = usePrograms();
-  
+
   const { exercises } = useExercises();
-  
+
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
 
@@ -40,13 +40,13 @@ export const ProgramScreen = () => {
   };
 
   return (
-    <div className="program-screen">
+    <div className="program-screen feature-container">
       {programsError && (
         <div className="error-banner">
           Error: {programsError}
         </div>
       )}
-      
+
       {selectedProgram ? (
         <ProgramDetail
           program={selectedProgram}
@@ -57,15 +57,15 @@ export const ProgramScreen = () => {
         />
       ) : (
         <>
-          <ProgramList 
+          <ProgramList
             programs={programs}
             loading={programsLoading}
             onSelectProgram={setSelectedProgram}
             onAddProgram={() => setIsAddDialogOpen(true)}
             onDeleteProgram={handleDeleteProgram}
           />
-          
-          <AddProgramDialog 
+
+          <AddProgramDialog
             isOpen={isAddDialogOpen}
             onClose={() => setIsAddDialogOpen(false)}
             onAdd={handleAddProgram}
