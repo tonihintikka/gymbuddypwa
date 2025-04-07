@@ -4,12 +4,14 @@ import './App.css'
 // Import hooks and components
 import { useExercises, ExerciseScreen } from './features/exercise'
 import { usePrograms, ProgramScreen } from './features/program'
-import { useWorkout } from './features/workout'
-import { useHistory } from './features/history'
+import { useWorkout, WorkoutScreen } from './features/workout'
+import { useHistory, HistoryScreen } from './features/history'
 
 // Import CSS for features
 import './features/exercise/components/Exercise.css'
 import './features/program/components/Program.css'
+import './features/workout/components/Workout.css'
+import './features/history/components/History.css'
 
 // Import database initialization
 import { initDatabase } from './services/db'
@@ -50,10 +52,7 @@ function App() {
 
       <main className="app-content">
         {activeTab === 'workout' && (
-          <div>
-            <h2>Start Workout</h2>
-            <p>This is where you'll start and track your workouts.</p>
-          </div>
+          <WorkoutScreen />
         )}
 
         {activeTab === 'exercises' && (
@@ -65,10 +64,7 @@ function App() {
         )}
 
         {activeTab === 'history' && (
-          <div>
-            <h2>History</h2>
-            <p>View your workout history and progress.</p>
-          </div>
+          <HistoryScreen />
         )}
       </main>
 

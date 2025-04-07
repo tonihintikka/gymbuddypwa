@@ -53,25 +53,30 @@
 
 - [x] Define WorkoutLog data model
 - [x] Create useWorkout hook with basic operations
-- [ ] Implement WorkoutStartScreen component
-- [ ] Create WorkoutExerciseView component
-- [ ] Implement SetInputForm component
-- [ ] Create LoggedSetsList component
-- [ ] Implement workout navigation (next/previous exercise)
+- [x] Implement WorkoutStartScreen component
+- [x] Create WorkoutScreen component as main container
+- [x] Implement ActiveWorkoutScreen component
+- [x] Create ExerciseView component
+- [x] Implement SetInputForm component
+- [x] Create LoggedSetsList component
+- [x] Implement workout navigation (next/previous exercise)
+- [x] Implement workout summary view
+- [x] Create workout completion screen
+- [x] Add ability to add exercises to workout
 - [ ] Add rest timer functionality
-- [ ] Implement workout summary view
-- [ ] Create workout completion screen
 
 ## History Feature
 
 - [x] Define history data access methods
 - [x] Create useHistory hook with basic operations
-- [ ] Implement HistoryList component
-- [ ] Create WorkoutDetailView component
-- [ ] Add date-based filtering
+- [x] Implement HistoryList component
+- [x] Create WorkoutDetailView component
+- [x] Create HistoryScreen component as main container
+- [x] Add date-based filtering
+- [x] Implement workout log deletion
+- [x] Add workout statistics display
 - [ ] Implement exercise-based filtering
-- [ ] Create basic statistics/progress visualization
-- [ ] Implement workout log deletion
+- [ ] Create more detailed progress visualization
 
 ## PWA Features
 
@@ -96,6 +101,7 @@
 
 - [x] Write unit tests for Exercise components
 - [x] Write unit tests for Program components
+- [x] Write unit tests for Workout components
 - [ ] Write unit tests for hooks and utilities
 - [ ] Implement more component tests
 - [ ] Add end-to-end testing

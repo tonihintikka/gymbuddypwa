@@ -10,7 +10,7 @@ import { STORES } from '../../../services/db';
 export function useWorkout() {
   const [currentWorkout, setCurrentWorkout] = useState<WorkoutLog | null>(null);
   const [activeExerciseIndex, setActiveExerciseIndex] = useState<number>(0);
-  
+
   const { saveItem: saveWorkoutLog } = useIndexedDB<WorkoutLog>(STORES.WORKOUT_LOGS);
   const { getItem: getProgram } = useIndexedDB<Program>(STORES.PROGRAMS);
 
@@ -22,34 +22,34 @@ export function useWorkout() {
       loggedExercises: [],
       programId,
     };
-    
+
     setCurrentWorkout(newWorkout);
     setActiveExerciseIndex(0);
-    
+
     return newWorkout;
   }, []);
 
   // Start a workout from a program
   const startProgramWorkout = useCallback(async (programId: string) => {
     const program = await getProgram(programId);
-    
+
     if (!program) {
       return null;
     }
-    
+
     const newWorkout = startWorkout(programId);
-    
+
     // Initialize logged exercises from program
     const loggedExercises: LoggedExercise[] = program.exercises.map(exercise => ({
       exerciseId: exercise.exerciseId,
       sets: [],
     }));
-    
+
     setCurrentWorkout({
       ...newWorkout,
       loggedExercises,
     });
-    
+
     return newWorkout;
   }, [getProgram, startWorkout]);
 
@@ -58,62 +58,88 @@ export function useWorkout() {
     if (!currentWorkout) {
       return false;
     }
-    
+
     const newLoggedExercise: LoggedExercise = {
       exerciseId,
       sets: [],
     };
-    
+
     setCurrentWorkout({
       ...currentWorkout,
       loggedExercises: [...currentWorkout.loggedExercises, newLoggedExercise],
     });
-    
+
+    // Set active exercise to the newly added exercise
+    setActiveExerciseIndex(currentWorkout.loggedExercises.length);
+
     return true;
   }, [currentWorkout]);
 
-  // Log a set for the active exercise
-  const logSet = useCallback((
-    weight: number, 
-    reps: number, 
-    isFailure?: boolean,
-    isPaused?: boolean,
-    isSlowEccentric?: boolean
-  ) => {
-    if (!currentWorkout || activeExerciseIndex >= currentWorkout.loggedExercises.length) {
+  // Log a set for a specific exercise
+  const logSet = useCallback((exerciseIndex: number, setLog: SetLog) => {
+    if (!currentWorkout || exerciseIndex >= currentWorkout.loggedExercises.length) {
       return false;
     }
-    
-    const newSet: SetLog = {
-      weight,
-      reps,
-      isFailure,
-      isPaused,
-      isSlowEccentric,
-    };
-    
+
     const updatedExercises = [...currentWorkout.loggedExercises];
-    updatedExercises[activeExerciseIndex] = {
-      ...updatedExercises[activeExerciseIndex],
-      sets: [...updatedExercises[activeExerciseIndex].sets, newSet],
+    updatedExercises[exerciseIndex] = {
+      ...updatedExercises[exerciseIndex],
+      sets: [...updatedExercises[exerciseIndex].sets, setLog],
     };
-    
+
     setCurrentWorkout({
       ...currentWorkout,
       loggedExercises: updatedExercises,
     });
-    
+
     return true;
-  }, [currentWorkout, activeExerciseIndex]);
+  }, [currentWorkout]);
+
+  // Delete a set from a specific exercise
+  const deleteSet = useCallback((exerciseIndex: number, setIndex: number) => {
+    if (
+      !currentWorkout ||
+      exerciseIndex >= currentWorkout.loggedExercises.length ||
+      setIndex >= currentWorkout.loggedExercises[exerciseIndex].sets.length
+    ) {
+      return false;
+    }
+
+    const updatedExercises = [...currentWorkout.loggedExercises];
+    const updatedSets = [...updatedExercises[exerciseIndex].sets];
+    updatedSets.splice(setIndex, 1);
+
+    updatedExercises[exerciseIndex] = {
+      ...updatedExercises[exerciseIndex],
+      sets: updatedSets,
+    };
+
+    setCurrentWorkout({
+      ...currentWorkout,
+      loggedExercises: updatedExercises,
+    });
+
+    return true;
+  }, [currentWorkout]);
 
   // Finish the current workout and save it
   const finishWorkout = useCallback(async () => {
     if (!currentWorkout) {
       return false;
     }
-    
+
     try {
-      await saveWorkoutLog(currentWorkout);
+      // Filter out any exercises with no sets logged
+      const filteredExercises = currentWorkout.loggedExercises.filter(
+        exercise => exercise.sets.length > 0
+      );
+
+      const finalWorkout = {
+        ...currentWorkout,
+        loggedExercises: filteredExercises,
+      };
+
+      await saveWorkoutLog(finalWorkout);
       setCurrentWorkout(null);
       setActiveExerciseIndex(0);
       return true;
@@ -128,7 +154,7 @@ export function useWorkout() {
     if (!currentWorkout || activeExerciseIndex >= currentWorkout.loggedExercises.length - 1) {
       return false;
     }
-    
+
     setActiveExerciseIndex(activeExerciseIndex + 1);
     return true;
   }, [currentWorkout, activeExerciseIndex]);
@@ -138,7 +164,7 @@ export function useWorkout() {
     if (!currentWorkout || activeExerciseIndex <= 0) {
       return false;
     }
-    
+
     setActiveExerciseIndex(activeExerciseIndex - 1);
     return true;
   }, [currentWorkout, activeExerciseIndex]);
@@ -151,6 +177,7 @@ export function useWorkout() {
     startProgramWorkout,
     addExerciseToWorkout,
     logSet,
+    deleteSet,
     finishWorkout,
     nextExercise,
     previousExercise,
