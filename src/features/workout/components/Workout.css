@@ -16,6 +16,55 @@
 
 .workout-program-section {
   margin-top: 2rem;
+  width: 100%;
+}
+
+.program-search {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.program-search input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--divider-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.program-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.program-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  background-color: var(--card-color);
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.program-item:hover {
+  background-color: var(--primary-light);
+}
+
+.no-programs {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-secondary);
+  background-color: var(--card-color);
+  border-radius: 4px;
+  width: 100%;
 }
 
 .workout-program-section h3 {

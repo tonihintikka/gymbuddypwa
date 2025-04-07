@@ -16,6 +16,7 @@
   border: 1px solid var(--divider-color);
   border-radius: 4px;
   font-size: 1rem;
+  box-sizing: border-box;
 }
 
 .add-program-btn {
@@ -26,6 +27,7 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  width: 100%;
 }
 
 .program-item {
@@ -39,6 +41,7 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
   cursor: pointer;
   transition: background-color 0.2s;
+  width: 100%;
 }
 
 .program-item:hover {
@@ -79,6 +82,7 @@
   color: var(--text-secondary);
   background-color: var(--card-color);
   border-radius: 4px;
+  width: 100%;
 }
 
 /* Program Detail Styles */
