@@ -1,0 +1,24 @@
+.offline-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--warning-color);
+  color: white;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  z-index: 1001;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.offline-icon {
+  font-size: 1rem;
+}
+
+.offline-text {
+  font-weight: 500;
+}

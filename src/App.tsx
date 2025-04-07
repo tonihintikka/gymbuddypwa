@@ -7,6 +7,11 @@ import { usePrograms, ProgramScreen } from './features/program'
 import { useWorkout, WorkoutScreen } from './features/workout'
 import { useHistory, HistoryScreen } from './features/history'
 
+// Import PWA components
+import { PWAInstallPrompt } from './components/PWAInstallPrompt'
+import { PWAUpdateNotification } from './components/PWAUpdateNotification'
+import { OfflineIndicator } from './components/OfflineIndicator'
+
 // Import CSS for features
 import './features/exercise/components/Exercise.css'
 import './features/program/components/Program.css'
@@ -46,6 +51,10 @@ function App() {
 
   return (
     <div className="app-container">
+      <OfflineIndicator />
+      <PWAUpdateNotification />
+      <PWAInstallPrompt />
+
       <header className="app-header">
         <h1>GymTrack PWA</h1>
       </header>
