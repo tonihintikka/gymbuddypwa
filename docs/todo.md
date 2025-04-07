@@ -91,6 +91,7 @@
 ## UI/UX Improvements
 
 - [x] Implement mobile-first responsive design
+- [x] Fix header and navigation layout consistency across views
 - [ ] Add proper loading indicators
 - [ ] Implement error handling and user feedback
 - [ ] Create consistent form validation
