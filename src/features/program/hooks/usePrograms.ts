@@ -10,6 +10,33 @@ import { STORES } from '../../../services/db';
 // Built-in workout programs
 const builtInPrograms: Program[] = [
   {
+    id: 'three-day-split',
+    name: '3-Day Training Split',
+    description: 'A balanced 3-day workout split targeting all major muscle groups with compound and isolation exercises.',
+    exercises: [
+      // Workout 1
+      { exerciseId: 'squat', targetSets: 4, targetReps: '8-10', notes: 'Workout 1' },
+      { exerciseId: 'bench-press', targetSets: 4, targetReps: '5-8', notes: 'Workout 1' },
+      { exerciseId: 'pull-ups', targetSets: 4, targetReps: 'max', notes: 'Workout 1' },
+      { exerciseId: 'tricep-pushdown', targetSets: 3, targetReps: '10-12', notes: 'Workout 1' },
+      { exerciseId: 'crunches', targetSets: 3, targetReps: '10-15', notes: 'Workout 1' },
+      
+      // Workout 2
+      { exerciseId: 'deadlift', targetSets: 4, targetReps: '5-8', notes: 'Workout 2' },
+      { exerciseId: 'overhead-press', targetSets: 4, targetReps: '8-10', notes: 'Workout 2' },
+      { exerciseId: 'barbell-row', targetSets: 4, targetReps: '8-10', notes: 'Workout 2' },
+      { exerciseId: 'dumbbell-curl', targetSets: 3, targetReps: '10-12', notes: 'Workout 2' },
+      { exerciseId: 'plank', targetSets: 3, targetReps: '30-60s', notes: 'Workout 2' },
+      
+      // Workout 3
+      { exerciseId: 'front-squat', targetSets: 4, targetReps: '8-10', notes: 'Workout 3' },
+      { exerciseId: 'incline-bench-press', targetSets: 4, targetReps: '5-8', notes: 'Workout 3' },
+      { exerciseId: 'pull-ups', targetSets: 4, targetReps: 'max', notes: 'Workout 3' },
+      { exerciseId: 'tricep-dips', targetSets: 3, targetReps: '8-12', notes: 'Workout 3' },
+      { exerciseId: 'bicycle-crunches', targetSets: 3, targetReps: '10-15', notes: 'Workout 3' },
+    ]
+  },
+  {
     id: 'beginner-full-body',
     name: 'Beginner Full Body Workout',
     description: 'A comprehensive full-body workout for beginners targeting all major muscle groups.',
