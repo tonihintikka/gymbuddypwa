@@ -30,13 +30,13 @@ export const AddExerciseToWorkoutDialog = ({
   };
 
   return (
-    <div className="modal-backdrop" onClick={handleBackdropClick}>
-      <div className="modal-content">
-        <button className="modal-close" onClick={onClose}>×</button>
-        
-        <div className="add-exercise-to-workout">
+    <div className="dialog-overlay" onClick={handleBackdropClick}>
+      <div className="dialog-content">
+        <div className="dialog-header">
           <h2>Add Exercise to Workout</h2>
-          
+        </div>
+        
+        <div className="dialog-body">
           <div className="exercise-search">
             <input
               type="text"
@@ -72,6 +72,15 @@ export const AddExerciseToWorkoutDialog = ({
               ))}
             </ul>
           )}
+        </div>
+        
+        <div className="dialog-actions">
+          <button 
+            className="secondary"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </div>

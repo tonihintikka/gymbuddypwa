@@ -6,9 +6,11 @@ import { WorkoutStartScreen } from './WorkoutStartScreen';
 import { ActiveWorkoutScreen } from './ActiveWorkoutScreen';
 import { WorkoutSummary } from './WorkoutSummary';
 import { AddExerciseToWorkoutDialog } from './AddExerciseToWorkoutDialog';
-import { SetLog, WorkoutLog } from '../../../types/models';
+import { SaveWorkoutAsProgramDialog } from './SaveWorkoutAsProgramDialog';
+import { SetLog, WorkoutLog, ProgramExercise, LoggedExercise } from '../../../types/models';
 import { useIndexedDB } from '../../../hooks/useIndexedDB';
 import { STORES } from '../../../services/db';
+import { v4 as uuidv4 } from 'uuid';
 
 export const WorkoutScreen = () => {
   const { 
@@ -24,7 +26,7 @@ export const WorkoutScreen = () => {
     finishWorkout
   } = useWorkout();
   
-  const { programs } = usePrograms();
+  const { programs, createProgram, addExerciseToProgram } = usePrograms();
   const { exercises } = useExercises();
   const { loadItems: refreshPrograms } = useIndexedDB(STORES.PROGRAMS);
   
@@ -32,6 +34,11 @@ export const WorkoutScreen = () => {
   const [workoutDuration, setWorkoutDuration] = useState('00:00:00');
   const [isAddExerciseDialogOpen, setIsAddExerciseDialogOpen] = useState(false);
   const [activeProgram, setActiveProgram] = useState<string | null>(null);
+  
+  // For "Save as Program" feature
+  const [completedWorkout, setCompletedWorkout] = useState<WorkoutLog | null>(null);
+  const [isEmptyWorkout, setIsEmptyWorkout] = useState(false);
+  const [isSaveAsProgramDialogOpen, setIsSaveAsProgramDialogOpen] = useState(false);
   
   // Get the active program object
   const programObject = activeProgram 
@@ -60,6 +67,7 @@ export const WorkoutScreen = () => {
   const handleStartEmpty = () => {
     startWorkout();
     setActiveProgram(null);
+    setIsEmptyWorkout(true);
   };
   
   // Handle logging a set
@@ -108,6 +116,8 @@ export const WorkoutScreen = () => {
       setWorkoutDuration(duration);
       
       // Store workout data before finalizing
+      // Important: We need to keep track of if this was started as an empty workout
+      // to later offer the "Save as Program" option
       setCompletedWorkout({...currentWorkout});
       
       await finishWorkout();
@@ -118,9 +128,64 @@ export const WorkoutScreen = () => {
   
   // Handle closing the workout summary
   const handleCloseSummary = () => {
+    if (isEmptyWorkout && completedWorkout && completedWorkout.loggedExercises.length > 0) {
+      // If this was an empty (ad-hoc) workout with exercises, offer to save as a program
+      setIsSaveAsProgramDialogOpen(true);
+    } else {
+      // Otherwise, reset all states
+      resetWorkoutStates();
+    }
+  };
+
+  // Reset all states related to workout
+  const resetWorkoutStates = () => {
     setWorkoutComplete(false);
     setActiveProgram(null);
-    refreshPrograms(); // Explicitly refresh programs when closing the summary
+    setIsEmptyWorkout(false);
+    setCompletedWorkout(null);
+    refreshPrograms();
+  };
+
+  // Handle saving an empty workout as a program
+  const handleSaveAsProgram = async (programName: string, loggedExercises: LoggedExercise[]) => {
+    try {
+      // Create a new program with the given name
+      const success = await createProgram(programName);
+      
+      if (success) {
+        // Find the newly created program to get its ID
+        const newProgram = programs.find(p => p.name === programName);
+        
+        if (newProgram) {
+          // Add each exercise from the workout to the program
+          for (const loggedExercise of loggedExercises) {
+            await addExerciseToProgram(
+              newProgram.id,
+              loggedExercise.exerciseId,
+              // You might want to infer target sets/reps from the workout
+              loggedExercise.sets.length, // Use the number of sets as targetSets
+              loggedExercise.sets[0]?.reps.toString() // Use reps from first set as targetReps
+            );
+          }
+          
+          console.log(`Successfully saved workout as program: ${programName}`);
+        }
+      }
+      
+      // Close the dialog and reset states
+      setIsSaveAsProgramDialogOpen(false);
+      resetWorkoutStates();
+    } catch (error) {
+      console.error('Error saving workout as program:', error);
+      // Close the dialog but keep states in case user wants to try again
+      setIsSaveAsProgramDialogOpen(false);
+    }
+  };
+  
+  // Close the save as program dialog without saving
+  const handleCancelSaveAsProgram = () => {
+    setIsSaveAsProgramDialogOpen(false);
+    resetWorkoutStates();
   };
 
   useEffect(() => {
@@ -129,9 +194,6 @@ export const WorkoutScreen = () => {
       refreshPrograms();
     }
   }, [workoutComplete, refreshPrograms]);
-  
-  // Store completed workout for summary display
-  const [completedWorkout, setCompletedWorkout] = useState<WorkoutLog | null>(null);
   
   // Save workout when finishing
   useEffect(() => {
@@ -170,13 +232,22 @@ export const WorkoutScreen = () => {
   if (workoutComplete) {
     // If we have a completedWorkout, use it for the summary
     return (
-      <WorkoutSummary
-        workout={completedWorkout || (currentWorkout as WorkoutLog)}
-        exercises={exercises}
-        programName={programObject?.name}
-        duration={workoutDuration}
-        onClose={handleCloseSummary}
-      />
+      <>
+        <WorkoutSummary
+          workout={completedWorkout || (currentWorkout as WorkoutLog)}
+          exercises={exercises}
+          programName={programObject?.name}
+          duration={workoutDuration}
+          onClose={handleCloseSummary}
+        />
+        
+        <SaveWorkoutAsProgramDialog
+          isOpen={isSaveAsProgramDialogOpen}
+          loggedExercises={completedWorkout?.loggedExercises || []}
+          onSave={handleSaveAsProgram}
+          onClose={handleCancelSaveAsProgram}
+        />
+      </>
     );
   }
   
