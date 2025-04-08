@@ -31,4 +31,11 @@
 
 ## Bug Reports
 - [ ] Exercise search doesn't filter properly
-- [ ] Workout history doesn't show all completed workouts 
+- [ ] Workout history doesn't show all completed workouts
+
+## Testing
+
+- [x] Fix linter errors and refactor `src/features/workout/__tests__/useWorkout.test.ts` (Removed useState mock, use renderHook/act, corrected types). #testing
+- [x] Fix linter errors and refactor `src/features/workout/__tests__/WorkoutScreen.test.tsx` (Corrected types, completed mocks, used vi.mocked, removed useState mock). #testing
+- [x] Verify `src/features/workout/components/__tests__/WorkoutStartScreen.test.tsx` (No errors found). #testing
+- [ ] Verify `src/features/workout/__tests__/WorkoutScreenReset.test.tsx` (Check after commits) #testing 
