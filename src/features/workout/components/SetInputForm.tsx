@@ -72,6 +72,10 @@ export const SetInputForm = ({
             type="checkbox"
             checked={isFailure}
             onChange={(e) => setIsFailure(e.target.checked)}
+            onTouchEnd={(e) => {
+              e.preventDefault();
+              setIsFailure(!isFailure);
+            }}
           />
           Failure
         </label>
@@ -81,6 +85,10 @@ export const SetInputForm = ({
             type="checkbox"
             checked={isPaused}
             onChange={(e) => setIsPaused(e.target.checked)}
+            onTouchEnd={(e) => {
+              e.preventDefault();
+              setIsPaused(!isPaused);
+            }}
           />
           Paused
         </label>
@@ -90,6 +98,10 @@ export const SetInputForm = ({
             type="checkbox"
             checked={isSlowEccentric}
             onChange={(e) => setIsSlowEccentric(e.target.checked)}
+            onTouchEnd={(e) => {
+              e.preventDefault();
+              setIsSlowEccentric(!isSlowEccentric);
+            }}
           />
           Slow Eccentric
         </label>

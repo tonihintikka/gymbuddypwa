@@ -6,7 +6,7 @@ import { WorkoutStartScreen } from './WorkoutStartScreen';
 import { ActiveWorkoutScreen } from './ActiveWorkoutScreen';
 import { WorkoutSummary } from './WorkoutSummary';
 import { AddExerciseToWorkoutDialog } from './AddExerciseToWorkoutDialog';
-import { SetLog } from '../../../types/models';
+import { SetLog, WorkoutLog } from '../../../types/models';
 import { useIndexedDB } from '../../../hooks/useIndexedDB';
 import { STORES } from '../../../services/db';
 
@@ -107,7 +107,11 @@ export const WorkoutScreen = () => {
       const duration = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
       setWorkoutDuration(duration);
       
+      // Store workout data before finalizing
+      setCompletedWorkout({...currentWorkout});
+      
       await finishWorkout();
+      // Set workout complete with saved workout data
       setWorkoutComplete(true);
     }
   };
@@ -125,6 +129,16 @@ export const WorkoutScreen = () => {
       refreshPrograms();
     }
   }, [workoutComplete, refreshPrograms]);
+  
+  // Store completed workout for summary display
+  const [completedWorkout, setCompletedWorkout] = useState<WorkoutLog | null>(null);
+  
+  // Save workout when finishing
+  useEffect(() => {
+    if (currentWorkout && !completedWorkout) {
+      setCompletedWorkout(currentWorkout);
+    }
+  }, [currentWorkout, completedWorkout]);
   
   // Determine what to render based on current state
   if (currentWorkout && !workoutComplete) {
@@ -153,10 +167,11 @@ export const WorkoutScreen = () => {
     );
   }
   
-  if (workoutComplete && currentWorkout) {
+  if (workoutComplete) {
+    // If we have a completedWorkout, use it for the summary
     return (
       <WorkoutSummary
-        workout={currentWorkout}
+        workout={completedWorkout || (currentWorkout as WorkoutLog)}
         exercises={exercises}
         programName={programObject?.name}
         duration={workoutDuration}

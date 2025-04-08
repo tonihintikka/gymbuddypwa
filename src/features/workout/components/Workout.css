@@ -52,10 +52,30 @@
   cursor: pointer;
   transition: background-color 0.2s;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .program-item:hover {
   background-color: var(--primary-light);
+}
+
+.program-info {
+  flex: 1;
+  min-width: 0; /* Prevents flex items from overflowing */
+  margin-right: 1rem;
+}
+
+.program-name {
+  font-weight: 500;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.program-exercises-count {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
 }
 
 .no-programs {
@@ -78,6 +98,8 @@
   border-radius: 4px;
   padding: 0.5rem 1rem;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .start-program-btn:hover {
@@ -215,6 +237,73 @@
   align-items: center;
   gap: 0.5rem;
   cursor: pointer;
+  /* Safari and mobile fixes */
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  padding: 8px 4px;
+}
+
+.checkbox-label input[type="checkbox"] {
+  /* Ensure checkbox is visible and clickable across browsers */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--text-secondary);
+  border-radius: 4px;
+  margin: 0;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  background-color: var(--card-color);
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.checkbox-label input[type="checkbox"]:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.checkbox-label input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  display: block;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.checkbox-label input[type="checkbox"]:hover {
+  border-color: var(--primary-color);
+}
+
+/* Fix for Safari - increase hit area */
+@media not all and (pointer: fine) {
+  .checkbox-label {
+    padding: 12px 8px;
+  }
+  
+  .checkbox-label input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .checkbox-label input[type="checkbox"]:checked::after {
+    left: 8px;
+    top: 3px;
+    width: 6px;
+    height: 12px;
+  }
 }
 
 .log-set-btn {
