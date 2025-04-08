@@ -58,6 +58,12 @@
 
 .exercise-name {
   font-weight: 500;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 1rem;
 }
 
 .delete-exercise-btn {
@@ -67,6 +73,7 @@
   padding: 0.5rem;
   cursor: pointer;
   font-size: 0.9rem;
+  flex-shrink: 0;
 }
 
 .delete-exercise-btn:hover {
