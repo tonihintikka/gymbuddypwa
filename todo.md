@@ -22,7 +22,11 @@
 - [ ] Add ability to edit workout programs (see docs/feature-plans.md)
 - [ ] Add ability to duplicate workout programs (see docs/feature-plans.md)
 - [ ] Add ability to share workout programs (see docs/feature-plans.md)
-- [ ] Allow saving an empty workout as a new program (see docs/feature-plans.md)
+- [x] Allow saving an empty workout as a new program (see docs/feature-plans.md)
+  - Created SaveWorkoutAsProgramDialog component for user input
+  - Updated WorkoutScreen to track empty workouts and trigger dialog after completion
+  - Implemented conversion of workout exercises to program format
+  - Added common dialog styling for better UX consistency
 - [ ] Add "Export All Data" button to export history, programs, and exercises (see docs/feature-plans.md)
 
 ## Bug Reports
