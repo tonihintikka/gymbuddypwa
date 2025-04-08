@@ -22,6 +22,8 @@
 - [ ] Add ability to edit workout programs
 - [ ] Add ability to duplicate workout programs
 - [ ] Add ability to share workout programs
+- [ ] Allow saving an empty workout as a new program (see docs/feature-plans.md)
+- [ ] Add "Export All Data" button to export history, programs, and exercises (see docs/feature-plans.md)
 
 ## Bug Reports
 - [ ] Exercise search doesn't filter properly
