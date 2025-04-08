@@ -19,9 +19,9 @@
   - Improved general button and input styling for better mobile experience
 
 ## Feature Requests
-- [ ] Add ability to edit workout programs
-- [ ] Add ability to duplicate workout programs
-- [ ] Add ability to share workout programs
+- [ ] Add ability to edit workout programs (see docs/feature-plans.md)
+- [ ] Add ability to duplicate workout programs (see docs/feature-plans.md)
+- [ ] Add ability to share workout programs (see docs/feature-plans.md)
 - [ ] Allow saving an empty workout as a new program (see docs/feature-plans.md)
 - [ ] Add "Export All Data" button to export history, programs, and exercises (see docs/feature-plans.md)
 

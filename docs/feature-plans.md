@@ -50,3 +50,58 @@
             *   Use the existing `downloadJson` utility (or ensure one exists) to create a downloadable file from this JSON object. Use a descriptive filename like `gymtrack_backup_YYYYMMDD.json`.
     3.  **Connect Button to Function:**
         *   In `HistoryScreen.tsx`, wire the `onClick` event of the new "Export All Data" button to call the newly created `exportAllData` function from the hook. 
+
+## Feature 3: Edit Workout Programs
+
+*   **Goal:** Allow users to modify existing workout programs (change name, add/remove/reorder exercises, change targets/notes).
+*   **User Interaction:**
+    *   Add an "Edit" button to each program item in `ProgramList.tsx`.
+    *   Clicking "Edit" navigates to a dedicated program editing screen/view.
+*   **Implementation Steps:**
+    1.  **UI for Editing:**
+        *   Modify `ProgramList.tsx`: Add an "Edit" button.
+        *   Create/Modify `ProgramEditScreen.tsx`:
+            *   Load program data using `usePrograms` or `useIndexedDB`.
+            *   Display program name in an editable input field.
+            *   List exercises (`ProgramExercise[]`) with options to:
+                *   Reorder (e.g., drag-and-drop).
+                *   Remove.
+                *   Edit details (target sets/reps, notes) via a dialog/form.
+            *   Add a button/mechanism to add *new* exercises to the program (reuse `ExerciseList`?).
+            *   Include "Save" and "Cancel" buttons.
+    2.  **Update Logic:**
+        *   Modify `usePrograms`: Add an `updateProgram` function.
+        *   In `ProgramEditScreen.tsx`, on "Save", construct the updated `Program` object and call `updateProgram`.
+        *   Handle navigation back to the program list.
+    3.  **Navigation:** Set up routing/state management for the edit view.
+
+## Feature 4: Duplicate Workout Programs
+
+*   **Goal:** Allow users to create a copy of an existing program.
+*   **User Interaction:**
+    *   Add a "Duplicate" option to each program item (e.g., in a "..." menu).
+    *   Prompt user for the new program's name, pre-filling with "[Original Name] Copy".
+*   **Implementation Steps:**
+    1.  **UI:**
+        *   Modify `ProgramList.tsx`: Add a "Duplicate" option.
+        *   Create `DuplicateProgramDialog.tsx`: Input field for new name, Save/Cancel buttons.
+    2.  **Duplication Logic:**
+        *   Modify `usePrograms`: Add a `duplicateProgram(originalId, newName)` function.
+        *   Inside `duplicateProgram`: Fetch original, deep copy, generate new ID, update name, save using `saveItem`.
+        *   Refresh the program list.
+    3.  **Connect UI:** Wire the "Duplicate" option to the dialog, and the dialog to the `duplicateProgram` function.
+
+## Feature 5: Share Workout Programs
+
+*   **Goal:** Allow users to share a program definition (e.g., via text, email).
+*   **User Interaction:**
+    *   Add a "Share" option to each program item (e.g., in a "..." menu).
+    *   Trigger Web Share API or copy program data (JSON) to clipboard.
+*   **Implementation Steps:**
+    1.  **UI:**
+        *   Modify `ProgramList.tsx`: Add a "Share" option.
+    2.  **Sharing Logic:**
+        *   Modify `usePrograms` (or add logic in `ProgramList.tsx`): Add `shareProgram(programId)` function.
+        *   Inside `shareProgram`: Fetch program, format data (JSON or text), use `navigator.share` if available, otherwise `navigator.clipboard.writeText`. Handle errors.
+    3.  **Connect UI:** Wire the "Share" option to the `shareProgram` function.
+    4.  **(Future Consideration):** An import feature would be needed to make sharing fully functional. 
