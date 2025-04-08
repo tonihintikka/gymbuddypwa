@@ -1,54 +1,73 @@
-# React + TypeScript + Vite
+# GymBuddy PWA
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A progressive web application for tracking workouts and fitness progress.
 
-Currently, two official plugins are available:
+## About
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+GymBuddy is a modern, mobile-first PWA (Progressive Web Application) designed to help users track their workouts and fitness journey. The application works entirely client-side, storing all data in the browser's storage or the PWA's memory when installed. This means your workout data stays on your device and is available even without an internet connection.
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Offline Support**: Works without an internet connection
+- **Mobile-First Design**: Optimized for use during workouts on mobile devices
+- **Exercise Library**: Contains 80+ built-in exercises organized by muscle group
+- **Workout Programs**: Includes multiple pre-defined workout programs
+- **Custom Workouts**: Create and save your own custom workouts
+- **Progress Tracking**: Log sets, reps, and weights for each exercise
+- **Workout History**: View your past workouts and track progress over time
+- **Installable**: Can be installed as a PWA on your mobile device or desktop
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Technology
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+GymBuddy is built with:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **Vite**: Next-generation front-end tooling
+- **React**: For component-based UI
+- **TypeScript**: For type safety
+- **IndexedDB**: For client-side data storage
+- **PWA Features**: For offline functionality and installability
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Getting Started
+
+### Online Version
+
+Visit the deployed application at [https://gymbuddypwa.vercel.app](https://gymbuddypwa.vercel.app)
+
+### Development
+
+To run the project locally:
+
+1. Clone the repository
+2. Install dependencies:
+   ```
+   npm install
+   ```
+3. Start the development server:
+   ```
+   npm run dev
+   ```
+4. Open your browser to the URL displayed in the terminal (typically `http://localhost:5173`)
+
+## Installation as PWA
+
+On compatible browsers (Chrome, Edge, Firefox, etc.):
+
+1. Navigate to the app in your browser
+2. Look for the "Install" or "Add to Home Screen" option in your browser menu
+3. Follow the prompts to install the app
+
+Once installed, GymBuddy will appear as an app on your device and can be used offline.
+
+## Data Storage
+
+All your workout data is stored locally in your browser using IndexedDB. No data is sent to any server, which means:
+
+- Your data is private
+- The app works offline
+- You can use the app without creating an account
+
+Note that clearing your browser data will also remove your saved workouts and programs.
+
+## License
+
+This project is open source and available under the MIT license.
