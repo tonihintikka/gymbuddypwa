@@ -149,27 +149,46 @@ export const WorkoutScreen = () => {
   // Handle saving an empty workout as a program
   const handleSaveAsProgram = async (programName: string, loggedExercises: LoggedExercise[]) => {
     try {
-      // Create a new program with the given name
+      console.log("Starting to save workout as program:", programName);
+      console.log("Exercises to save:", loggedExercises.length);
+      
+      // Use the existing createProgram function from usePrograms hook
       const success = await createProgram(programName);
       
       if (success) {
-        // Find the newly created program to get its ID
-        const newProgram = programs.find(p => p.name === programName);
+        // Manually load the programs to get fresh data
+        await refreshPrograms();
         
-        if (newProgram) {
+        // Find our new program in the updated list
+        // Use current programs - refreshPrograms() has updated it
+        const newlyCreatedProgram = programs.find(p => p.name === programName);
+        
+        if (newlyCreatedProgram) {
+          console.log("Created program:", newlyCreatedProgram.id, "with name:", programName);
+          
           // Add each exercise from the workout to the program
           for (const loggedExercise of loggedExercises) {
-            await addExerciseToProgram(
-              newProgram.id,
+            console.log("Adding exercise:", loggedExercise.exerciseId);
+            const exerciseAdded = await addExerciseToProgram(
+              newlyCreatedProgram.id,
               loggedExercise.exerciseId,
-              // You might want to infer target sets/reps from the workout
               loggedExercise.sets.length, // Use the number of sets as targetSets
               loggedExercise.sets[0]?.reps.toString() // Use reps from first set as targetReps
             );
+            
+            if (!exerciseAdded) {
+              console.error("Failed to add exercise:", loggedExercise.exerciseId);
+            }
           }
           
-          console.log(`Successfully saved workout as program: ${programName}`);
+          // Final refresh to make sure we have all the changes
+          await refreshPrograms();
+          console.log("Successfully saved program with exercises");
+        } else {
+          console.error("Couldn't find newly created program after refresh");
         }
+      } else {
+        console.error("Failed to create program:", programName);
       }
       
       // Close the dialog and reset states
