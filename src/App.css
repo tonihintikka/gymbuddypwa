@@ -241,3 +241,16 @@ button.secondary:hover {
     max-width: 100%;
   }
 }
+
+/* Workout Summary */
+.workout-summary {
+  padding: 1.5rem;
+}
+
+.no-sets-message {
+  padding: 0.5rem;
+  font-style: italic;
+  color: #666;
+  border-left: 3px solid #ddd;
+  margin: 0.5rem 0;
+}

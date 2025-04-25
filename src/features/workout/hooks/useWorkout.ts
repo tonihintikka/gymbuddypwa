@@ -135,14 +135,9 @@ export function useWorkout() {
     }
 
     try {
-      // Filter out any exercises with no sets logged
-      const filteredExercises = currentWorkout.loggedExercises.filter(
-        exercise => exercise.sets.length > 0
-      );
-
+      // Save the workout without filtering out exercises with no sets
       const finalWorkout = {
         ...currentWorkout,
-        loggedExercises: filteredExercises,
       };
 
       await saveWorkoutLog(finalWorkout);

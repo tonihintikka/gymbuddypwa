@@ -95,21 +95,25 @@ export const WorkoutSummary = ({
             <div key={index} className="exercise-summary-item">
               <h4>{exercise.name}</h4>
               <div className="sets-summary">
-                {loggedExercise.sets.map((set, setIndex) => (
-                  <div key={setIndex} className="set-summary">
-                    <span className="set-number">Set {setIndex + 1}:</span>
-                    <span className="set-details">
-                      {set.weight} kg × {set.reps} reps
-                      {(set.isFailure || set.isPaused || set.isSlowEccentric) && (
-                        <span className="set-modifiers">
-                          {set.isFailure && ' (Failure)'}
-                          {set.isPaused && ' (Paused)'}
-                          {set.isSlowEccentric && ' (Slow Eccentric)'}
-                        </span>
-                      )}
-                    </span>
-                  </div>
-                ))}
+                {loggedExercise.sets.length > 0 ? (
+                  loggedExercise.sets.map((set, setIndex) => (
+                    <div key={setIndex} className="set-summary">
+                      <span className="set-number">Set {setIndex + 1}:</span>
+                      <span className="set-details">
+                        {set.weight} kg × {set.reps} reps
+                        {(set.isFailure || set.isPaused || set.isSlowEccentric) && (
+                          <span className="set-modifiers">
+                            {set.isFailure && ' (Failure)'}
+                            {set.isPaused && ' (Paused)'}
+                            {set.isSlowEccentric && ' (Slow Eccentric)'}
+                          </span>
+                        )}
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="no-sets-message">No sets logged</div>
+                )}
               </div>
             </div>
           );

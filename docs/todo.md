@@ -130,3 +130,13 @@
 - [ ] Deploy to hosting service
 - [ ] Configure custom domain (optional)
 - [ ] Set up HTTPS
+
+## Bug Reports
+
+- [ ] Exercise search doesn't filter properly
+- [ ] Workout history doesn't show all completed workouts
+- [x] Preserve exercises list for custom workouts when saving
+  - Modified `finishWorkout` in `useWorkout` to stop filtering out exercises with no sets
+  - Updated WorkoutSummary component to display exercises with no sets logged
+  - Added a "No sets logged" message with styling for empty exercises
+  - Added test case to verify exercises with no sets are preserved

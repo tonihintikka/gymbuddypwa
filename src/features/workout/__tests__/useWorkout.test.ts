@@ -1,46 +1,41 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useWorkout } from '../hooks/useWorkout';
 import { useIndexedDB } from '../../../hooks/useIndexedDB';
 import { useExercises } from '../../exercise/hooks/useExercises';
 import { usePrograms } from '../../program/hooks/usePrograms';
-import { Exercise, Program, ProgramExercise } from '../../../types/models'; // Import necessary types
+import { Exercise, Program, ProgramExercise, WorkoutLog } from '../../../types/models'; // Import types
+import { STORES } from '../../../services/db'; // Import STORES enum
 
 // Mock dependencies
-vi.mock('../../../hooks/useIndexedDB', () => ({
-  useIndexedDB: vi.fn(),
-}));
-
-vi.mock('../../exercise/hooks/useExercises', () => ({
-  useExercises: vi.fn(),
-}));
-
-vi.mock('../../program/hooks/usePrograms', () => ({
-  usePrograms: vi.fn(),
-}));
+vi.mock('../../../hooks/useIndexedDB'); // Keep this basic mock
+vi.mock('../../exercise/hooks/useExercises');
+vi.mock('../../program/hooks/usePrograms');
 
 // Mock uuid
 vi.mock('uuid', () => ({
   v4: () => 'mock-uuid',
 }));
 
-// --- Removed React.useState mock ---
-
 describe('useWorkout', () => {
-  // Setup mock functions and data
-  const saveItemMock = vi.fn().mockResolvedValue(true);
-  const getItemMock = vi.fn();
-  const loadItemsMock = vi.fn().mockResolvedValue(undefined);
-  const deleteItemMock = vi.fn().mockResolvedValue(true);
+  // Mocks for specific store instances
+  const workoutLogSaveItemMock = vi.fn().mockResolvedValue(true);
+  const programGetItemMock = vi.fn();
+  
+  // Default mocks (can be overridden in specific tests if needed)
+  const genericSaveItemMock = vi.fn().mockResolvedValue(true);
+  const genericGetItemMock = vi.fn().mockResolvedValue(undefined);
+  const genericLoadItemsMock = vi.fn().mockResolvedValue(undefined);
+  const genericDeleteItemMock = vi.fn().mockResolvedValue(true);
 
-  // Corrected mockExercises to match Exercise interface
+  // Corrected mockExercises
   const mockExercises: Exercise[] = [
     { id: 'ex1', name: 'Squat', isCustom: false },
     { id: 'ex2', name: 'Bench Press', isCustom: false },
   ];
 
-  // Corrected mockPrograms to match Program interface
-  const mockPrograms: Program[] = [
+  // Corrected mockPrograms
+  const mockProgramsData: Program[] = [
     { 
       id: 'prog1', 
       name: 'Strength Program', 
@@ -51,22 +46,48 @@ describe('useWorkout', () => {
   ];
 
   beforeEach(() => {
+    vi.useFakeTimers(); // Use fake timers
+    vi.setSystemTime(new Date(2021, 0, 1, 0, 0, 0, 0)); // Set system time to Jan 1, 2021
     vi.clearAllMocks();
     
-    // Reset the mock implementations with vi.mocked and complete interfaces
-    vi.mocked(useIndexedDB).mockReturnValue({
-      saveItem: saveItemMock,
-      getItem: getItemMock,
-      loadItems: loadItemsMock,
-      deleteItem: deleteItemMock,
-      items: [], // Add missing properties
-      loading: false,
-      error: null,
+    // Mock useIndexedDB as a factory based on store name
+    vi.mocked(useIndexedDB).mockImplementation((storeName) => {
+      if (storeName === STORES.WORKOUT_LOGS) {
+        return {
+          saveItem: workoutLogSaveItemMock,
+          getItem: genericGetItemMock, // Use generic if specific not needed
+          loadItems: genericLoadItemsMock,
+          deleteItem: genericDeleteItemMock,
+          items: [], 
+          loading: false,
+          error: null,
+        };
+      } else if (storeName === STORES.PROGRAMS) {
+        return {
+          saveItem: genericSaveItemMock, 
+          getItem: programGetItemMock, // Use specific mock for programs
+          loadItems: genericLoadItemsMock,
+          deleteItem: genericDeleteItemMock,
+          items: mockProgramsData, // Provide programs data if needed
+          loading: false,
+          error: null,
+        };
+      }
+      // Default generic mock for other stores
+      return {
+          saveItem: genericSaveItemMock, 
+          getItem: genericGetItemMock,
+          loadItems: genericLoadItemsMock,
+          deleteItem: genericDeleteItemMock,
+          items: [], 
+          loading: false,
+          error: null,
+      };
     });
     
     vi.mocked(useExercises).mockReturnValue({
       exercises: mockExercises,
-      addExercise: vi.fn(), // Add missing functions
+      addExercise: vi.fn(),
       removeExercise: vi.fn(),
       customExercises: [],
       builtInExercises: [],
@@ -75,8 +96,8 @@ describe('useWorkout', () => {
     });
     
     vi.mocked(usePrograms).mockReturnValue({
-      programs: mockPrograms,
-      createProgram: vi.fn(), // Add missing functions
+      programs: mockProgramsData,
+      createProgram: vi.fn(), 
       addExerciseToProgram: vi.fn(),
       deleteProgram: vi.fn(),
       removeExerciseFromProgram: vi.fn(),
@@ -85,10 +106,11 @@ describe('useWorkout', () => {
       loading: false,
       error: null,
     });
-    
-    // Make Date.now() return a consistent value for testing
-    // Ensure we restore the original Date.now after each test if needed, or spy per test.
-    // vi.spyOn(Date, 'now').mockImplementation(() => 1609459200000); // 2021-01-01
+  });
+
+  afterEach(() => {
+    vi.useRealTimers(); // Restore real timers
+    // No need to restore dateSpy
   });
 
   // Test 1: Initialization
@@ -101,7 +123,6 @@ describe('useWorkout', () => {
 
   // Test 2: Start Empty Workout
   it('should start a new empty workout', () => {
-    const dateSpy = vi.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
     const { result } = renderHook(() => useWorkout());
     
     expect(result.current.currentWorkout).toBeNull(); // Verify initial state
@@ -109,40 +130,33 @@ describe('useWorkout', () => {
     act(() => {
       result.current.startWorkout();
     });
-    
-    // Check the state via result.current
+
     expect(result.current.currentWorkout).not.toBeNull();
     expect(result.current.currentWorkout?.id).toBe('mock-uuid');
-    expect(result.current.currentWorkout?.date).toEqual(new Date(1609459200000));
+    expect(result.current.currentWorkout?.date).toEqual(new Date(2021, 0, 1));
     expect(result.current.currentWorkout?.loggedExercises).toEqual([]);
     expect(result.current.currentWorkout?.programId).toBeUndefined();
-
-    dateSpy.mockRestore(); // Restore original Date.now
   });
 
   // Test 3: Start Program Workout
   it('should start a workout from a program', async () => {
-    const dateSpy = vi.spyOn(Date, 'now').mockImplementation(() => 1609459200000);
-    // Mock the getItem to return a program
-    getItemMock.mockResolvedValueOnce(mockPrograms[0]);
+    // Mock getItem *before* renderHook
+    programGetItemMock.mockResolvedValueOnce(mockProgramsData[0]);
         
     const { result } = renderHook(() => useWorkout());
     
     expect(result.current.currentWorkout).toBeNull(); // Verify initial state
 
-    // Call the function within act
     await act(async () => {
       await result.current.startProgramWorkout('prog1');
     });
-    
+
     // Check the state via result.current
     expect(result.current.currentWorkout).not.toBeNull();
     expect(result.current.currentWorkout?.programId).toBe('prog1');
     expect(result.current.currentWorkout?.loggedExercises.length).toBe(1);
     expect(result.current.currentWorkout?.loggedExercises[0].exerciseId).toBe('ex1');
-    expect(result.current.currentWorkout?.date).toEqual(new Date(1609459200000));
-
-    dateSpy.mockRestore();
+    expect(result.current.currentWorkout?.date).toEqual(new Date(2021, 0, 1));
   });
 
   // Test 4: Add Exercise
@@ -239,11 +253,56 @@ describe('useWorkout', () => {
     expect(result.current.currentWorkout).toBeNull();
     expect(result.current.activeExerciseIndex).toBe(0);
 
-    // Verify saveItem was called with the correct data
-    expect(saveItemMock).toHaveBeenCalledTimes(1);
-    // We expect the workout log to be saved to the WORKOUT_LOGS store
-    expect(vi.mocked(useIndexedDB).mock.calls[0][0]).toBe('WORKOUT_LOGS'); // Check store name passed to useIndexedDB
-    expect(saveItemMock).toHaveBeenCalledWith(workoutToSave); 
+    // Verify the specific saveItem mock for WORKOUT_LOGS was called
+    expect(workoutLogSaveItemMock).toHaveBeenCalledTimes(1);
+    expect(workoutLogSaveItemMock).toHaveBeenCalledWith(workoutToSave);
+    expect(programGetItemMock).not.toHaveBeenCalled(); // Ensure other store mocks weren't called
+  });
+
+  // Test for saving a workout with exercises that have no sets
+  it('should preserve exercises with no sets when finishing a workout', async () => {
+    const { result } = renderHook(() => useWorkout());
+    
+    // Start a new workout
+    act(() => {
+      result.current.startWorkout();
+    });
+    
+    // Verify workout is created
+    expect(result.current.currentWorkout).not.toBeNull();
+    
+    // Add exercises one by one (this updates the state properly)
+    act(() => {
+      // First add 'ex1'
+      result.current.addExerciseToWorkout('ex1');
+    });
+    
+    act(() => {
+      // Then add 'ex2'
+      result.current.addExerciseToWorkout('ex2');
+    });
+    
+    // Get the workout with the exercises
+    const workoutWithExercises = result.current.currentWorkout;
+    
+    // Verify both exercises are added
+    expect(workoutWithExercises?.loggedExercises.length).toBe(2);
+    expect(workoutWithExercises?.loggedExercises[0].exerciseId).toBe('ex1');
+    expect(workoutWithExercises?.loggedExercises[1].exerciseId).toBe('ex2');
+    
+    // Finish the workout
+    await act(async () => {
+      await result.current.finishWorkout();
+    });
+    
+    // Verify saveWorkoutLog was called with the correct data
+    expect(workoutLogSaveItemMock).toHaveBeenCalledTimes(1);
+    const savedWorkout = workoutLogSaveItemMock.mock.calls[0][0];
+    
+    // Check that both exercises were preserved in the saved workout
+    expect(savedWorkout.loggedExercises.length).toBe(2);
+    expect(savedWorkout.loggedExercises[0].exerciseId).toBe('ex1');
+    expect(savedWorkout.loggedExercises[1].exerciseId).toBe('ex2');
   });
 
   // Test 8: Navigation
