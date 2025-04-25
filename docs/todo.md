@@ -16,7 +16,16 @@
 - [x] Implement feature-specific data hooks (useExercises, usePrograms, useWorkout, useHistory)
 - [x] Fix IndexedDB connection management for reliable data persistence
 - [ ] Add data migration support for future updates
-- [ ] Implement data backup/restore functionality
+- [x] Implement data backup functionality
+  - Added workout history export feature in useHistory hook
+  - Implemented JSON export of workout logs
+  - Currently exports only workout logs, not programs or exercises
+- [ ] Implement data restore/import functionality
+  - Create file upload mechanism for JSON data files
+  - Validate imported data structure before importing
+  - Handle merging imported data with existing data
+  - Support importing of custom exercises, programs, and workout history
+  - Add user-friendly import UI with progress and success indicators
 
 ## Exercise Management Feature
 

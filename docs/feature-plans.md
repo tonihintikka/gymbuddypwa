@@ -105,3 +105,46 @@
         *   Inside `shareProgram`: Fetch program, format data (JSON or text), use `navigator.share` if available, otherwise `navigator.clipboard.writeText`. Handle errors.
     3.  **Connect UI:** Wire the "Share" option to the `shareProgram` function.
     4.  **(Future Consideration):** An import feature would be needed to make sharing fully functional. 
+
+## Feature 6: Data Import Functionality
+
+*   **Goal:** Allow users to import previously exported data, including custom exercises, programs, and workout history.
+*   **User Interaction:**
+    *   Add an "Import Data" button next to the "Export All Data" button in the History screen.
+    *   On click, open a file picker dialog for selecting a JSON file.
+    *   Show progress/status during import and confirmation when complete.
+*   **Implementation Steps:**
+    1.  **Modify `HistoryScreen.tsx`:**
+        *   Add a new "Import Data" button within the `.history-actions` div.
+    2.  **Modify `useHistory.ts` (or potentially create `useImport.ts`):**
+        *   Create a new asynchronous function, e.g., `importData`.
+        *   Inside `importData`:
+            *   Accept a File object from the file picker.
+            *   Read the file's contents using FileReader.
+            *   Parse the JSON data and validate its structure. It should match the expected format:
+                ```json
+                {
+                  "version": 1,
+                  "exportedAt": "ISO_TIMESTAMP",
+                  "workoutLogs": [...],
+                  "programs": [...],
+                  "exercises": [...]
+                }
+                ```
+            *   For each data type (exercises, programs, workout logs):
+                *   Check for duplicates (matching IDs) in existing data.
+                *   Handle conflicts (e.g., prompt user to keep existing, replace, or keep both).
+                *   Add new items to the database using appropriate `saveItem` calls.
+            *   Return success/error status and details of imported items.
+    3.  **Create `ImportDialog.tsx` Component:**
+        *   Display a file picker and import button.
+        *   Show progress during import.
+        *   Display results (number of items imported for each type, any errors).
+        *   Include an option to merge or replace existing data.
+    4.  **Security and Data Validation:**
+        *   Validate all imported data before saving to prevent corrupt data or security issues.
+        *   Handle errors gracefully and provide clear feedback to the user.
+        *   Include a mechanism to abort import if validation fails.
+    5.  **Connect UI:**
+        *   In `HistoryScreen.tsx`, wire the "Import Data" button to open the import dialog.
+        *   Handle import success/failure with appropriate UI feedback. 
