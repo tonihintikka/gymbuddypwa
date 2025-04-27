@@ -149,3 +149,38 @@
   - Updated WorkoutSummary component to display exercises with no sets logged
   - Added a "No sets logged" message with styling for empty exercises
   - Added test case to verify exercises with no sets are preserved
+- [x] Fix duplicate program key errors in ProgramList
+  - Fixed the usePrograms hook to properly handle built-in programs
+  - Added proper separation of built-in vs saved built-in vs custom programs
+  - Used useMemo to optimize filtering and prevent duplicate keys in lists
+  - Changed program loading logic to prevent duplicate keys in the UI
+
+## Test Error Fix Plan
+
+1. **Analyze `useWorkout` hook implementation**
+   - Examine state initialization and management
+   - Check exercise navigation functions
+   - Verify set logging and deletion functionality
+
+2. **Fix state management issues in `useWorkout`**
+   - Ensure proper initialization of workout state
+   - Fix array handling for exercises and sets
+   - Correct navigation between exercises
+
+3. **Address component rendering issues**
+   - Set up proper test providers/context in test files
+   - Verify component mounting in test environment
+   - Fix conditional rendering that might be preventing elements from appearing
+
+4. **Update test expectations if needed**
+   - Align test assertions with actual component behavior
+   - Update expected values if implementation has changed
+
+5. **Implement incremental fixes**
+   - Fix `useWorkout` hook first (most failures)
+   - Then address `WorkoutScreenReset.test.tsx`
+   - Finally fix `WorkoutScreen.test.tsx`
+
+6. **Verify fixes with continuous testing**
+   - Run affected tests after each fix
+   - Run full test suite at the end

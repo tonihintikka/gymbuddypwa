@@ -1,7 +1,8 @@
+import React from 'react';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { HistoryList } from '../HistoryList';
-import { WorkoutLog } from '../../../../types/models';
+import { WorkoutLog, Program } from '../../../../types/models';
 
 describe('HistoryList', () => {
   const mockWorkoutLogs: WorkoutLog[] = [
@@ -39,10 +40,20 @@ describe('HistoryList', () => {
     }
   ];
 
+  // Mock programs data
+  const mockPrograms: Program[] = [
+    {
+      id: 'program1',
+      name: 'Strength Training',
+      exercises: []
+    }
+  ];
+
   it('renders the history list correctly', () => {
     render(
       <HistoryList
         workoutLogs={mockWorkoutLogs}
+        programs={mockPrograms}
         onSelectWorkout={() => {}}
       />
     );
@@ -55,6 +66,7 @@ describe('HistoryList', () => {
     render(
       <HistoryList
         workoutLogs={[]}
+        programs={mockPrograms}
         onSelectWorkout={() => {}}
         loading={true}
       />
@@ -67,6 +79,7 @@ describe('HistoryList', () => {
     render(
       <HistoryList
         workoutLogs={[]}
+        programs={mockPrograms}
         onSelectWorkout={() => {}}
       />
     );
@@ -78,6 +91,7 @@ describe('HistoryList', () => {
     render(
       <HistoryList
         workoutLogs={mockWorkoutLogs}
+        programs={mockPrograms}
         onSelectWorkout={() => {}}
       />
     );
@@ -94,15 +108,16 @@ describe('HistoryList', () => {
     expect(screen.getByText('3 sets')).toBeInTheDocument();
     expect(screen.getByText('1 sets')).toBeInTheDocument();
     
-    // Check program ID is displayed
+    // Check program name is displayed
     expect(screen.getByText('Program:')).toBeInTheDocument();
-    expect(screen.getByText('program1')).toBeInTheDocument();
+    expect(screen.getByText('Strength Training')).toBeInTheDocument();
   });
 
   it('filters workouts based on date input', () => {
     render(
       <HistoryList
         workoutLogs={mockWorkoutLogs}
+        programs={mockPrograms}
         onSelectWorkout={() => {}}
       />
     );
@@ -130,6 +145,7 @@ describe('HistoryList', () => {
     render(
       <HistoryList
         workoutLogs={mockWorkoutLogs}
+        programs={mockPrograms}
         onSelectWorkout={handleSelectWorkout}
       />
     );
@@ -149,6 +165,7 @@ describe('HistoryList', () => {
     render(
       <HistoryList
         workoutLogs={mockWorkoutLogs}
+        programs={mockPrograms}
         onSelectWorkout={() => {}}
         onDeleteWorkout={handleDeleteWorkout}
       />
