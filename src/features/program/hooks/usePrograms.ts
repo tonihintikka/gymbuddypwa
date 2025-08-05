@@ -194,7 +194,7 @@ export function usePrograms() {
   // Create a new program
   const createProgram = useCallback(async (name: string, description?: string) => {
     if (!name.trim()) {
-      return false;
+      return null;
     }
 
     const newProgram: Program = {
@@ -204,7 +204,12 @@ export function usePrograms() {
       exercises: [],
     };
 
-    return await saveItem(newProgram);
+    const success = await saveItem(newProgram);
+    if (success) {
+      return newProgram;
+    } else {
+      return null;
+    }
   }, [saveItem]);
 
   // Add an exercise to a program

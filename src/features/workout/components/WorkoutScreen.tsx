@@ -7,10 +7,9 @@ import { ActiveWorkoutScreen } from './ActiveWorkoutScreen';
 import { WorkoutSummary } from './WorkoutSummary';
 import { AddExerciseToWorkoutDialog } from './AddExerciseToWorkoutDialog';
 import { SaveWorkoutAsProgramDialog } from './SaveWorkoutAsProgramDialog';
-import { SetLog, WorkoutLog, ProgramExercise, LoggedExercise } from '../../../types/models';
+import { SetLog, WorkoutLog, LoggedExercise } from '../../../types/models';
 import { useIndexedDB } from '../../../hooks/useIndexedDB';
 import { STORES } from '../../../services/db';
-import { v4 as uuidv4 } from 'uuid';
 
 export const WorkoutScreen = () => {
   const { 
@@ -153,40 +152,29 @@ export const WorkoutScreen = () => {
       console.log("Exercises to save:", loggedExercises.length);
       
       // Use the existing createProgram function from usePrograms hook
-      const success = await createProgram(programName);
+      const newProgram = await createProgram(programName);
       
-      if (success) {
-        // Manually load the programs to get fresh data
-        await refreshPrograms();
+      if (newProgram) {
+        console.log("Created program:", newProgram.id, "with name:", programName);
         
-        // Find our new program in the updated list
-        // Use current programs - refreshPrograms() has updated it
-        const newlyCreatedProgram = programs.find(p => p.name === programName);
-        
-        if (newlyCreatedProgram) {
-          console.log("Created program:", newlyCreatedProgram.id, "with name:", programName);
+        // Add each exercise from the workout to the program
+        for (const loggedExercise of loggedExercises) {
+          console.log("Adding exercise:", loggedExercise.exerciseId);
+          const exerciseAdded = await addExerciseToProgram(
+            newProgram.id,
+            loggedExercise.exerciseId,
+            loggedExercise.sets.length, // Use the number of sets as targetSets
+            loggedExercise.sets[0]?.reps.toString() // Use reps from first set as targetReps
+          );
           
-          // Add each exercise from the workout to the program
-          for (const loggedExercise of loggedExercises) {
-            console.log("Adding exercise:", loggedExercise.exerciseId);
-            const exerciseAdded = await addExerciseToProgram(
-              newlyCreatedProgram.id,
-              loggedExercise.exerciseId,
-              loggedExercise.sets.length, // Use the number of sets as targetSets
-              loggedExercise.sets[0]?.reps.toString() // Use reps from first set as targetReps
-            );
-            
-            if (!exerciseAdded) {
-              console.error("Failed to add exercise:", loggedExercise.exerciseId);
-            }
+          if (!exerciseAdded) {
+            console.error("Failed to add exercise:", loggedExercise.exerciseId);
           }
-          
-          // Final refresh to make sure we have all the changes
-          await refreshPrograms();
-          console.log("Successfully saved program with exercises");
-        } else {
-          console.error("Couldn't find newly created program after refresh");
         }
+        
+        // Final refresh to make sure we have all the changes
+        await refreshPrograms();
+        console.log("Successfully saved program with exercises");
       } else {
         console.error("Failed to create program:", programName);
       }
