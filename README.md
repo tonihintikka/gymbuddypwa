@@ -25,6 +25,7 @@ GymTrack is a modern, mobile-first PWA (Progressive Web Application) designed to
 - **Full Offline Functionality**: All core features work without network connectivity
 - **IndexedDB Storage**: Local data storage with no external dependencies
 - **Workout History**: Complete history of all logged workouts
+- **Progress Visualization**: Track your performance with charts for key metrics like estimated 1RM, max weight, and total volume.
 - **Data Export**: Export your workout data (planned feature)
 
 ### Technical Features

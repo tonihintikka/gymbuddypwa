@@ -6,6 +6,7 @@ import { useExercises, ExerciseScreen } from './features/exercise'
 import { usePrograms, ProgramScreen } from './features/program'
 import { useWorkout, WorkoutScreen } from './features/workout'
 import { useHistory, HistoryScreen } from './features/history'
+import { ProgressScreen } from './features/progress'
 
 // Import PWA components
 import { PWAInstallPrompt } from './components/PWAInstallPrompt'
@@ -81,6 +82,10 @@ function App() {
         {activeTab === 'history' && (
           <HistoryScreen />
         )}
+
+        {activeTab === 'progress' && (
+          <ProgressScreen />
+        )}
       </main>
 
       <nav className="app-nav">
@@ -107,6 +112,12 @@ function App() {
           onClick={() => setActiveTab('history')}
         >
           History
+        </button>
+        <button
+          className={activeTab === 'progress' ? 'active' : ''}
+          onClick={() => setActiveTab('progress')}
+        >
+          Progress
         </button>
       </nav>
     </div>
