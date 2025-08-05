@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useExercises } from '../../exercise/hooks/useExercises';
 import { useExerciseProgress } from '../hooks/useExerciseProgress';
+import { useExercisesWithHistory } from '../hooks/useExercisesWithHistory';
 import ExerciseSelector from './ExerciseSelector';
 import MetricToggle from './MetricToggle';
 import ProgressChart from './ProgressChart';
@@ -11,16 +12,19 @@ const ProgressScreen: React.FC = () => {
   const [selectedMetric, setSelectedMetric] = useState('estimated1RM');
   
   const { exercises, loading: exercisesLoading } = useExercises();
+  const { groupedExercises, loading: historyLoading } = useExercisesWithHistory(exercises);
   const { progressData, loading: progressLoading, error } = useExerciseProgress(selectedExercise);
+
+  const isLoading = exercisesLoading || historyLoading;
 
   return (
     <div>
       <h2>Progress</h2>
       <ExerciseSelector 
-        exercises={exercises}
+        groupedExercises={groupedExercises}
         selectedExercise={selectedExercise}
         onSelectExercise={setSelectedExercise}
-        loading={exercisesLoading}
+        loading={isLoading}
       />
       {selectedExercise && (
         <>

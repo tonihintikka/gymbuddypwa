@@ -1,16 +1,16 @@
 
 import React from 'react';
-import { Exercise } from '../../types/models';
+import { GroupedExercises } from '../hooks/useExercisesWithHistory';
 
 interface ExerciseSelectorProps {
-  exercises: Exercise[];
+  groupedExercises: GroupedExercises;
   selectedExercise: string;
   onSelectExercise: (exerciseId: string) => void;
   loading: boolean;
 }
 
 const ExerciseSelector: React.FC<ExerciseSelectorProps> = ({ 
-  exercises, 
+  groupedExercises, 
   selectedExercise, 
   onSelectExercise, 
   loading 
@@ -26,13 +26,44 @@ const ExerciseSelector: React.FC<ExerciseSelectorProps> = ({
         id="exercise-select"
         value={selectedExercise}
         onChange={(e) => onSelectExercise(e.target.value)}
+        style={{ minWidth: '300px' }}
       >
         <option value="">-- Select an exercise --</option>
-        {exercises.map(ex => (
-          <option key={ex.id} value={ex.id}>
-            {ex.name}
+        
+        {/* Exercises with workout data */}
+        {groupedExercises.withData.length > 0 && (
+          <>
+            <option disabled value="" style={{ fontWeight: 'bold', backgroundColor: '#f0f0f0' }}>
+              — Exercises with Data —
+            </option>
+            {groupedExercises.withData.map(item => (
+              <option key={item.exercise.id} value={item.exercise.id}>
+                {item.exercise.name} ({item.workoutCount} workout{item.workoutCount !== 1 ? 's' : ''})
+              </option>
+            ))}
+          </>
+        )}
+        
+        {/* Separator */}
+        {groupedExercises.withData.length > 0 && groupedExercises.withoutData.length > 0 && (
+          <option disabled value="" style={{ backgroundColor: '#e0e0e0' }}>
+            ────────────────────────
           </option>
-        ))}
+        )}
+        
+        {/* Exercises without workout data */}
+        {groupedExercises.withoutData.length > 0 && (
+          <>
+            <option disabled value="" style={{ fontWeight: 'bold', backgroundColor: '#f0f0f0' }}>
+              — All Exercises —
+            </option>
+            {groupedExercises.withoutData.map(item => (
+              <option key={item.exercise.id} value={item.exercise.id}>
+                {item.exercise.name}
+              </option>
+            ))}
+          </>
+        )}
       </select>
     </div>
   );
