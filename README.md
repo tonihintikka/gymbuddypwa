@@ -1,31 +1,49 @@
-# GymBuddy PWA
+# GymTrack PWA
 
-A progressive web application for tracking workouts and fitness progress.
+A progressive web application for tracking weightlifting workouts with prioritization on simplicity and ease of use during active workouts.
 
 ## About
 
-GymBuddy is a modern, mobile-first PWA (Progressive Web Application) designed to help users track their workouts and fitness journey. The application works entirely client-side, storing all data in the browser's storage or the PWA's memory when installed. This means your workout data stays on your device and is available even without an internet connection.
+GymTrack is a modern, mobile-first PWA (Progressive Web Application) designed to help users track their weightlifting workouts with a focus on fast, simple interactions during active training sessions. The application works entirely offline, storing all data locally in IndexedDB. This means your workout data stays on your device and is available even without an internet connection.
 
 ## Features
 
-- **Offline Support**: Works without an internet connection
-- **Mobile-First Design**: Optimized for use during workouts on mobile devices
-- **Exercise Library**: Contains 80+ built-in exercises organized by muscle group
-- **Workout Programs**: Includes multiple pre-defined workout programs
-- **Custom Workouts**: Create and save your own custom workouts
-- **Progress Tracking**: Log sets, reps, and weights for each exercise
-- **Workout History**: View your past workouts and track progress over time
-- **Installable**: Can be installed as a PWA on your mobile device or desktop
+### Core Workout Features
+- **Fast Workout Logging**: Minimal taps required to log sets during active workouts
+- **Exercise Management**: Built-in exercises with support for custom exercises
+- **Flexible Set Logging**: Track weight, reps, and additional markers (failure, pause, slow eccentric)
+- **Active Workout Screen**: Large, easily tappable controls optimized for gym use
+- **Real-time Progress**: Clear visual indicators for logged sets and workout progress
 
-## Technology
+### Program Management
+- **Built-in Programs**: Multiple pre-defined workout programs (3-Day Split, Push/Pull/Legs, etc.)
+- **Custom Programs**: Create your own workout program templates
+- **Empty Workouts**: Start workouts without a program and save them as new programs
+- **Program Templates**: Convert completed workouts into reusable program templates
 
-GymBuddy is built with:
+### Data & Offline Support
+- **Full Offline Functionality**: All core features work without network connectivity
+- **IndexedDB Storage**: Local data storage with no external dependencies
+- **Workout History**: Complete history of all logged workouts
+- **Data Export**: Export your workout data (planned feature)
 
-- **Vite**: Next-generation front-end tooling
-- **React**: For component-based UI
-- **TypeScript**: For type safety
-- **IndexedDB**: For client-side data storage
-- **PWA Features**: For offline functionality and installability
+### Technical Features
+- **Progressive Web App**: Installable on mobile devices and desktop
+- **Mobile-First Design**: Optimized for smartphone use during workouts
+- **TypeScript**: Complete type safety throughout the application
+- **Material UI**: Consistent, accessible user interface components
+
+## Technology Stack
+
+GymTrack is built with:
+
+- **React 18**: Component-based UI with hooks for state management
+- **TypeScript**: Complete type safety throughout the codebase
+- **Vite**: Next-generation front-end build tooling
+- **Material UI**: Consistent component library for UI elements
+- **IndexedDB**: Client-side data storage for offline functionality
+- **Service Worker**: For PWA features and offline capability
+- **Web App Manifest**: For installability as a native-like app
 
 ## Getting Started
 
@@ -56,7 +74,7 @@ On compatible browsers (Chrome, Edge, Firefox, etc.):
 2. Look for the "Install" or "Add to Home Screen" option in your browser menu
 3. Follow the prompts to install the app
 
-Once installed, GymBuddy will appear as an app on your device and can be used offline.
+Once installed, GymTrack will appear as an app on your device and can be used offline.
 
 ## Data Storage
 
@@ -72,7 +90,7 @@ Note that clearing your browser data will also remove your saved workouts and pr
 
 ### Overview
 
-GymBuddy is a Progressive Web Application (PWA) for fitness tracking developed using an agent-based development approach with multiple AI models. The entire development process took approximately 5.5 hours spread across two days.
+GymTrack is a Progressive Web Application (PWA) for weightlifting workout tracking developed using an agent-based development approach with multiple AI models. The initial development process took approximately 5.5 hours spread across two days, with ongoing improvements and bug fixes implemented using modern AI-assisted development practices.
 
 ### Multi-Model AI Development Workflow
 
@@ -121,6 +139,14 @@ The application was built as a React-based PWA with TypeScript and features:
 4. **Iterative Rule Refinement**: Cursor rules were refined through experience to focus on patterns and principles rather than detailed implementations, improving overall development efficiency.
 
 This project demonstrates how agent-based development with multiple AI models can dramatically accelerate application development without sacrificing quality.
+
+### Recent Improvements
+
+#### Bug Fixes & Enhancements
+- **Empty Workout to Program Conversion**: Fixed a race condition where exercises weren't being saved when converting empty workouts to program templates
+- **Program Creation Logic**: Enhanced the `createProgram` function to return the created program object for more reliable program management
+- **Code Quality**: Improved TypeScript type safety and removed unused imports for cleaner codebase
+- **Development Workflow**: Established proper branching strategy with development and main branches for stable releases
 
 ## License
 
