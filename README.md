@@ -24,7 +24,7 @@ GymTrack is a modern, mobile-first PWA (Progressive Web Application) designed to
 ### Data & Offline Support
 - **Full Offline Functionality**: All core features work without network connectivity
 - **IndexedDB Storage**: Local data storage with no external dependencies
-- **Workout History**: Complete history of all logged workouts
+- **Workout History**: Complete history of all logged workouts, with the ability to edit past entries.
 - **Progress Visualization**: Track your performance with charts for key metrics like estimated 1RM, max weight, and total volume.
 - **Data Export**: Export your workout data (planned feature)
 
@@ -170,6 +170,12 @@ The application was built as a React-based PWA with TypeScript and features:
 4. **Iterative Rule Refinement**: Cursor rules were refined through experience to focus on patterns and principles rather than detailed implementations, improving overall development efficiency.
 
 This project demonstrates how agent-based development with multiple AI models can dramatically accelerate application development without sacrificing quality.
+
+### Recent Improvements
+
+#### Bug Fixes & Enhancements
+- **Persistent Workout State**: Refactored the application to lift the workout state to the global level, ensuring that active workout data is preserved when navigating between tabs.
+- **Editable Workout History**: Added the ability for users to edit the weight and reps of sets in their workout history, providing greater flexibility and control over their data.
 
 ### Current Status & Future Development
 
