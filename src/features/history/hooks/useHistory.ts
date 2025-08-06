@@ -15,6 +15,7 @@ export function useHistory() {
     getItem,
     deleteItem 
   } = useIndexedDB<WorkoutLog>(STORES.WORKOUT_LOGS);
+  const { saveItem: updateWorkout } = useIndexedDB<WorkoutLog>(STORES.WORKOUT_LOGS);
   
   const [selectedWorkout, setSelectedWorkout] = useState<WorkoutLog | null>(null);
 
@@ -46,6 +47,16 @@ export function useHistory() {
     return success;
   }, [deleteItem, selectedWorkout, clearSelectedWorkout]);
 
+  // Update a workout log
+  const updateWorkoutLog = useCallback(async (workout: WorkoutLog) => {
+    const success = await updateWorkout(workout);
+    if (success) {
+      await loadItems();
+      setSelectedWorkout(workout);
+    }
+    return success;
+  }, [updateWorkout, loadItems]);
+
   // Export workout logs as JSON
   const exportWorkoutLogs = useCallback(() => {
     const dataStr = JSON.stringify(workoutLogs, null, 2);
@@ -69,5 +80,6 @@ export function useHistory() {
     clearSelectedWorkout,
     deleteWorkoutLog,
     exportWorkoutLogs,
+    updateWorkoutLog,
   };
 }

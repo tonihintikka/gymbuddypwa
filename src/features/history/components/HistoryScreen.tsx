@@ -13,7 +13,8 @@ export const HistoryScreen = () => {
     error,
     refreshHistory,
     deleteWorkoutLog,
-    exportWorkoutLogs
+    exportWorkoutLogs,
+    updateWorkoutLog
   } = useHistory();
 
   const { exercises } = useExercises();
@@ -66,6 +67,7 @@ export const HistoryScreen = () => {
           exercises={exercises}
           program={workoutProgram}
           onBack={handleBack}
+          onSave={updateWorkoutLog}
         />
       ) : (
         <>

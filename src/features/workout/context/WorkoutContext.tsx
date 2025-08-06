@@ -1,47 +1,26 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { WorkoutLog } from '../../../types/models';
+import React, { createContext, useContext, ReactNode } from 'react';
+import { useWorkout } from '../hooks/useWorkout';
 
 // Define the context type
-interface WorkoutContextType {
-  workout: WorkoutLog | null;
-  setWorkout: (workout: WorkoutLog | null) => void;
-  loading: boolean;
-  setLoading: (loading: boolean) => void;
-  error: Error | null;
-  setError: (error: Error | null) => void;
-}
+export type WorkoutContextType = ReturnType<typeof useWorkout>;
 
 // Create context with default values
-const WorkoutContext = createContext<WorkoutContextType>({
-  workout: null,
-  setWorkout: () => {},
-  loading: false,
-  setLoading: () => {},
-  error: null,
-  setError: () => {},
-});
+const WorkoutContext = createContext<WorkoutContextType | undefined>(undefined);
 
 // Create provider component
-export const WorkoutProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [workout, setWorkout] = useState<WorkoutLog | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-
+export const WorkoutProvider: React.FC<{ children: ReactNode, value: WorkoutContextType }> = ({ children, value }) => {
   return (
-    <WorkoutContext.Provider
-      value={{
-        workout,
-        setWorkout,
-        loading,
-        setLoading,
-        error,
-        setError,
-      }}
-    >
+    <WorkoutContext.Provider value={value}>
       {children}
     </WorkoutContext.Provider>
   );
 };
 
 // Custom hook for using this context
-export const useWorkoutContext = () => useContext(WorkoutContext); 
+export const useWorkoutContext = () => {
+  const context = useContext(WorkoutContext);
+  if (context === undefined) {
+    throw new Error('useWorkoutContext must be used within a WorkoutProvider');
+  }
+  return context;
+}; 

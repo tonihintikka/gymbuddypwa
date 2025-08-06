@@ -10,3 +10,4 @@ export * from './components/SetInputForm';
 export * from './components/LoggedSetsList';
 export * from './components/WorkoutSummary';
 export * from './components/AddExerciseToWorkoutDialog';
+export * from './context/WorkoutContext';

@@ -4,7 +4,7 @@ import './App.css'
 // Import hooks and components
 import { useExercises, ExerciseScreen } from './features/exercise'
 import { usePrograms, ProgramScreen } from './features/program'
-import { useWorkout, WorkoutScreen } from './features/workout'
+import { useWorkout, WorkoutScreen, WorkoutProvider } from './features/workout'
 import { useHistory, HistoryScreen } from './features/history'
 import { ProgressScreen } from './features/progress'
 
@@ -25,6 +25,7 @@ import { initDatabase } from './services/db'
 function App() {
   const [initialized, setInitialized] = useState(false)
   const [activeTab, setActiveTab] = useState('workout')
+  const workout = useWorkout()
 
   // Initialize the database on mount
   useEffect(() => {
@@ -51,76 +52,78 @@ function App() {
   }
 
   return (
-    <div className="app-container">
-      <OfflineIndicator />
-      <PWAUpdateNotification />
-      <PWAInstallPrompt />
+    <WorkoutProvider value={workout}>
+      <div className="app-container">
+        <OfflineIndicator />
+        <PWAUpdateNotification />
+        <PWAInstallPrompt />
 
-      <header className="app-header">
-        <h1>
-          <img src="/icons/icon.svg" alt="GymTrack" className="app-logo" />
-          GymTrack
-        </h1>
-        <div className="header-actions">
-          {/* Add any header actions here if needed */}
-        </div>
-      </header>
+        <header className="app-header">
+          <h1>
+            <img src="/icons/icon.svg" alt="GymTrack" className="app-logo" />
+            GymTrack
+          </h1>
+          <div className="header-actions">
+            {/* Add any header actions here if needed */}
+          </div>
+        </header>
 
-      <main className="app-content">
-        {activeTab === 'workout' && (
-          <WorkoutScreen />
-        )}
+        <main className="app-content">
+          {activeTab === 'workout' && (
+            <WorkoutScreen />
+          )}
 
-        {activeTab === 'exercises' && (
-          <ExerciseScreen />
-        )}
+          {activeTab === 'exercises' && (
+            <ExerciseScreen />
+          )}
 
-        {activeTab === 'programs' && (
-          <ProgramScreen />
-        )}
+          {activeTab === 'programs' && (
+            <ProgramScreen />
+          )}
 
-        {activeTab === 'history' && (
-          <HistoryScreen />
-        )}
+          {activeTab === 'history' && (
+            <HistoryScreen />
+          )}
 
-        {activeTab === 'progress' && (
-          <ProgressScreen />
-        )}
-      </main>
+          {activeTab === 'progress' && (
+            <ProgressScreen />
+          )}
+        </main>
 
-      <nav className="app-nav">
-        <button
-          className={activeTab === 'workout' ? 'active' : ''}
-          onClick={() => setActiveTab('workout')}
-        >
-          Workout
-        </button>
-        <button
-          className={activeTab === 'exercises' ? 'active' : ''}
-          onClick={() => setActiveTab('exercises')}
-        >
-          Exercises
-        </button>
-        <button
-          className={activeTab === 'programs' ? 'active' : ''}
-          onClick={() => setActiveTab('programs')}
-        >
-          Programs
-        </button>
-        <button
-          className={activeTab === 'history' ? 'active' : ''}
-          onClick={() => setActiveTab('history')}
-        >
-          History
-        </button>
-        <button
-          className={activeTab === 'progress' ? 'active' : ''}
-          onClick={() => setActiveTab('progress')}
-        >
-          Progress
-        </button>
-      </nav>
-    </div>
+        <nav className="app-nav">
+          <button
+            className={activeTab === 'workout' ? 'active' : ''}
+            onClick={() => setActiveTab('workout')}
+          >
+            Workout
+          </button>
+          <button
+            className={activeTab === 'exercises' ? 'active' : ''}
+            onClick={() => setActiveTab('exercises')}
+          >
+            Exercises
+          </button>
+          <button
+            className={activeTab === 'programs' ? 'active' : ''}
+            onClick={() => setActiveTab('programs')}
+          >
+            Programs
+          </button>
+          <button
+            className={activeTab === 'history' ? 'active' : ''}
+            onClick={() => setActiveTab('history')}
+          >
+            History
+          </button>
+          <button
+            className={activeTab === 'progress' ? 'active' : ''}
+            onClick={() => setActiveTab('progress')}
+          >
+            Progress
+          </button>
+        </nav>
+      </div>
+    </WorkoutProvider>
   )
 }
 
