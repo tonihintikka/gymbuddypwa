@@ -42,67 +42,90 @@ export function useWorkout() {
   }, [getProgram, startWorkout]);
 
   const addExerciseToWorkout = useCallback((exerciseId: string) => {
-    if (!currentWorkout) return false;
-    const newLoggedExercise: LoggedExercise = {
-      exerciseId,
-      sets: [],
-    };
-    setCurrentWorkout(prev => prev ? {
-      ...prev,
-      loggedExercises: [...prev.loggedExercises, newLoggedExercise],
-    } : null);
-    setActiveExerciseIndex(currentWorkout.loggedExercises.length);
+    setCurrentWorkout(prev => {
+      if (!prev) return null;
+      const newLoggedExercise: LoggedExercise = {
+        exerciseId,
+        sets: [],
+      };
+      setActiveExerciseIndex(prev.loggedExercises.length);
+      return {
+        ...prev,
+        loggedExercises: [...prev.loggedExercises, newLoggedExercise],
+      };
+    });
     return true;
-  }, [currentWorkout]);
+  }, []);
 
   const logSet = useCallback((exerciseIndex: number, setLog: SetLog) => {
-    if (!currentWorkout) return false;
-    const updatedExercises = [...currentWorkout.loggedExercises];
-    updatedExercises[exerciseIndex] = {
-      ...updatedExercises[exerciseIndex],
-      sets: [...updatedExercises[exerciseIndex].sets, setLog],
-    };
-    setCurrentWorkout(prev => prev ? { ...prev, loggedExercises: updatedExercises } : null);
+    setCurrentWorkout(prev => {
+      if (!prev) return null;
+      const updatedExercises = [...prev.loggedExercises];
+      updatedExercises[exerciseIndex] = {
+        ...updatedExercises[exerciseIndex],
+        sets: [...updatedExercises[exerciseIndex].sets, setLog],
+      };
+      return { ...prev, loggedExercises: updatedExercises };
+    });
     return true;
-  }, [currentWorkout]);
+  }, []);
 
   const deleteSet = useCallback((exerciseIndex: number, setIndex: number) => {
-    if (!currentWorkout) return false;
-    const updatedExercises = [...currentWorkout.loggedExercises];
-    const updatedSets = [...updatedExercises[exerciseIndex].sets];
-    updatedSets.splice(setIndex, 1);
-    updatedExercises[exerciseIndex] = {
-      ...updatedExercises[exerciseIndex],
-      sets: updatedSets,
-    };
-    setCurrentWorkout(prev => prev ? { ...prev, loggedExercises: updatedExercises } : null);
+    setCurrentWorkout(prev => {
+      if (!prev) return null;
+      const updatedExercises = [...prev.loggedExercises];
+      const updatedSets = [...updatedExercises[exerciseIndex].sets];
+      updatedSets.splice(setIndex, 1);
+      updatedExercises[exerciseIndex] = {
+        ...updatedExercises[exerciseIndex],
+        sets: updatedSets,
+      };
+      return { ...prev, loggedExercises: updatedExercises };
+    });
     return true;
-  }, [currentWorkout]);
+  }, []);
 
   const finishWorkout = useCallback(async () => {
-    if (!currentWorkout) return false;
+    let workoutToSave: WorkoutLog | null = null;
+    setCurrentWorkout(prev => {
+      workoutToSave = prev;
+      return null;
+    });
+
+    if (!workoutToSave) return false;
     try {
-      await saveWorkoutLog(currentWorkout);
-      setCurrentWorkout(null);
+      await saveWorkoutLog(workoutToSave);
       setActiveExerciseIndex(0);
       return true;
     } catch (error) {
       console.error('Error saving workout:', error);
+      // Optionally, revert state if save fails
+      setCurrentWorkout(workoutToSave);
       return false;
     }
-  }, [currentWorkout, saveWorkoutLog]);
+  }, [saveWorkoutLog]);
 
   const nextExercise = useCallback(() => {
-    if (!currentWorkout || activeExerciseIndex >= currentWorkout.loggedExercises.length - 1) return false;
-    setActiveExerciseIndex(prev => prev + 1);
+    setActiveExerciseIndex(prev => {
+      let nextIndex = prev + 1;
+      if (currentWorkout && nextIndex >= currentWorkout.loggedExercises.length) {
+        nextIndex = currentWorkout.loggedExercises.length - 1;
+      }
+      return nextIndex;
+    });
     return true;
-  }, [currentWorkout, activeExerciseIndex]);
+  }, [currentWorkout]);
 
   const previousExercise = useCallback(() => {
-    if (!currentWorkout || activeExerciseIndex <= 0) return false;
-    setActiveExerciseIndex(prev => prev - 1);
+    setActiveExerciseIndex(prev => {
+      const nextIndex = prev - 1;
+      if (nextIndex < 0) {
+        return 0;
+      }
+      return nextIndex;
+    });
     return true;
-  }, [currentWorkout, activeExerciseIndex]);
+  }, []);
 
   return {
     currentWorkout,

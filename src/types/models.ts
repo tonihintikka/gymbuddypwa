@@ -5,10 +5,17 @@
 /**
  * Represents an exercise definition
  */
+export type MuscleGroup = 'Chest' | 'Back' | 'Shoulders' | 'Biceps' | 'Triceps' | 'Quads' | 'Hamstrings' | 'Glutes' | 'Calves' | 'Abs' | 'Other';
+export type ExerciseCategory = 'Push' | 'Pull' | 'Legs' | 'Core' | 'Full Body' | 'Other';
+
 export interface Exercise {
   id: string;
   name: string;
   isCustom: boolean;
+  muscleGroup?: MuscleGroup;
+  category?: ExerciseCategory;
+  side?: 'Front' | 'Back' | 'Other';
+  baseExercise?: string;
 }
 
 /**

@@ -1,9 +1,10 @@
 import { AddExerciseForm } from './AddExerciseForm';
+import { Exercise } from '../../../types/models';
 
 interface AddExerciseDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (name: string) => Promise<boolean>;
+  onAdd: (exercise: Omit<Exercise, 'id' | 'isCustom'>) => Promise<boolean>;
 }
 
 export const AddExerciseDialog = ({ 

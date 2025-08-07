@@ -16,8 +16,8 @@ export const ExerciseScreen = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
 
-  const handleAddExercise = async (name: string) => {
-    const success = await addExercise(name);
+  const handleAddExercise = async (exercise: Omit<Exercise, 'id' | 'isCustom'>) => {
+    const success = await addExercise(exercise);
     if (success) {
       setIsAddDialogOpen(false);
     }
@@ -59,6 +59,10 @@ export const ExerciseScreen = () => {
         <div className="exercise-details">
           <h3>{selectedExercise.name}</h3>
           <p>Type: {selectedExercise.isCustom ? 'Custom' : 'Built-in'}</p>
+          <p>Muscle Group: {selectedExercise.muscleGroup}</p>
+          <p>Category: {selectedExercise.category}</p>
+          <p>Side: {selectedExercise.side}</p>
+          <p>Base Exercise: {selectedExercise.baseExercise}</p>
           <button
             className="close-details"
             onClick={() => setSelectedExercise(null)}

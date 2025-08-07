@@ -5,9 +5,10 @@ import { Exercise } from '../../../../types/models';
 
 describe('ExerciseList', () => {
   const mockExercises: Exercise[] = [
-    { id: '1', name: 'Squat', isCustom: false },
-    { id: '2', name: 'Bench Press', isCustom: false },
-    { id: '3', name: 'Custom Exercise', isCustom: true },
+    { id: '1', name: 'Squat', isCustom: false, muscleGroup: 'Legs', category: 'Legs', side: 'Front', baseExercise: 'Squat' },
+    { id: '2', name: 'Bench Press', isCustom: false, muscleGroup: 'Chest', category: 'Push', side: 'Front', baseExercise: 'Bench Press' },
+    { id: '3', name: 'Custom Exercise', isCustom: true, muscleGroup: 'Biceps', category: 'Pull', side: 'Front', baseExercise: 'Curl' },
+    { id: '4', name: 'Incline Bench Press', isCustom: false, muscleGroup: 'Chest', category: 'Push', side: 'Front', baseExercise: 'Bench Press' },
   ];
 
   it('renders the list of exercises', () => {
@@ -37,8 +38,40 @@ describe('ExerciseList', () => {
     fireEvent.change(searchInput, { target: { value: 'bench' } });
     
     expect(screen.getByText('Bench Press')).toBeInTheDocument();
+    expect(screen.getByText('Incline Bench Press')).toBeInTheDocument();
     expect(screen.queryByText('Squat')).not.toBeInTheDocument();
     expect(screen.queryByText('Custom Exercise')).not.toBeInTheDocument();
+  });
+
+  it('filters exercises by muscle group', () => {
+    render(<ExerciseList exercises={mockExercises} />);
+    
+    const muscleGroupSelect = screen.getByRole('combobox', { name: /muscle/i });
+    fireEvent.change(muscleGroupSelect, { target: { value: 'Chest' } });
+
+    expect(screen.getByText('Bench Press')).toBeInTheDocument();
+    expect(screen.getByText('Incline Bench Press')).toBeInTheDocument();
+    expect(screen.queryByText('Squat')).not.toBeInTheDocument();
+  });
+
+  it('filters exercises by category', () => {
+    render(<ExerciseList exercises={mockExercises} />);
+    
+    const categorySelect = screen.getByRole('combobox', { name: /category/i });
+    fireEvent.change(categorySelect, { target: { value: 'Pull' } });
+
+    expect(screen.getByText('Custom Exercise')).toBeInTheDocument();
+    expect(screen.queryByText('Squat')).not.toBeInTheDocument();
+  });
+
+  it('groups exercises by base exercise', () => {
+    render(<ExerciseList exercises={mockExercises} />);
+    
+    const groupCheckbox = screen.getByLabelText('Group by Base Exercise');
+    fireEvent.click(groupCheckbox);
+
+    const benchPressGroup = screen.getAllByText('Bench Press');
+    expect(benchPressGroup).toHaveLength(2); // Group name and one exercise
   });
 
   it('calls onSelectExercise when an exercise is clicked', () => {

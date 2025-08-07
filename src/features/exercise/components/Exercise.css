@@ -208,3 +208,365 @@
   border-radius: 4px;
   margin-bottom: 1rem;
 }
+
+/* Enhanced Add Exercise to Workout Dialog Styles */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.dialog-content {
+  background-color: var(--card-color);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.dialog-header {
+  padding: 1.5rem 1.5rem 0 1.5rem;
+  border-bottom: 1px solid var(--divider-color);
+  background-color: var(--background-color);
+}
+
+.dialog-header h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.dialog-body {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+/* Enhanced Filter Styles */
+.exercise-filters {
+  margin-bottom: 1.5rem;
+  background-color: var(--background-color);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid var(--divider-color);
+}
+
+.search-section {
+  margin-bottom: 1rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.875rem;
+  border: 2px solid var(--divider-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+  outline: none;
+}
+
+.filter-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filter-select {
+  padding: 0.75rem;
+  border: 1px solid var(--divider-color);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background-color: white;
+  transition: border-color 0.2s;
+}
+
+.filter-select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.options-section {
+  display: flex;
+  align-items: center;
+}
+
+.group-toggle {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.95rem;
+  user-select: none;
+}
+
+.group-toggle input[type="checkbox"] {
+  margin-right: 0.5rem;
+  transform: scale(1.1);
+}
+
+.toggle-text {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Enhanced Exercise List Styles */
+.exercise-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.exercise-item {
+  background-color: var(--card-color);
+  border: 1px solid var(--divider-color);
+  border-radius: 8px;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.exercise-item:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.1);
+  transform: translateY(-1px);
+}
+
+.exercise-item.custom {
+  border-left: 4px solid var(--accent-color);
+}
+
+.exercise-content {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.exercise-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+  line-height: 1.3;
+}
+
+.exercise-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.muscle-group-badge,
+.category-badge,
+.custom-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.muscle-group-badge {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #388e3c;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.category-badge {
+  background-color: rgba(33, 150, 243, 0.1);
+  color: #1976d2;
+  border: 1px solid rgba(33, 150, 243, 0.3);
+}
+
+.custom-badge {
+  background-color: rgba(255, 152, 0, 0.1);
+  color: #f57c00;
+  border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+/* Grouped Exercise List Styles */
+.grouped-exercise-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.exercise-group {
+  background-color: var(--background-color);
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid var(--divider-color);
+}
+
+.group-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--divider-color);
+}
+
+/* Dialog Actions */
+.dialog-actions {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--divider-color);
+  background-color: var(--background-color);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dialog-actions button {
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dialog-actions button.secondary {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--divider-color);
+}
+
+.dialog-actions button.secondary:hover {
+  background-color: var(--divider-color);
+}
+
+/* No exercises state */
+.no-exercises {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+  background-color: var(--background-color);
+  border-radius: 8px;
+  border: 1px dashed var(--divider-color);
+}
+
+/* Main Exercise List Specific Styles */
+.exercise-list-container .exercise-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.exercise-list-container .exercise-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.exercise-list-container .delete-exercise-btn {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  background-color: transparent;
+  color: var(--error-color);
+  border: 1px solid var(--error-color);
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.exercise-list-container .delete-exercise-btn:hover {
+  background-color: var(--error-color);
+  color: white;
+}
+
+.exercise-list-container .add-exercise-btn {
+  width: 100%;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.exercise-list-container .add-exercise-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Ensure proper spacing for exercise items with delete buttons */
+.exercise-list-container .exercise-item.custom .exercise-content {
+  padding-right: 5rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .dialog-content {
+    margin: 0.5rem;
+    max-width: none;
+    max-height: 95vh;
+  }
+  
+  .filter-section {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .exercise-name {
+    font-size: 1rem;
+  }
+  
+  .exercise-list-container .exercise-item.custom .exercise-content {
+    padding-right: 4rem;
+  }
+  
+  .exercise-list-container .delete-exercise-btn {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+    right: 0.75rem;
+  }
+}

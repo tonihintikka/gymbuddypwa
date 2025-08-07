@@ -8,6 +8,10 @@ describe('AddExerciseForm', () => {
     
     expect(screen.getByText('Add New Exercise')).toBeInTheDocument();
     expect(screen.getByLabelText('Exercise Name')).toBeInTheDocument();
+    expect(screen.getByLabelText('Muscle Group')).toBeInTheDocument();
+    expect(screen.getByLabelText('Category')).toBeInTheDocument();
+    expect(screen.getByLabelText('Side')).toBeInTheDocument();
+    expect(screen.getByLabelText('Base Exercise (optional)')).toBeInTheDocument();
     expect(screen.getByText('Add Exercise')).toBeInTheDocument();
   });
 
@@ -34,18 +38,36 @@ describe('AddExerciseForm', () => {
     expect(screen.getByText('Exercise name cannot be empty')).toBeInTheDocument();
   });
 
-  it('calls onAdd with exercise name when form is submitted', async () => {
+  it('calls onAdd with exercise data when form is submitted', async () => {
     const handleAdd = vi.fn().mockResolvedValue(true);
     render(<AddExerciseForm onAdd={handleAdd} />);
     
     fireEvent.change(screen.getByLabelText('Exercise Name'), { 
       target: { value: 'New Exercise' } 
     });
+    fireEvent.change(screen.getByLabelText('Muscle Group'), { 
+      target: { value: 'Biceps' } 
+    });
+    fireEvent.change(screen.getByLabelText('Category'), { 
+      target: { value: 'Pull' } 
+    });
+    fireEvent.change(screen.getByLabelText('Side'), { 
+      target: { value: 'Front' } 
+    });
+    fireEvent.change(screen.getByLabelText('Base Exercise (optional)'), { 
+      target: { value: 'Curl' } 
+    });
     
     fireEvent.click(screen.getByText('Add Exercise'));
     
     await waitFor(() => {
-      expect(handleAdd).toHaveBeenCalledWith('New Exercise');
+      expect(handleAdd).toHaveBeenCalledWith({
+        name: 'New Exercise',
+        muscleGroup: 'Biceps',
+        category: 'Pull',
+        side: 'Front',
+        baseExercise: 'Curl',
+      });
     });
   });
 
