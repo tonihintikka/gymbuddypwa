@@ -39,6 +39,36 @@ export const ProgramScreen = () => {
     }
   };
 
+  const handleRemoveExerciseFromProgram = async (programId: string, exerciseIndex: number) => {
+    const ok = await removeExerciseFromProgram(programId, exerciseIndex);
+    if (ok) {
+      setSelectedProgram(prev => {
+        if (!prev || prev.id !== programId) return prev;
+        const updated = { ...prev, exercises: prev.exercises.filter((_, i) => i !== exerciseIndex) };
+        return updated;
+      });
+    }
+    return ok;
+  };
+
+  const handleAddExerciseToProgram = async (
+    programId: string,
+    exerciseId: string,
+    targetSets?: number,
+    targetReps?: string,
+    notes?: string
+  ) => {
+    const ok = await addExerciseToProgram(programId, exerciseId, targetSets, targetReps, notes);
+    if (ok) {
+      setSelectedProgram(prev => {
+        if (!prev || prev.id !== programId) return prev;
+        const newExercise = { exerciseId, targetSets, targetReps, notes };
+        return { ...prev, exercises: [...prev.exercises, newExercise] };
+      });
+    }
+    return ok;
+  };
+
   return (
     <div className="program-screen feature-container">
       {programsError && (
@@ -51,8 +81,8 @@ export const ProgramScreen = () => {
         <ProgramDetail
           program={selectedProgram}
           exercises={exercises}
-          onAddExercise={addExerciseToProgram}
-          onRemoveExercise={removeExerciseFromProgram}
+          onAddExercise={handleAddExerciseToProgram}
+          onRemoveExercise={handleRemoveExerciseFromProgram}
           onBack={() => setSelectedProgram(null)}
         />
       ) : (

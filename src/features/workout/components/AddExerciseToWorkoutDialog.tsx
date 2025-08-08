@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Exercise, MuscleGroup, ExerciseCategory } from '../../../types/models';
+import { useExerciseFilters } from '../../exercise/hooks/useExerciseFilters';
+import { FilterChips } from '../../exercise/components/FilterChips';
+import { FiltersBottomSheet } from '../../exercise/components/FiltersBottomSheet';
 import '../../exercise/components/Exercise.css';
 
 interface AddExerciseToWorkoutDialogProps {
@@ -15,24 +18,29 @@ export const AddExerciseToWorkoutDialog = ({
   exercises,
   onAddExercise
 }: AddExerciseToWorkoutDialogProps) => {
-  const [filter, setFilter] = useState('');
-  const [muscleGroupFilter, setMuscleGroupFilter] = useState<MuscleGroup | 'All'>('All');
-  const [categoryFilter, setCategoryFilter] = useState<ExerciseCategory | 'All'>('All');
-  const [groupByName, setGroupByName] = useState(false);
+  const {
+    search,
+    setSearch,
+    muscleGroup,
+    setMuscleGroup,
+    category,
+    setCategory,
+    groupByBase,
+    toggleGroup,
+    reset,
+    activeChips,
+    getFiltered,
+  } = useExerciseFilters();
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   
   if (!isOpen) return null;
   
   // Filter exercises based on search input and filters
-  const filteredExercises = exercises.filter(exercise => {
-    const nameMatch = exercise.name.toLowerCase().includes(filter.toLowerCase());
-    const muscleGroupMatch = muscleGroupFilter === 'All' || exercise.muscleGroup === muscleGroupFilter;
-    const categoryMatch = categoryFilter === 'All' || exercise.category === categoryFilter;
-    return nameMatch && muscleGroupMatch && categoryMatch;
-  });
+  const filteredExercises = getFiltered(exercises);
 
   // Group exercises if requested
   const groupedExercises = filteredExercises.reduce((acc, exercise) => {
-    const key = groupByName ? exercise.baseExercise || exercise.name : exercise.id;
+    const key = groupByBase ? exercise.baseExercise || exercise.name : exercise.id;
     if (!acc[key]) {
       acc[key] = [];
     }
@@ -59,23 +67,44 @@ export const AddExerciseToWorkoutDialog = ({
         
         <div className="dialog-body">
           <div className="exercise-filters">
-            <div className="search-section">
+            <div className="filters-toolbar">
               <input
                 type="text"
                 placeholder="Search exercises..."
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 autoFocus
                 className="search-input"
               />
+              <div className="filters-actions">
+                <button
+                  type="button"
+                  className={`icon-btn ${groupByBase ? 'active' : ''}`}
+                  aria-pressed={groupByBase}
+                  aria-label="Toggle group by base exercise"
+                  onClick={toggleGroup}
+                >
+                  Group
+                </button>
+                <button
+                  type="button"
+                  className="icon-btn"
+                  aria-label="Open filters"
+                  onClick={() => setIsFiltersOpen(true)}
+                >
+                  Filters
+                </button>
+              </div>
             </div>
-            
+
+            <FilterChips chips={activeChips} onClearAll={reset} />
+
             <div className="filter-section">
               <div className="filter-group">
                 <label className="filter-label">Muscle Group</label>
                 <select
-                  value={muscleGroupFilter}
-                  onChange={(e) => setMuscleGroupFilter(e.target.value as MuscleGroup | 'All')}
+                  value={muscleGroup}
+                  onChange={(e) => setMuscleGroup(e.target.value as MuscleGroup | 'All')}
                   className="filter-select"
                 >
                   <option value="All">All Muscle Groups</option>
@@ -88,8 +117,8 @@ export const AddExerciseToWorkoutDialog = ({
               <div className="filter-group">
                 <label className="filter-label">Category</label>
                 <select
-                  value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value as ExerciseCategory | 'All')}
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value as ExerciseCategory | 'All')}
                   className="filter-select"
                 >
                   <option value="All">All Categories</option>
@@ -104,21 +133,32 @@ export const AddExerciseToWorkoutDialog = ({
               <label className="group-toggle">
                 <input
                   type="checkbox"
-                  checked={groupByName}
-                  onChange={(e) => setGroupByName(e.target.checked)}
+                  checked={groupByBase}
+                  onChange={toggleGroup}
                 />
                 <span className="toggle-text">Group by exercise type</span>
               </label>
             </div>
           </div>
+
+          <FiltersBottomSheet
+            open={isFiltersOpen}
+            onClose={() => setIsFiltersOpen(false)}
+            values={{ muscleGroup, category }}
+            onChange={(v) => { setMuscleGroup(v.muscleGroup); setCategory(v.category); }}
+            availableMuscleGroups={availableMuscleGroups}
+            availableCategories={availableCategories}
+            onApply={() => setIsFiltersOpen(false)}
+            onClear={() => { reset(); setIsFiltersOpen(false); }}
+          />
           
           {filteredExercises.length === 0 ? (
             <div className="no-exercises">
-              {filter || muscleGroupFilter !== 'All' || categoryFilter !== 'All' ? 
+              {search || muscleGroup !== 'All' || category !== 'All' ? 
                 'No exercises found matching the selected filters.' : 
                 'No exercises available.'}
             </div>
-          ) : groupByName ? (
+          ) : groupByBase ? (
             <div className="grouped-exercise-list">
               {Object.entries(groupedExercises).map(([groupName, groupExercises]) => (
                 <div key={groupName} className="exercise-group">
