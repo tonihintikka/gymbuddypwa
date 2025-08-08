@@ -9,7 +9,7 @@ Guidelines
 
 ## Milestone A - Shared filter state
 
-### [ ] A1 Create reusable hook useExerciseFilters
+### [x] A1 Create reusable hook useExerciseFilters
 - Location: `src/features/exercise/hooks/useExerciseFilters.ts`
 - State: `search: string`, `muscleGroup: MuscleGroup | 'All'`, `category: ExerciseCategory | 'All'`, `groupByBase: boolean`
 - API: `setSearch`, `setMuscleGroup`, `setCategory`, `toggleGroup`, `reset`, `hasActiveFilters` (muscle/category not All), `activeChips` (array of { key, label, onRemove })
@@ -20,7 +20,7 @@ Acceptance
 
 ## Milestone B - Compact header + chips (Exercises view)
 
-### [ ] B1 Compact toolbar for mobile
+### [x] B1 Compact toolbar for mobile
 - File: `src/features/exercise/components/ExerciseList.tsx`
 - Replace top filter block on mobile (<= 768px) with:
   - Search input (full width)
@@ -30,7 +30,7 @@ Acceptance
 Acceptance
 - On mobile, only search + two buttons are visible in the header
 
-### [ ] B2 Active filter chips
+### [x] B2 Active filter chips
 - File: `src/features/exercise/components/FilterChips.tsx` (new)
 - Props: `chips: { key: string; label: string; onRemove: () => void }[]`, `onClearAll?: () => void`
 - Render a horizontally scrollable chip row under the search (wrap on desktop)
@@ -40,7 +40,7 @@ Acceptance
 
 ## Milestone C - Bottom sheet filters (Exercises view)
 
-### [ ] C1 Bottom sheet component
+### [x] C1 Bottom sheet component
 - File: `src/features/exercise/components/FiltersBottomSheet.tsx` (new)
 - Props: `open`, `onClose`, `onApply`, `values: { muscleGroup, category }`, `onChange`
 - Behavior: focus trap, ESC/overlay closes, returns focus to Filters button, safe-area aware
@@ -49,7 +49,7 @@ Acceptance
 Acceptance
 - Opening/closing works with keyboard and touch; Apply updates list; Clear resets filters
 
-### [ ] C2 Wire up to ExerciseList.tsx
+### [x] C2 Wire up to ExerciseList.tsx
 - Use `useExerciseFilters` for state; pass derived `filteredExercises` and `grouped` to existing rendering
 
 Acceptance
@@ -57,7 +57,7 @@ Acceptance
 
 ## Milestone D - Apply to Add Exercise to Workout dialog
 
-### [ ] D1 Mirror compact toolbar & chips in dialog
+### [x] D1 Mirror compact toolbar & chips in dialog
 - File: `src/features/workout/components/AddExerciseToWorkoutDialog.tsx`
 - Reuse `useExerciseFilters`, `FilterChips`, and `FiltersBottomSheet`
 - Make search row sticky inside the dialog for long lists
@@ -67,7 +67,7 @@ Acceptance
 
 ## Milestone E - Styling
 
-### [ ] E1 CSS additions
+### [x] E1 CSS additions
 - Files: `src/features/exercise/components/Exercise.css` (extend), optional dialog-specific overrides in `src/features/workout/components/Workout.css`
 - Classes: `.filters-toolbar`, `.filters-actions`, `.filter-chips`, `.bottom-sheet`, `.bottom-sheet__header`, `.bottom-sheet__content`, `.bottom-sheet__actions`
 - Mobile: reduce padding; ensure 44px min tap targets; support horizontal chip scroll; safe-area insets

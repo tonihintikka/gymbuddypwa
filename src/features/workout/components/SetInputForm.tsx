@@ -22,7 +22,7 @@ export const SetInputForm = ({
     const weightNum = parseFloat(weight);
     const repsNum = parseInt(reps.toString(), 10);
     
-    if (isNaN(weightNum) || isNaN(repsNum) || weightNum <= 0 || repsNum <= 0) {
+    if (isNaN(weightNum) || isNaN(repsNum) || weightNum < 0 || repsNum <= 0) {
       return;
     }
     

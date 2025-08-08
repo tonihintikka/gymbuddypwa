@@ -1,107 +1,95 @@
-# 2025 Visual Refresh + Navigation Simplification — To‑Do
+# Modern UI and Navigation - To-Do Checklist
 
-Goal: Make the app feel modern (2025) while staying fast and thumb‑friendly. Reduce bottom tabs by merging History and Progress into one Insights tab with in‑screen sub‑tabs.
+Goal: Refresh the app's look-and-feel and navigation for a clean, native-like PWA experience while preserving offline-first performance. Keep interactions fast and mobile-first.
 
-Principles
-- Mobile‑first, offline‑first, performance‑focused, type‑safe
-- Small, incremental edits; keep all tests green after each milestone
-- Respect safe‑areas and a11y (>=44px targets, visible focus, high contrast)
+Guidelines
+- Mobile-first, offline-first, performance-focused, type-safe
+- Keep DOM/CSS simple; avoid heavy UI kits
+- Reuse tokens in `src/App.css` (CSS variables) and existing component CSS
 
-## Milestone 1 — Theme Tokens + Dark Mode (low risk)
+## Milestone A - App shell polish
 
-### [ ] T1.1 Introduce CSS tokens (light/dark)
-- Files: `src/App.css` or `src/index.css`
-- Add `:root` variables and `prefers-color-scheme: dark` overrides
-- Tokens: radii (8/12/16), spacing (4/8/12/16/24), colors (brand, surface, on-surface, muted, border), elevations (shadows)
+### [x] A1 Header cleanup
+- File: `src/App.css`, `src/App.tsx`
+- Reduce header height to 48–56px on mobile
+- Left: app icon + name, Right: minimal actions (e.g., settings/overflow)
+- Ensure sticky, elevate with subtle shadow, safe-area padding
 
-Acceptance: cards/buttons/inputs use tokens; dark mode works automatically
+### [x] A2 Content container spacing
+- Files: `src/App.css`
+- Harmonize paddings/margins (`.app-content`, `.feature-container`)
+- Ensure no double spacing around feature screens
 
-### [ ] T1.2 Apply tokens to primitives
-- Files: `src/components/*`, `src/features/**/components/*.css`
-- Update buttons, cards, inputs, chips, tabs to use variables; soften borders; increase radius
+## Milestone B - Bottom navigation improvements
 
-Acceptance: visuals match token spec; no layout regressions
+### [x] B1 Iconized tabs
+- File: `src/App.tsx`, assets under `public/icons/`
+- Add simple SVG icons for `Workout`, `Exercises`, `Programs`, `History`, `Progress`
+- Render label under icon; active state uses `--primary-color`
 
-## Milestone 2 — App Bar, Buttons, Tabs (quick wins)
+### [x] B2 Improve tap targets and feedback
+- File: `src/App.css`
+- Minimum 44x44 touch area; add pressed state and focus ring
+- Use subtle background highlight for active and hover
 
-### [ ] T2.1 App Bar polish
-- Files: `src/App.css`, `src/App.tsx`
-- Subtle gradient, matching `<meta name="theme-color">`, rounded Finish button
-
-### [ ] T2.2 Buttons
-- Primary: radius 14px, hover/active states, micro press scale (honor reduced-motion)
-
-### [ ] T2.3 Bottom tab bar
-- Taller bar, active tab with rounded capsule backdrop, >=44px targets, 24px icons
-
-Acceptance: app bar/tabs feel modern; hit areas large; safe areas respected
-
-## Milestone 3 — Exercise Cards + Chips
-
-### [ ] T3.1 Exercise card restyle
-- File: `src/features/exercise/components/Exercise.css`
-- 12–16px radius, soft 1px border, low elevation; bigger name; single-row badges; trailing options icon placeholder
-
-### [ ] T3.2 Chip badges
-- Pills with soft background, strong contrast; uppercase optional
-
-Acceptance: cards look lighter; metadata readable; matches tokens
-
-## Milestone 4 — Workout Primary Actions
-
-### [ ] T4.1 Sticky Log Set bar
-- Files: `src/features/workout/components/ActiveWorkoutScreen.tsx`, `src/features/workout/components/Workout.css`
-- Full-width sticky pill at bottom; shadow; safe‑area padding; Undo snackbar (5s)
-
-### [ ] T4.2 Motion micro‑feedback
-- CSS transitions 120–200ms; press scale 0.98; success checkmark fade; honor reduced‑motion
-
-Acceptance: Log action always thumb‑reachable; feedback clear and subtle
-
-## Milestone 5 — Compact Filters (use separate plan)
-- See `docs/compact-filter-todo.md`
-- Implement compact toolbar (Search + Group + Filters), bottom sheet, chips
-
-Acceptance: header height reduced on mobile; same pattern in Add‑to‑Workout dialog
-
-## Milestone 6 — Navigation Simplification (merge History + Progress)
-
-### [ ] N6.1 Create Insights screen with sub‑tabs
-- New: `src/features/insights/components/InsightsScreen.tsx`
-- Contains segmented control (History | Progress) or tabs; lazy mount; reuse `HistoryScreen` and `ProgressScreen`
-
-### [ ] N6.2 Update routes + bottom nav
+### [x] B3 Persist last tab
 - File: `src/App.tsx`
-- Bottom nav: `Workout`, `Exercises`, `Programs`, `Insights`
-- Routes: `/insights?tab=history|progress`
-- Redirects: `/history` -> `/insights?tab=history`, `/progress` -> `/insights?tab=progress`
+- Persist `activeTab` to `localStorage`; restore on load
 
-### [ ] N6.3 Persist sub‑tab
-- Remember last selected tab in `sessionStorage`
+## Milestone C - Route-ready architecture (optional)
 
-Acceptance: combined Insights tab; deep links work; state persists; no regressions
+### [ ] C1 Introduce simple router boundary
+- Files: `src/App.tsx`
+- Abstract current tab rendering behind a `CurrentRoute` component
+- Prepare for `react-router` migration without adding dependency now
 
-### [ ] N6.4 Tests
-- Files: `src/features/insights/components/__tests__/InsightsScreen.test.tsx`, update any nav tests
-- Cases: default tab, switch tabs, redirects, persistence
+### [ ] C2 URL hash sync (optional)
+- Sync `activeTab` into `location.hash` (e.g., `#workout`) to allow deep links
 
-## Milestone 7 — Accessibility & Safe Areas
+## Milestone D - Theming and tokens
 
-### [ ] A7.1 Safe‑area padding
-- Use `env(safe-area-inset-*)` for sticky footer/app bar
+### [ ] D1 Token audit
+- File: `src/App.css`
+- Confirm variables: `--text-color`, `--text-secondary`, `--background-color`, `--card-color`, etc.
+- Add `--surface-elev`, `--radius`, `--shadow` presets for consistent elevation and rounding
 
-### [ ] A7.2 A11y audit
-- Targets >=44px; visible focus; aria-pressed on toggles; contrast >= 4.5:1 for text
+### [ ] D2 Light/Dark readiness (later)
+- Provide a future-friendly hook to flip tokens based on system theme
+- Do not change runtime yet; keep light mode default
 
-## Milestone 8 — QA & Rollout
+## Milestone E - Reusable UI elements
 
-### [ ] Q8.1 Device pass
-- iOS Safari + Android Chrome: theme swap, safe areas, sticky bar, performance, reduced‑motion
+### [x] E1 IconButton
+- File: `src/components/IconButton.tsx` (new) and `src/App.css`
+- Props: `ariaLabel`, `icon`, `active?`, `onClick`
+- Used in header actions and compact filter toolbar
 
-### [ ] Q8.2 Docs & changelog
-- Update `README.md` visuals, add screenshots; summarize nav change and theming
+### [ ] E2 SectionHeader
+- File: `src/components/SectionHeader.tsx` (new)
+- Props: `title`, `actions?`
+- Replace scattered `<h2>` + buttons patterns
 
-Notes
-- Keep bundle lean; no heavy UI libs
-- Prefer CSS for motion; memoize heavy components
-- Gate risky changes behind flags if needed
+## Milestone F - Performance and a11y
+
+### [ ] F1 Reduce layout shifts
+- Audit image/icon sizes; set width/height attributes
+- Prefer CSS `content-visibility: auto` for long lists
+
+### [ ] F2 Keyboard & screen reader
+- Ensure landmarks: header, main, nav have proper roles
+- Use `aria-current="page"` on active nav button
+
+## Milestone G - Tests
+
+### [ ] G1 Navigation persistence test
+- File: `src/__tests__/navigation.test.tsx` (new)
+- Ensures last tab persists across reloads
+
+### [ ] G2 Accessibility checks
+- File: `src/__tests__/a11y.test.tsx` (new)
+- Verify `aria-current`, focus management, and roles
+
+## Done criteria
+- Header and bottom nav feel native on mobile with icons and strong tap targets
+- Last visited tab persists
+- No regressions; all tests green

@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Exercise, MuscleGroup, ExerciseCategory } from '../../../types/models';
+import { useExerciseFilters } from '../hooks/useExerciseFilters';
+import { FilterChips } from './FilterChips';
+import { FiltersBottomSheet } from './FiltersBottomSheet';
 import './Exercise.css';
 
 interface ExerciseListProps {
@@ -17,22 +20,28 @@ export const ExerciseList = ({
   onDeleteExercise,
   loading = false,
 }: ExerciseListProps) => {
-  const [filter, setFilter] = useState('');
-  const [muscleGroupFilter, setMuscleGroupFilter] = useState<MuscleGroup | 'All'>('All');
-  const [categoryFilter, setCategoryFilter] = useState<ExerciseCategory | 'All'>('All');
-  const [groupByName, setGroupByName] = useState(false);
+  const {
+    search,
+    setSearch,
+    muscleGroup,
+    setMuscleGroup,
+    category,
+    setCategory,
+    groupByBase,
+    toggleGroup,
+    reset,
+    activeChips,
+    getFiltered,
+  } = useExerciseFilters();
+
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
   // Filter exercises based on search input and filters
-  const filteredExercises = exercises.filter(exercise => {
-    const nameMatch = exercise.name.toLowerCase().includes(filter.toLowerCase());
-    const muscleGroupMatch = muscleGroupFilter === 'All' || exercise.muscleGroup === muscleGroupFilter;
-    const categoryMatch = categoryFilter === 'All' || exercise.category === categoryFilter;
-    return nameMatch && muscleGroupMatch && categoryMatch;
-  });
+  const filteredExercises = getFiltered(exercises);
 
   // Group exercises if requested
   const groupedExercises = filteredExercises.reduce((acc, exercise) => {
-    const key = groupByName ? exercise.baseExercise || exercise.name : exercise.id;
+    const key = groupByBase ? exercise.baseExercise || exercise.name : exercise.id;
     if (!acc[key]) {
       acc[key] = [];
     }
@@ -52,23 +61,46 @@ export const ExerciseList = ({
     <div className="exercise-list-container">
       <h2>Exercises</h2>
       <div className="exercise-filters">
-        <div className="search-section">
+        {/* Compact toolbar visible on mobile */}
+        <div className="filters-toolbar">
           <input
             type="text"
             placeholder="Search exercises..."
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             className="search-input"
           />
+          <div className="filters-actions">
+            <button
+              type="button"
+              className={`icon-btn ${groupByBase ? 'active' : ''}`}
+              aria-pressed={groupByBase}
+              aria-label="Toggle group by base exercise"
+              onClick={toggleGroup}
+            >
+              Group
+            </button>
+            <button
+              type="button"
+              className="icon-btn"
+              aria-label="Open filters"
+              onClick={() => setIsFiltersOpen(true)}
+            >
+              Filters
+            </button>
+          </div>
         </div>
-        
+
+        <FilterChips chips={activeChips} onClearAll={reset} />
+
+        {/* Inline filters stay visible on desktop */}
         <div className="filter-section">
           <div className="filter-group">
             <label className="filter-label">Muscle Group</label>
             <select
               aria-label="Muscle Group"
-              value={muscleGroupFilter}
-              onChange={(e) => setMuscleGroupFilter(e.target.value as MuscleGroup | 'All')}
+              value={muscleGroup}
+              onChange={(e) => setMuscleGroup(e.target.value as MuscleGroup | 'All')}
               className="filter-select"
             >
               <option value="All">All Muscle Groups</option>
@@ -82,8 +114,8 @@ export const ExerciseList = ({
             <label className="filter-label">Category</label>
             <select
               aria-label="Category"
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value as ExerciseCategory | 'All')}
+              value={category}
+              onChange={(e) => setCategory(e.target.value as ExerciseCategory | 'All')}
               className="filter-select"
             >
               <option value="All">All Categories</option>
@@ -93,18 +125,29 @@ export const ExerciseList = ({
             </select>
           </div>
         </div>
-        
+
         <div className="options-section">
           <label className="group-toggle">
             <input
               type="checkbox"
-              checked={groupByName}
-              onChange={(e) => setGroupByName(e.target.checked)}
+              checked={groupByBase}
+              onChange={toggleGroup}
             />
             <span className="toggle-text">Group by Base Exercise</span>
           </label>
         </div>
       </div>
+
+      <FiltersBottomSheet
+        open={isFiltersOpen}
+        onClose={() => setIsFiltersOpen(false)}
+        values={{ muscleGroup, category }}
+        onChange={(v) => { setMuscleGroup(v.muscleGroup); setCategory(v.category); }}
+        availableMuscleGroups={availableMuscleGroups}
+        availableCategories={availableCategories}
+        onApply={() => setIsFiltersOpen(false)}
+        onClear={() => { reset(); setIsFiltersOpen(false); }}
+      />
       
       {onAddExercise && (
         <button
@@ -117,11 +160,11 @@ export const ExerciseList = ({
 
       {filteredExercises.length === 0 ? (
         <div className="no-exercises">
-          {filter || muscleGroupFilter !== 'All' || categoryFilter !== 'All' ? 
+          {search || muscleGroup !== 'All' || category !== 'All' ? 
             'No exercises found matching the selected filters.' : 
             'No exercises available. Add your first exercise!'}
         </div>
-      ) : groupByName ? (
+      ) : groupByBase ? (
         <div className="grouped-exercise-list">
           {Object.entries(groupedExercises).map(([groupName, groupExercises]) => (
             <div key={groupName} className="exercise-group">

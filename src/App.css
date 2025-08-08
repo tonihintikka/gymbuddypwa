@@ -44,12 +44,12 @@ body {
 .app-header {
   background-color: var(--primary-color);
   color: white;
-  padding: 0.5rem 1rem;
+  padding: calc(0.25rem + env(safe-area-inset-top)) 1rem 0.25rem 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  height: 56px;
+  height: 52px;
   width: 100vw;
   position: fixed;
   top: 0;
@@ -81,8 +81,8 @@ body {
   flex: 1;
   padding: 0.75rem;
   overflow-y: auto;
-  margin-top: 56px; /* Add top margin equal to header height */
-  margin-bottom: 56px; /* Same as nav height */
+  margin-top: 52px; /* Equal to header height */
+  margin-bottom: calc(56px + env(safe-area-inset-bottom)); /* Account for nav + safe area */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -124,14 +124,15 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 56px;
+  height: calc(56px + env(safe-area-inset-bottom));
   width: 100%;
   z-index: 10;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .app-nav button {
   flex: 1;
-  padding: 0.75rem 0;
+  padding: 0.25rem 0;
   background: none;
   border: none;
   font-size: 0.85rem;
@@ -143,6 +144,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.25rem;
+  min-height: 56px; /* ensure 44+ tap target */
 }
 
 .app-nav button.active {
@@ -151,6 +153,12 @@ body {
   font-weight: 500;
   background-color: rgba(63, 81, 181, 0.05);
 }
+
+.app-nav .nav-icon { font-size: 1.25rem; line-height: 1; }
+.app-nav .nav-label { font-size: 0.75rem; }
+
+/* SVG nav icons inherit currentColor */
+.app-nav .nav-icon svg { width: 22px; height: 22px; display: block; }
 
 .app-nav button:hover {
   background-color: var(--primary-light);
@@ -177,6 +185,8 @@ input, select, textarea {
   /* Safari and mobile fixes */
   -webkit-appearance: none;
   appearance: none;
+  background-color: #ffffff;
+  color: var(--text-color);
 }
 
 input[type="number"] {
