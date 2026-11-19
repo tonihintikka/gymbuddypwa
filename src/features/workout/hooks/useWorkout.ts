@@ -11,29 +11,50 @@ export function useWorkout() {
   const { saveItem: saveWorkoutLog } = useIndexedDB<WorkoutLog>(STORES.WORKOUT_LOGS);
   const { getItem: getProgram } = useIndexedDB<Program>(STORES.PROGRAMS);
 
-  const startWorkout = useCallback((programId?: string) => {
+  const startWorkout = useCallback((programId?: string, dayId?: string) => {
     const newWorkout: WorkoutLog = {
       id: uuidv4(),
       date: new Date(),
       loggedExercises: [],
       programId,
+      dayId,
     };
     setCurrentWorkout(newWorkout);
     setActiveExerciseIndex(0);
     return newWorkout;
   }, []);
 
-  const startProgramWorkout = useCallback(async (programId: string) => {
+  const startProgramWorkout = useCallback(async (programId: string, dayId?: string) => {
     const program = await getProgram(programId);
     if (!program) {
       console.error("Program not found with ID:", programId);
       return null;
     }
-    const newWorkout = startWorkout(programId);
-    const loggedExercises: LoggedExercise[] = program.exercises.map(exercise => ({
+
+    let exercisesToLog = program.exercises;
+
+    // If program has days and a dayId is provided, use that day's exercises
+    if (program.days && program.days.length > 0) {
+      if (dayId) {
+        const day = program.days.find(d => d.id === dayId);
+        if (day) {
+          exercisesToLog = day.exercises;
+        } else {
+          console.warn("Day not found, falling back to first day");
+          exercisesToLog = program.days[0].exercises;
+        }
+      } else {
+        // No day selected — default to first day
+        exercisesToLog = program.days[0].exercises;
+      }
+    }
+
+    const newWorkout = startWorkout(programId, dayId);
+    const loggedExercises: LoggedExercise[] = exercisesToLog.map(exercise => ({
       exerciseId: exercise.exerciseId,
       sets: [],
     }));
+
     setCurrentWorkout({
       ...newWorkout,
       loggedExercises,
@@ -99,7 +120,6 @@ export function useWorkout() {
       return true;
     } catch (error) {
       console.error('Error saving workout:', error);
-      // Optionally, revert state if save fails
       setCurrentWorkout(workoutToSave);
       return false;
     }
