@@ -134,7 +134,7 @@ const builtInPrograms: Program[] = [
     exercises: [
       // Day 1 - Upper A
       { exerciseId: 'bench-press', targetSets: 3, targetReps: '8-10', notes: 'Day 1 - Upper A' },
-      { exerciseId: 'barbell-row', targetSets: 3, targetReps: '8-10', notes: 'Day 1 - Upper A' },
+      { exerciseId: 'angled-t-bar-row', targetSets: 3, targetReps: '8-10', notes: 'Day 1 - Upper A' },
       { exerciseId: 'overhead-press', targetSets: 3, targetReps: '8-10', notes: 'Day 1 - Upper A' },
       { exerciseId: 'lat-pulldown', targetSets: 3, targetReps: '10-12', notes: 'Day 1 - Upper A' },
       { exerciseId: 'dumbbell-curl', targetSets: 2, targetReps: '10-12', notes: 'Day 1 - Upper A' },
@@ -142,20 +142,20 @@ const builtInPrograms: Program[] = [
 
       // Day 2 - Lower A
       { exerciseId: 'squat', targetSets: 3, targetReps: '8-10', notes: 'Day 2 - Lower A' },
+      { exerciseId: 'hack-squat', targetSets: 3, targetReps: '8-10', notes: 'Day 2 - Lower A' },
       { exerciseId: 'romanian-deadlift', targetSets: 3, targetReps: '8-10', notes: 'Day 2 - Lower A' },
-      { exerciseId: 'leg-press', targetSets: 3, targetReps: '8-10', notes: 'Day 2 - Lower A' },
       { exerciseId: 'calf-raise', targetSets: 3, targetReps: '12-15', notes: 'Day 2 - Lower A' },
       { exerciseId: 'plank', targetSets: 2, targetReps: '20-40s', notes: 'Day 2 - Lower A' },
 
       // Day 3 - Upper B
       { exerciseId: 'incline-bench-press', targetSets: 3, targetReps: '10-12', notes: 'Day 3 - Upper B' },
       { exerciseId: 'lat-pulldown', targetSets: 3, targetReps: '10-12', notes: 'Day 3 - Upper B' },
-      { exerciseId: 'seated-cable-row', targetSets: 3, targetReps: '10-12', notes: 'Day 3 - Upper B' },
+      { exerciseId: 't-bar-row', targetSets: 3, targetReps: '10-12', notes: 'Day 3 - Upper B' },
       { exerciseId: 'lateral-raise', targetSets: 3, targetReps: '12-15', notes: 'Day 3 - Upper B' },
       { exerciseId: 'face-pull', targetSets: 2, targetReps: '12-15', notes: 'Day 3 - Upper B' },
 
       // Day 4 - Lower B
-      { exerciseId: 'leg-press', targetSets: 3, targetReps: '10-12', notes: 'Day 4 - Lower B' },
+      { exerciseId: 'hack-squat', targetSets: 3, targetReps: '10-12', notes: 'Day 4 - Lower B' },
       { exerciseId: 'leg-curl', targetSets: 3, targetReps: '10-12', notes: 'Day 4 - Lower B' },
       { exerciseId: 'leg-extension', targetSets: 3, targetReps: '10-12', notes: 'Day 4 - Lower B' },
       { exerciseId: 'romanian-deadlift', targetSets: 3, targetReps: '10-12', notes: 'Day 4 - Lower B' },
@@ -163,7 +163,7 @@ const builtInPrograms: Program[] = [
 
       // Day 5 - Upper C (lighter)
       { exerciseId: 'dumbbell-bench-press', targetSets: 3, targetReps: '10-12', notes: 'Day 5 - Upper C' },
-      { exerciseId: 'seated-cable-row', targetSets: 3, targetReps: '10-12', notes: 'Day 5 - Upper C' },
+      { exerciseId: 't-bar-row-close-grip', targetSets: 3, targetReps: '10-12', notes: 'Day 5 - Upper C' },
       { exerciseId: 'dumbbell-shoulder-press', targetSets: 3, targetReps: '10-12', notes: 'Day 5 - Upper C' },
       { exerciseId: 'dumbbell-curl', targetSets: 2, targetReps: '10-12', notes: 'Day 5 - Upper C' },
       { exerciseId: 'tricep-pushdown', targetSets: 2, targetReps: '10-12', notes: 'Day 5 - Upper C' },
