@@ -45,6 +45,7 @@ export interface WorkoutLog {
   date: Date;
   loggedExercises: LoggedExercise[];
   programId?: string;
+  dayId?: string;
 }
 
 /**
@@ -58,11 +59,22 @@ export interface ProgramExercise {
 }
 
 /**
+ * Represents a single day within a multi-day program
+ */
+export interface ProgramDay {
+  id: string;
+  name: string;
+  description?: string;
+  exercises: ProgramExercise[];
+}
+
+/**
  * Represents a workout program template
  */
 export interface Program {
   id: string;
   name: string;
   description?: string;
-  exercises: ProgramExercise[];
+  exercises: ProgramExercise[]; // Flat list for backward compatibility
+  days?: ProgramDay[]; // Optional multi-day structure
 }
