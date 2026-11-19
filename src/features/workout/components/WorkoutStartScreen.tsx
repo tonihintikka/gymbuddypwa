@@ -3,7 +3,7 @@ import { Program } from '../../../types/models';
 
 interface WorkoutStartScreenProps {
   programs: Program[];
-  onStartProgram: (programId: string) => void;
+  onStartProgram: (programId: string, dayId?: string) => void;
   onStartEmpty: () => void;
   loading?: boolean;
 }
@@ -15,14 +15,58 @@ export const WorkoutStartScreen = ({
   loading = false,
 }: WorkoutStartScreenProps) => {
   const [filter, setFilter] = useState('');
+  const [selectedProgram, setSelectedProgram] = useState<Program | null>(null);
 
-  // Filter programs based on search input
   const filteredPrograms = programs.filter(program =>
     program.name.toLowerCase().includes(filter.toLowerCase())
   );
 
   if (loading) {
     return <div className="loading">Loading programs...</div>;
+  }
+
+  // Day selection view
+  if (selectedProgram && selectedProgram.days && selectedProgram.days.length > 0) {
+    return (
+      <div className="workout-start-screen">
+        <div className="workout-start-header">
+          <button
+            className="back-button"
+            onClick={() => setSelectedProgram(null)}
+          >
+            ← Back
+          </button>
+          <h2>{selectedProgram.name}</h2>
+          <p>Select a day to start</p>
+        </div>
+
+        <ul className="program-list">
+          {selectedProgram.days.map(day => (
+            <li
+              key={day.id}
+              className="program-item"
+              onClick={() => onStartProgram(selectedProgram.id, day.id)}
+            >
+              <div className="program-info">
+                <span className="program-name">{day.name}</span>
+                <span className="program-exercises-count">
+                  {day.exercises.length} exercises
+                </span>
+              </div>
+              <button
+                className="start-program-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onStartProgram(selectedProgram.id, day.id);
+                }}
+              >
+                Start
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
   }
 
   return (
@@ -57,29 +101,48 @@ export const WorkoutStartScreen = ({
           </div>
         ) : (
           <ul className="program-list">
-            {filteredPrograms.map(program => (
-              <li
-                key={program.id}
-                className="program-item"
-                onClick={() => onStartProgram(program.id)}
-              >
-                <div className="program-info">
-                  <span className="program-name">{program.name}</span>
-                  <span className="program-exercises-count">
-                    {program.exercises.length} {program.exercises.length === 1 ? 'exercise' : 'exercises'}
-                  </span>
-                </div>
-                <button
-                  className="start-program-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onStartProgram(program.id);
+            {filteredPrograms.map(program => {
+              const hasDays = program.days && program.days.length > 0;
+              const exerciseCount = hasDays
+                ? program.days!.reduce((sum, d) => sum + d.exercises.length, 0)
+                : program.exercises.length;
+
+              return (
+                <li
+                  key={program.id}
+                  className="program-item"
+                  onClick={() => {
+                    if (hasDays) {
+                      setSelectedProgram(program);
+                    } else {
+                      onStartProgram(program.id);
+                    }
                   }}
                 >
-                  Start
-                </button>
-              </li>
-            ))}
+                  <div className="program-info">
+                    <span className="program-name">{program.name}</span>
+                    <span className="program-exercises-count">
+                      {hasDays
+                        ? `${program.days!.length} days • ${exerciseCount} exercises`
+                        : `${exerciseCount} ${exerciseCount === 1 ? 'exercise' : 'exercises'}`}
+                    </span>
+                  </div>
+                  <button
+                    className="start-program-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (hasDays) {
+                        setSelectedProgram(program);
+                      } else {
+                        onStartProgram(program.id);
+                      }
+                    }}
+                  >
+                    {hasDays ? 'Select Day' : 'Start'}
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>
