@@ -46,8 +46,8 @@ export const WorkoutScreen = () => {
     }
   }, [currentWorkout, workoutComplete, refreshPrograms]);
 
-  const handleStartProgram = async (programId: string) => {
-    const result = await startProgramWorkout(programId);
+  const handleStartProgram = async (programId: string, dayId?: string) => {
+    const result = await startProgramWorkout(programId, dayId);
     if (result) setActiveProgram(programId);
   };
 
