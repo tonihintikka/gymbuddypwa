@@ -229,27 +229,37 @@ export function usePrograms() {
     return [...savedBuiltInPrograms, ...unsavedBuiltInPrograms, ...customPrograms];
   }, [savedBuiltInPrograms, customPrograms]);
 
-  // Initialize built-in programs in the database
+  // Initialize / migrate built-in programs in the database
   useEffect(() => {
     const initializeBuiltInPrograms = async () => {
-      // Only run if we have custom programs loaded (after initial load) and no built-in programs saved
-      if (!loading) {
-        // Check which built-in programs need to be saved
-        const programsToSave = builtInPrograms.filter(p => 
-          !savedBuiltInPrograms.some(sp => sp.id === p.id)
-        );
-        
-        if (programsToSave.length > 0) {
-          console.log(`Saving ${programsToSave.length} built-in programs to database`);
-          
-          // Save each missing built-in program
-          for (const program of programsToSave) {
-            await saveItem(program);
-          }
-          
-          // Reload programs to update the list
-          await loadItems();
+      if (loading) return;
+
+      let needsReload = false;
+
+      for (const builtIn of builtInPrograms) {
+        const saved = savedBuiltInPrograms.find(sp => sp.id === builtIn.id);
+
+        // Missing entirely → save it
+        if (!saved) {
+          console.log(`Saving missing built-in program: ${builtIn.id}`);
+          await saveItem(builtIn);
+          needsReload = true;
+          continue;
         }
+
+        // Exists but is outdated (has days in code but not in DB, or vice versa)
+        const codeHasDays = !!builtIn.days && builtIn.days.length > 0;
+        const savedHasDays = !!saved.days && saved.days.length > 0;
+
+        if (codeHasDays && !savedHasDays) {
+          console.log(`Migrating built-in program to days structure: ${builtIn.id}`);
+          await saveItem(builtIn);
+          needsReload = true;
+        }
+      }
+
+      if (needsReload) {
+        await loadItems();
       }
     };
     
