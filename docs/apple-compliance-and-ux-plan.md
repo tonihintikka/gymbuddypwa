@@ -1,7 +1,7 @@
 # Apple HIG Compliance & UX Improvement Plan
 
 **Date:** 2026-11-24  
-**Status:** Research complete, implementation pending  
+**Status:** Implemented (day selection UX, active workout header, iOS PWA meta + safe areas)  
 **Related:** Multi-day program day selection feature
 
 ## Background
@@ -12,18 +12,18 @@ GymTrack is a Progressive Web App (PWA), not a native iOS app. It does not go th
 
 | Area | Current State | Apple Perspective | Risk / Notes |
 |------|---------------|-------------------|--------------|
-| **Day selection** | Works (user picks day before starting workout) | HIG Workouts: clear session selection, no distraction during workout | Low – logic is solid |
-| **Workout start** | Select day → workout starts with only that day’s exercises | Good. HIG recommends large, easily tappable controls | OK |
+| **Day selection** | Larger cards + clear Start Day button | HIG Workouts: clear session selection, no distraction during workout | Improved |
+| **Workout start** | Select day → workout starts with only that day’s exercises; day name shown in header | Good. HIG recommends large, easily tappable controls | Improved |
 | **Offline + local data** | Full IndexedDB, no backend | Strong 4.2 argument ("not just a website") | Very good |
 | **Privacy** | No accounts, no cloud, data stays on device | 5.1.1 – privacy policy still recommended | Low, but missing |
-| **UI / feel** | Functional, but web-styled | HIG: large buttons, safe areas, minimal distraction during workout | Medium |
+| **UI / feel** | Larger buttons, safe-area padding, standalone meta tags | HIG: large buttons, safe areas, minimal distraction during workout | Improved |
 | **App Store path** | Not planned | 4.2 – wrapper apps are easily rejected | High if App Store is desired later |
 
-**Summary:** The day selection logic itself aligns well with Apple guidelines (clear session choice, no mixed exercise list). The main improvement area is making the experience more "app-like" and optimized for active workout use on iOS.
+**Summary:** The day selection logic itself aligns well with Apple guidelines (clear session choice, no mixed exercise list). Recent changes made the experience more "app-like" and optimized for active workout use on iOS.
 
 ## Prioritized Improvement Plan
 
-### 1. Day Selection UX (Quick, High Impact)
+### 1. Day Selection UX (Quick, High Impact) — DONE
 
 **Goal:** Make day selection clearer and more native-feeling.
 
@@ -31,23 +31,25 @@ GymTrack is a Progressive Web App (PWA), not a native iOS app. It does not go th
 - Add a large, clearly labeled "Start Day" button (HIG: large tappable controls).
 - Show the selected day name in the active workout header (e.g. "Day 2 – Lower A") so the user always knows which session they are in.
 
-**Files to touch:**
+**Files touched:**
 - `src/features/workout/components/WorkoutStartScreen.tsx`
+- `src/features/workout/components/ActiveWorkoutScreen.tsx`
+- `src/features/workout/components/Workout.css`
 
-### 2. During-Workout Experience (HIG Workouts)
+### 2. During-Workout Experience (HIG Workouts) — PARTIAL
 
 **Goal:** Minimize distraction and make controls easy to use while training.
 
-- Hide or minimize navigation during an active workout.
-- Make Previous / Next buttons larger and easier to hit.
+- Hide or minimize navigation during an active workout. (not yet)
+- Make Previous / Next buttons larger and easier to hit. (done)
 - Keep target sets/reps clearly visible (already partially done).
-- Review "Finish Workout" button size and placement.
+- Review "Finish Workout" button size and placement. (larger padding)
 
-**Files to touch:**
+**Files touched:**
 - `src/features/workout/components/ActiveWorkoutScreen.tsx`
-- Related workout components
+- `src/features/workout/components/Workout.css`
 
-### 3. iOS PWA Native Feel
+### 3. iOS PWA Native Feel — DONE
 
 **Goal:** Make the installed PWA feel more like a native app.
 
@@ -55,12 +57,11 @@ GymTrack is a Progressive Web App (PWA), not a native iOS app. It does not go th
 - Use `env(safe-area-inset-*)` for header and bottom navigation (Dynamic Island / notch).
 - Test thoroughly in standalone mode (Add to Home Screen → Open as Web App).
 
-**Files to touch:**
+**Files touched:**
 - `index.html`
-- Layout / header / bottom nav components
-- CSS safe-area styles
+- `src/features/workout/components/Workout.css`
 
-### 4. Privacy & Compliance
+### 4. Privacy & Compliance — PENDING
 
 **Goal:** Align with 5.1.1 expectations even for a local-only app.
 
@@ -100,10 +101,10 @@ PWAs cannot be submitted directly to the App Store. A WKWebView wrapper would fa
 
 ## Next Steps
 
-1. Implement day selection UX improvements (item 1).
-2. Review and improve active workout controls (item 2).
-3. Audit and fix iOS PWA meta tags and safe areas (item 3).
-4. Add basic privacy policy page (item 4).
+1. ~~Implement day selection UX improvements (item 1).~~ Done
+2. Review and improve active workout controls (item 2). Partial — larger buttons done
+3. ~~Audit and fix iOS PWA meta tags and safe areas (item 3).~~ Done
+4. Add basic privacy policy page (item 4). Still pending
 
 ---
 
