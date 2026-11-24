@@ -74,6 +74,11 @@ export const ActiveWorkoutScreen = ({
   // Find program exercise if available
   const programExercise = program?.exercises[activeExerciseIndex];
 
+  // Resolve day name if workout was started from a specific day
+  const dayName = workout.dayId && program?.days
+    ? program.days.find(d => d.id === workout.dayId)?.name
+    : null;
+
   // Handle logging a set for the current exercise
   const handleLogSet = (weight: number, reps: number, isFailure?: boolean, isPaused?: boolean, isSlowEccentric?: boolean) => {
     onLogSet(activeExerciseIndex, weight, reps, isFailure, isPaused, isSlowEccentric);
@@ -84,11 +89,15 @@ export const ActiveWorkoutScreen = ({
     onDeleteSet(activeExerciseIndex, setIndex);
   };
 
+  const headerTitle = dayName
+    ? `${program?.name || 'Workout'} – ${dayName}`
+    : (program?.name || 'Workout');
+
   return (
     <div className="active-workout-screen">
       <div className="workout-header">
         <div className="workout-info">
-          <h2>{program?.name || 'Workout'}</h2>
+          <h2>{headerTitle}</h2>
           <div className="workout-time">
             <span className="time-label">Time:</span>
             <span className="time-value">{elapsedTime}</span>
