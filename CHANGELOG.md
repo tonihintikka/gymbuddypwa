@@ -22,6 +22,43 @@ All notable changes to GymTrack PWA are documented here.
 ### Fixed
 - Export History button did nothing on iOS.
 
-## Earlier
+## 2025
 
-See `README.md` for the original development history and feature set as of mid-2025. The long-form development process notes remain there for reference.
+### Progress Visualization
+- Added progress tab with Chart.js.
+- Estimated 1RM (Epley), max weight, and total volume charts.
+- Exercise-specific progress series.
+- Smart exercise prioritization in the progress view (`useExercisesWithHistory`): exercises with data shown first, with workout counts.
+
+### Exercise Structure
+- Muscle group and category classifications on exercises.
+- 50+ built-in exercises covering major muscle groups.
+- Grouping by base movement (e.g. all bench press variations).
+- Advanced filtering in both the exercise screen and the add-exercise dialog.
+
+### UI / UX
+- Card-based redesign of exercise selection.
+- Color-coded metadata badges, improved typography and spacing.
+- Accessibility improvements (ARIA labels, contrast, touch targets).
+
+### Workout Flow
+- Empty workout can be saved as a new program.
+- Workout state lifted so it survives tab switches.
+- Editable workout history (weight and reps of past sets).
+
+### Data
+- Export workout history as JSON (initially data-URI based).
+
+### Quality
+- Test suite stabilized (Vitest + Testing Library).
+- Feature branching and documentation practices established.
+
+## 2025-04
+
+### Initial Release
+- Core PWA: React 19, TypeScript, Vite, IndexedDB.
+- Workout logging, programs, exercises, history.
+- Offline support via service worker.
+- Deployed to Vercel.
+
+Initial development was done in roughly 5.5 hours across two days using multiple AI models for specification, rules, and implementation.
