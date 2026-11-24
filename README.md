@@ -1,247 +1,64 @@
 # GymTrack PWA
 
-A progressive web application for tracking weightlifting workouts with prioritization on simplicity and ease of use during active workouts.
+A progressive web application for tracking weightlifting workouts. Designed for fast, simple interactions during active training sessions.
+
+**Documentation:** [Wiki](wiki/index.md) · [Changelog](CHANGELOG.md)
 
 ## About
 
-GymTrack is a modern, mobile-first PWA (Progressive Web Application) designed to help users track their weightlifting workouts with a focus on fast, simple interactions during active training sessions. The application works entirely offline, storing all data locally in IndexedDB. This means your workout data stays on your device and is available even without an internet connection.
+GymTrack is a mobile-first PWA that works entirely offline. All data is stored locally in IndexedDB. No account is required.
+
+Live demo: [https://gymbuddypwa.vercel.app](https://gymbuddypwa.vercel.app)
 
 ## Features
 
-### Core Workout Features
-- **Fast Workout Logging**: Minimal taps required to log sets during active workouts
-- **Enhanced Exercise Management**: 50+ built-in exercises with comprehensive muscle group and category classifications
-- **Smart Exercise Discovery**: Advanced filtering by muscle group, exercise category, and exercise type grouping
-- **Flexible Set Logging**: Track weight, reps, and additional markers (failure, pause, slow eccentric)
-- **Active Workout Screen**: Large, easily tappable controls optimized for gym use
-- **Real-time Progress**: Clear visual indicators for logged sets and workout progress
+- **Workout logging** — large controls, set modifiers (failure, pause, slow eccentric), exercise navigation
+- **Programs** — built-in templates (including multi-day programs) and custom programs
+- **Multi-day support** — programs can define days; the start screen shows a day picker
+- **Exercise catalog** — 50+ built-in exercises with muscle group and category filtering, plus custom exercises
+- **History** — view, edit, and export past workouts
+- **Progress** — charts for estimated 1RM, volume, and max weight
+- **Offline-first** — full functionality without network after install
 
-### Program Management
-- **Built-in Programs**: Multiple pre-defined workout programs (3-Day Split, Push/Pull/Legs, etc.)
-- **Custom Programs**: Create your own workout program templates
-- **Empty Workouts**: Start workouts without a program and save them as new programs
-- **Program Templates**: Convert completed workouts into reusable program templates
+## Technology
 
-### Exercise Management & Discovery
-- **Comprehensive Exercise Library**: 50+ built-in exercises covering all major muscle groups
-- **Smart Categorization**: Exercises organized by muscle group (Chest, Back, Shoulders, etc.) and movement type (Push, Pull, Legs)
-- **Advanced Filtering**: Multi-level filtering by muscle group, exercise category, and exercise type grouping
-- **Exercise Variations**: Grouped exercises by base movement (e.g., all bench press variations together)
-- **Custom Exercise Support**: Add your own exercises with full categorization capabilities
-- **Consistent Discovery**: Same filtering experience in main Exercise view and workout planning dialog
-
-### Data & Offline Support
-- **Full Offline Functionality**: All core features work without network connectivity
-- **IndexedDB Storage**: Local data storage with no external dependencies
-- **Workout History**: Complete history of all logged workouts, with the ability to edit past entries.
-- **Progress Visualization**: Track your performance with charts for key metrics like estimated 1RM, max weight, and total volume.
-- **Data Export**: Export your workout data (planned feature)
-
-### Technical Features
-- **Progressive Web App**: Installable on mobile devices and desktop
-- **Mobile-First Design**: Optimized for smartphone use during workouts
-- **TypeScript**: Complete type safety throughout the application
-- **Material UI**: Consistent, accessible user interface components
-
-## Technology Stack
-
-GymTrack is built with:
-
-- **React 19**: Component-based UI with hooks for state management
-- **TypeScript**: Complete type safety throughout the codebase
-- **Vite**: Next-generation front-end build tooling
-- **Material UI**: Consistent component library for UI elements
-- **Chart.js**: Interactive progress visualization and analytics
-- **IndexedDB**: Client-side data storage for offline functionality
-- **Service Worker**: For PWA features and offline capability
-- **Web App Manifest**: For installability as a native-like app
+- React 19 + TypeScript
+- Vite + `vite-plugin-pwa` (Workbox)
+- IndexedDB
+- Chart.js
+- Vitest
 
 ## Getting Started
 
-### Online Version
+```bash
+npm install
+npm run dev
+```
 
-Visit the deployed application at [https://gymbuddypwa.vercel.app](https://gymbuddypwa.vercel.app)
+Open the URL shown in the terminal (usually `http://localhost:5173`).
 
-### Development
+### Install as PWA
 
-To run the project locally:
+Use the browser's "Install" or "Add to Home Screen" option. Once installed, the app opens in standalone mode and works offline.
 
-1. Clone the repository
-2. Install dependencies:
-   ```
-   npm install
-   ```
-3. Start the development server:
-   ```
-   npm run dev
-   ```
-4. Open your browser to the URL displayed in the terminal (typically `http://localhost:5173`)
+## Data
 
-## Installation as PWA
+Everything stays on the device. Clearing browser data removes workouts and programs.
 
-On compatible browsers (Chrome, Edge, Firefox, etc.):
+## Project Structure
 
-1. Navigate to the app in your browser
-2. Look for the "Install" or "Add to Home Screen" option in your browser menu
-3. Follow the prompts to install the app
+For architecture, data models, workout flow, and storage details, see the **[wiki](wiki/index.md)**.
 
-Once installed, GymTrack will appear as an app on your device and can be used offline.
+Key locations:
 
-## Data Storage
+- `src/features/` — feature modules (exercise, program, workout, history, progress)
+- `src/services/db.ts` — IndexedDB
+- `src/types/models.ts` — domain types
 
-All your workout data is stored locally in your browser using IndexedDB. No data is sent to any server, which means:
+## Changelog
 
-- Your data is private
-- The app works offline
-- You can use the app without creating an account
-
-Note that clearing your browser data will also remove your saved workouts and programs.
-
-## Development Process
-
-### Overview
-
-GymTrack is a Progressive Web Application (PWA) for weightlifting workout tracking developed using an agent-based development approach with multiple AI models. The initial development process took approximately 5.5 hours spread across two days, with ongoing improvements and bug fixes implemented using modern AI-assisted development practices.
-
-### Multi-Model AI Development Workflow
-
-This project leveraged multiple AI models in a coordinated workflow to maximize efficiency:
-
-1. **Google Gemini 2.5 Pro**: Used for initial specifications and planning, defining core features, data models, and implementation patterns for both Flutter and PWA versions.
-
-2. **Claude**: Employed to develop Cursor rules that would guide AI agents during implementation. These rules were iteratively refined to be concise and directive rather than overly detailed.
-
-3. **Augment Code**: Generated the actual implementation code based on the specifications and rules, and created a structured to-do list for tracking development progress.
-
-4. **Cursor**: Used for debugging, fixing UI errors, and making deployment configurations.
-
-### Development Timeline
-
-#### Phase 1: Initial Development (April 4-7, 2025)
-**April 4, 2025 (4 hours)**
-- **19:00**: Project initiated with Google Gemini 2.5 Pro to create detailed specifications
-- **20:00**: Worked with Claude to create proper Cursor rules for implementation
-- **21:00**: Generated implementation code with Augment Code
-- **22:40**: Completed initial working version of the application
-
-**April 7, 2025 (1.5 hours)**
-- Fixed UI errors and navigation issues using Cursor
-- Made configuration changes for Vercel deployment
-- Prepared the app for publication on the Vercel platform
-
-#### Phase 2: Core Feature Stabilization (2024-2025)
-- **Workout Flow Improvements**: Enhanced empty workout to program conversion functionality
-- **Data Persistence**: Fixed issues with exercise preservation during program creation
-- **Code Quality**: Improved TypeScript safety and removed unused imports
-- **Testing Infrastructure**: Refactored test suite and resolved linter errors
-- **Documentation**: Enhanced project documentation and feature planning
-
-#### Phase 3: Advanced Features (2025)
-**Progress Visualization Feature**
-- Implemented comprehensive progress tracking with Chart.js integration
-- Added estimated 1RM calculations using Epley formula
-- Created interactive charts for max weight, total volume, and rep tracking
-- Built exercise-specific progress analysis with time-series data
-- Integrated full navigation tab for progress monitoring
-
-**Progress UX Enhancement**
-- Developed smart exercise prioritization in Progress tab
-- Implemented `useExercisesWithHistory` hook for workout data analysis
-- Added exercise grouping: "Exercises with Data" vs "All Exercises"
-- Integrated workout count display (e.g., "Bench Press (5 workouts)")
-- Created visual separators and section headers for better UX
-- Sorted exercises by usage frequency for optimal user experience
-
-#### Phase 4: Exercise Structure Enhancement (2025)
-**Enhanced Exercise Organization**
-- Redesigned exercise data model with muscle group and category classifications
-- Added 50+ comprehensive built-in exercises covering all major muscle groups
-- Implemented exercise categorization: Push, Pull, Legs, Core, Full Body
-- Added exercise grouping by base exercise type (e.g., all bench press variations)
-- Enhanced filtering capabilities in both main Exercise view and workout dialog
-
-**User Experience Improvements**
-- Advanced exercise filtering: search, muscle group, category, and grouping options
-- Consistent filtering experience across Exercise management and workout planning
-- Visual exercise metadata display with muscle group, category, and custom indicators
-- Smart exercise discovery during workout creation with enhanced Add Exercise dialog
-
-#### Phase 5: Visual Design Enhancement (2025)
-**Modern UI/UX Overhaul**
-- Complete visual redesign of exercise selection interfaces with modern card-based design
-- Enhanced typography with prominent exercise names and color-coded metadata badges
-- Consistent visual hierarchy across main Exercise view and workout planning dialog
-- Professional filter layouts with structured sections and improved accessibility
-- Mobile-optimized responsive design with touch-friendly controls
-
-**Design System Implementation**
-- Unified color scheme with semantic badge colors (green for muscle groups, blue for categories)
-- Enhanced spacing, borders, and shadow effects for improved visual depth
-- Consistent hover states and interactive feedback across all components
-- Modern rounded corners and subtle animations for professional appearance
-- Accessibility improvements with proper ARIA labels and contrast ratios
-
-#### Phase 6: Development Workflow (2025)
-- **Branching Strategy**: Established feature branches with proper merge workflows
-- **Remote Backup**: Pushed all feature branches to GitHub for collaboration
-- **Documentation**: Comprehensive feature planning and todo tracking
-- **Quality Assurance**: Build verification and TypeScript compilation checks
-- **Test Suite Maintenance**: Fixed all failing tests and enhanced test reliability
-
-### Technical Implementation
-
-The application was built as a React-based PWA with TypeScript and features:
-
-- Feature-based code organization (exercises, programs, workouts, history)
-- IndexedDB for local data storage and offline functionality
-- Custom React hooks for state management
-- TypeScript interfaces for robust data modeling
-- PWA capabilities including offline access and installability
-- Tab-based navigation system for intuitive user experience
-
-### Key Insights from the Process
-
-1. **Effective AI Guidance**: The quality of guidance provided to AI models directly impacts the quality of generated code. Well-structured, concise rules yield better results than exhaustive documentation.
-
-2. **Complementary AI Models**: Different AI models have distinct strengths that can be leveraged for specific tasks in the development process.
-
-3. **Development Speed**: By coordinating multiple AI models with proper guidance, development time was dramatically reduced while maintaining quality.
-
-4. **Iterative Rule Refinement**: Cursor rules were refined through experience to focus on patterns and principles rather than detailed implementations, improving overall development efficiency.
-
-This project demonstrates how agent-based development with multiple AI models can dramatically accelerate application development without sacrificing quality.
-
-### Recent Improvements
-
-#### Bug Fixes & Enhancements
-- **Persistent Workout State**: Refactored the application to lift the workout state to the global level, ensuring that active workout data is preserved when navigating between tabs.
-- **Editable Workout History**: Added the ability for users to edit the weight and reps of sets in their workout history, providing greater flexibility and control over their data.
-
-### Current Status & Future Development
-
-#### Latest Achievements (2025)
-- ✅ **Full Progress Tracking**: Complete visualization system with charts and metrics
-- ✅ **Smart Exercise Selection**: Intelligent prioritization based on workout history
-- ✅ **Enhanced Exercise Structure**: Comprehensive muscle group and category classifications with 50+ built-in exercises
-- ✅ **Advanced Filtering**: Multi-level filtering system for efficient exercise discovery
-- ✅ **Modern Visual Design**: Complete UI/UX overhaul with professional card-based design and consistent visual hierarchy
-- ✅ **Design System Consistency**: Unified color scheme, typography, and interaction patterns across all exercise interfaces
-- ✅ **Enhanced Accessibility**: Proper ARIA labels, contrast ratios, and mobile-optimized responsive design
-- ✅ **Robust Data Flow**: Reliable workout-to-program conversion with race condition fixes
-- ✅ **Development Maturity**: Professional branching strategy and comprehensive documentation
-- ✅ **Quality Assurance**: Complete test suite with all tests passing and zero linting errors
-
-#### Technical Maturity
-The application has evolved from an initial MVP to a comprehensive fitness tracking solution with:
-- **Feature-Complete Core**: All essential workout tracking functionality implemented
-- **Advanced Analytics**: Progress visualization with mathematical workout analysis
-- **User-Centric Design**: Interface optimized based on real-world usage patterns
-- **Maintainable Codebase**: TypeScript safety, testing infrastructure, and modular architecture
-- **Professional Workflow**: Feature branching, documentation, and quality assurance processes
-
-#### Development Approach Evolution
-The project demonstrates the progression from rapid AI-assisted prototyping to mature software development practices, showcasing how modern AI tools can accelerate both initial development and ongoing feature enhancement while maintaining code quality and user experience standards.
+Recent changes are listed in [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-This project is open source and available under the MIT license.
+MIT
