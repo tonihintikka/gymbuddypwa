@@ -24,6 +24,16 @@ describe('WorkoutStartScreen', () => {
     },
   ];
 
+  const multiDayProgram: Program = {
+    id: '3',
+    name: '5-Day Split',
+    exercises: [],
+    days: [
+      { id: 'd1', name: 'Upper A', exercises: [{ exerciseId: 'ex1' }, { exerciseId: 'ex2' }] },
+      { id: 'd2', name: 'Lower A', description: 'Squat focus', exercises: [{ exerciseId: 'ex3' }] },
+    ],
+  };
+
   it('renders the start screen correctly', () => {
     render(
       <WorkoutStartScreen
@@ -138,5 +148,58 @@ describe('WorkoutStartScreen', () => {
     fireEvent.click(screen.getByText('Strength Program'));
     
     expect(handleStartProgram).toHaveBeenCalledWith('1');
+  });
+
+  it('shows day selection for multi-day programs', () => {
+    render(
+      <WorkoutStartScreen
+        programs={[multiDayProgram]}
+        onStartProgram={() => {}}
+        onStartEmpty={() => {}}
+      />
+    );
+
+    fireEvent.click(screen.getByText('Select Day'));
+
+    expect(screen.getByText('Upper A')).toBeInTheDocument();
+    expect(screen.getByText('Lower A')).toBeInTheDocument();
+    expect(screen.getByText('Squat focus')).toBeInTheDocument();
+    expect(screen.getByText('2 exercises')).toBeInTheDocument();
+    expect(screen.getByText('1 exercise')).toBeInTheDocument();
+    expect(screen.getAllByText('Start Day').length).toBe(2);
+  });
+
+  it('starts the selected day from multi-day program', () => {
+    const handleStartProgram = vi.fn();
+    render(
+      <WorkoutStartScreen
+        programs={[multiDayProgram]}
+        onStartProgram={handleStartProgram}
+        onStartEmpty={() => {}}
+      />
+    );
+
+    fireEvent.click(screen.getByText('Select Day'));
+    const startDayButtons = screen.getAllByText('Start Day');
+    fireEvent.click(startDayButtons[1]); // Lower A
+
+    expect(handleStartProgram).toHaveBeenCalledWith('3', 'd2');
+  });
+
+  it('can go back from day selection', () => {
+    render(
+      <WorkoutStartScreen
+        programs={[multiDayProgram]}
+        onStartProgram={() => {}}
+        onStartEmpty={() => {}}
+      />
+    );
+
+    fireEvent.click(screen.getByText('Select Day'));
+    expect(screen.getByText('Upper A')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('← Back'));
+    expect(screen.getByText('5-Day Split')).toBeInTheDocument();
+    expect(screen.queryByText('Upper A')).not.toBeInTheDocument();
   });
 });
