@@ -20,9 +20,11 @@ export const OfflineIndicator = () => {
   if (!isOffline) return null;
 
   return (
-    <div className="offline-indicator">
-      <span className="offline-icon">⚠️</span>
-      <span className="offline-text">You are offline. Some features may be limited.</span>
+    <div className="offline-indicator" role="status" aria-live="polite">
+      <span className="offline-icon" aria-hidden>⚠️</span>
+      <span className="offline-text">
+        Offline mode — workouts and data are saved locally on this device.
+      </span>
     </div>
   );
 };
