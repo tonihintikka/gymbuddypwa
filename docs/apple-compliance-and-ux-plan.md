@@ -1,7 +1,7 @@
 # Apple HIG Compliance & UX Improvement Plan
 
 **Date:** 2026-11-24  
-**Status:** Implemented (day selection UX, active workout header, iOS PWA meta + safe areas)  
+**Status:** Implemented (day selection UX, active workout header, iOS PWA meta + safe areas, offline improvements)  
 **Related:** Multi-day program day selection feature
 
 ## Background
@@ -14,12 +14,12 @@ GymTrack is a Progressive Web App (PWA), not a native iOS app. It does not go th
 |------|---------------|-------------------|--------------|
 | **Day selection** | Larger cards + clear Start Day button | HIG Workouts: clear session selection, no distraction during workout | Improved |
 | **Workout start** | Select day → workout starts with only that day’s exercises; day name shown in header | Good. HIG recommends large, easily tappable controls | Improved |
-| **Offline + local data** | Full IndexedDB, no backend | Strong 4.2 argument ("not just a website") | Very good |
+| **Offline + local data** | Full IndexedDB, service worker with navigateFallback, OfflineIndicator | Strong 4.2 argument ("not just a website") | Very good |
 | **Privacy** | No accounts, no cloud, data stays on device | 5.1.1 – privacy policy still recommended | Low, but missing |
 | **UI / feel** | Larger buttons, safe-area padding, standalone meta tags | HIG: large buttons, safe areas, minimal distraction during workout | Improved |
 | **App Store path** | Not planned | 4.2 – wrapper apps are easily rejected | High if App Store is desired later |
 
-**Summary:** The day selection logic itself aligns well with Apple guidelines (clear session choice, no mixed exercise list). Recent changes made the experience more "app-like" and optimized for active workout use on iOS.
+**Summary:** The day selection logic itself aligns well with Apple guidelines (clear session choice, no mixed exercise list). Recent changes made the experience more "app-like" and optimized for active workout use on iOS, including better offline support.
 
 ## Prioritized Improvement Plan
 
@@ -60,6 +60,20 @@ GymTrack is a Progressive Web App (PWA), not a native iOS app. It does not go th
 **Files touched:**
 - `index.html`
 - `src/features/workout/components/Workout.css`
+
+### 3b. iOS Offline Support — IMPROVED
+
+**Goal:** Ensure the installed PWA works reliably offline on iOS.
+
+- `navigateFallback: '/index.html'` so SPA routes load from cache when offline.
+- `cleanupOutdatedCaches` for cleaner updates.
+- Clearer OfflineIndicator message (data is local).
+- Safe-area padding on the offline banner.
+
+**Files touched:**
+- `vite.config.ts`
+- `src/components/OfflineIndicator.tsx`
+- `src/components/OfflineIndicator.css`
 
 ### 4. Privacy & Compliance — PENDING
 
@@ -105,6 +119,7 @@ PWAs cannot be submitted directly to the App Store. A WKWebView wrapper would fa
 2. Review and improve active workout controls (item 2). Partial — larger buttons done
 3. ~~Audit and fix iOS PWA meta tags and safe areas (item 3).~~ Done
 4. Add basic privacy policy page (item 4). Still pending
+5. ~~Improve offline support for iOS.~~ Done (navigateFallback + messaging)
 
 ---
 
