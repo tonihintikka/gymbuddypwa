@@ -25,7 +25,7 @@ export const WorkoutStartScreen = ({
     return <div className="loading">Loading programs...</div>;
   }
 
-  // Day selection view
+  // Day selection view – larger cards, clearer hierarchy
   if (selectedProgram && selectedProgram.days && selectedProgram.days.length > 0) {
     return (
       <div className="workout-start-screen">
@@ -37,30 +37,33 @@ export const WorkoutStartScreen = ({
             ← Back
           </button>
           <h2>{selectedProgram.name}</h2>
-          <p>Select a day to start</p>
+          <p className="day-select-subtitle">Select a day to start</p>
         </div>
 
-        <ul className="program-list">
+        <ul className="day-list">
           {selectedProgram.days.map(day => (
             <li
               key={day.id}
-              className="program-item"
+              className="day-card"
               onClick={() => onStartProgram(selectedProgram.id, day.id)}
             >
-              <div className="program-info">
-                <span className="program-name">{day.name}</span>
-                <span className="program-exercises-count">
-                  {day.exercises.length} exercises
+              <div className="day-card-info">
+                <span className="day-card-name">{day.name}</span>
+                {day.description && (
+                  <span className="day-card-description">{day.description}</span>
+                )}
+                <span className="day-card-meta">
+                  {day.exercises.length} {day.exercises.length === 1 ? 'exercise' : 'exercises'}
                 </span>
               </div>
               <button
-                className="start-program-btn"
+                className="start-day-btn"
                 onClick={(e) => {
                   e.stopPropagation();
                   onStartProgram(selectedProgram.id, day.id);
                 }}
               >
-                Start
+                Start Day
               </button>
             </li>
           ))}
