@@ -1,12 +1,22 @@
+import { useState } from 'react';
 import { Exercise, LoggedExercise, ProgramExercise } from '../../../types/models';
 import { SetInputForm } from './SetInputForm';
 import { LoggedSetsList } from './LoggedSetsList';
+import { useSetRecommendation } from '../hooks/useSetRecommendation';
+import { formatKg } from '../rir';
 
 interface ExerciseViewProps {
   exercise: Exercise;
   loggedExercise: LoggedExercise;
   programExercise?: ProgramExercise;
-  onLogSet: (weight: number, reps: number, isFailure?: boolean, isPaused?: boolean, isSlowEccentric?: boolean) => void;
+  onLogSet: (
+    weight: number,
+    reps: number,
+    isFailure?: boolean,
+    isPaused?: boolean,
+    isSlowEccentric?: boolean,
+    rir?: number,
+  ) => void;
   onDeleteSet?: (index: number) => void;
 }
 
@@ -17,6 +27,9 @@ export const ExerciseView = ({
   onLogSet,
   onDeleteSet
 }: ExerciseViewProps) => {
+  const recommendation = useSetRecommendation(exercise.id, programExercise?.targetRir);
+  const [weightPresetNonce, setWeightPresetNonce] = useState(0);
+
   return (
     <div className="exercise-view">
       <div className="exercise-header">
@@ -33,19 +46,39 @@ export const ExerciseView = ({
                 {programExercise.targetReps} reps
               </span>
             )}
+            {programExercise.targetRir != null && (
+              <span className="target-rir">
+                RIR {programExercise.targetRir}
+              </span>
+            )}
           </div>
         )}
         {programExercise?.notes && (
           <p className="exercise-notes">{programExercise.notes}</p>
         )}
       </div>
-      
-      <SetInputForm 
+
+      {recommendation && (
+        <div className="set-recommendation" role="status">
+          <p>{recommendation.message}</p>
+          <button
+            type="button"
+            className="use-suggested-weight-btn secondary"
+            onClick={() => setWeightPresetNonce(nonce => nonce + 1)}
+          >
+            Use {formatKg(recommendation.suggestedWeight)} kg
+          </button>
+        </div>
+      )}
+
+      <SetInputForm
         onLogSet={onLogSet}
         programExercise={programExercise}
+        weightPreset={recommendation?.suggestedWeight}
+        weightPresetNonce={weightPresetNonce}
       />
-      
-      <LoggedSetsList 
+
+      <LoggedSetsList
         sets={loggedExercise.sets}
         onDeleteSet={onDeleteSet}
       />

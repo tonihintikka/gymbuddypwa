@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Program, Exercise } from '../../../types/models';
 import { ProgramExerciseItem } from './ProgramExerciseItem';
 import { AddExerciseToProgramDialog } from './AddExerciseToProgramDialog';
+import { formatTargetRirRange } from '../../workout/rir';
 
 interface ProgramDetailProps {
   program: Program;
@@ -11,7 +12,8 @@ interface ProgramDetailProps {
     exerciseId: string, 
     targetSets?: number, 
     targetReps?: string, 
-    notes?: string
+    notes?: string,
+    targetRir?: number,
   ) => Promise<boolean>;
   onRemoveExercise: (programId: string, exerciseIndex: number) => Promise<boolean>;
   onBack: () => void;
@@ -41,7 +43,8 @@ export const ProgramDetail = ({
     exerciseId: string, 
     targetSets?: number, 
     targetReps?: string, 
-    notes?: string
+    notes?: string,
+    targetRir?: number,
   ) => {
     setError(null);
     try {
@@ -50,7 +53,8 @@ export const ProgramDetail = ({
         exerciseId, 
         targetSets, 
         targetReps, 
-        notes
+        notes,
+        targetRir,
       );
       
       if (success) {
@@ -79,6 +83,9 @@ export const ProgramDetail = ({
     }
   };
 
+  const days = program.days ?? [];
+  const showDays = days.length > 0;
+
   return (
     <div className="program-detail">
       <div className="program-detail-header">
@@ -100,43 +107,78 @@ export const ProgramDetail = ({
         </div>
       )}
       
-      <div className="program-exercises-header">
-        <h3>Exercises</h3>
-        <button 
-          className="add-exercise-btn"
-          onClick={() => setIsAddExerciseDialogOpen(true)}
-        >
-          Add Exercise
-        </button>
-      </div>
-      
-      {programExercisesWithDetails.length === 0 ? (
-        <div className="no-exercises">
-          This program doesn't have any exercises yet. Add some exercises to get started.
+      {showDays ? (
+        <div className="program-days">
+          {days.map(day => {
+            const rirLabel = formatTargetRirRange(day.exercises);
+            return (
+              <section key={day.id} className="program-day">
+                <h3 className="program-day-name">{day.name}</h3>
+                {rirLabel && <p className="program-day-rir">{rirLabel}</p>}
+                <div className="program-exercises-list">
+                  {day.exercises.map((programExercise, index) => {
+                    const exercise = exercises.find(item => item.id === programExercise.exerciseId);
+                    if (!exercise) {
+                      return (
+                        <div key={`${day.id}-${index}`} className="missing-exercise">
+                          Exercise not found
+                        </div>
+                      );
+                    }
+                    return (
+                      <ProgramExerciseItem
+                        key={`${day.id}-${index}`}
+                        programExercise={programExercise}
+                        exercise={exercise}
+                      />
+                    );
+                  })}
+                </div>
+              </section>
+            );
+          })}
         </div>
       ) : (
-        <div className="program-exercises-list">
-          {programExercisesWithDetails.map(({ programExercise, exercise, index }) => (
-            exercise ? (
-              <ProgramExerciseItem
-                key={`${program.id}-${index}`}
-                programExercise={programExercise}
-                exercise={exercise}
-                onRemove={() => handleRemoveExercise(index)}
-              />
-            ) : (
-              <div key={`${program.id}-${index}`} className="missing-exercise">
-                Exercise not found
-                <button 
-                  className="remove-program-exercise-btn"
-                  onClick={() => handleRemoveExercise(index)}
-                >
-                  Remove
-                </button>
-              </div>
-            )
-          ))}
-        </div>
+        <>
+          <div className="program-exercises-header">
+            <h3>Exercises</h3>
+            <button
+              className="add-exercise-btn"
+              onClick={() => setIsAddExerciseDialogOpen(true)}
+            >
+              Add Exercise
+            </button>
+          </div>
+
+          {programExercisesWithDetails.length === 0 ? (
+            <div className="no-exercises">
+              This program doesn't have any exercises yet. Add some exercises to get started.
+            </div>
+          ) : (
+            <div className="program-exercises-list">
+              {programExercisesWithDetails.map(({ programExercise, exercise, index }) => (
+                exercise ? (
+                  <ProgramExerciseItem
+                    key={`${program.id}-${index}`}
+                    programExercise={programExercise}
+                    exercise={exercise}
+                    onRemove={() => handleRemoveExercise(index)}
+                  />
+                ) : (
+                  <div key={`${program.id}-${index}`} className="missing-exercise">
+                    Exercise not found
+                    <button
+                      className="remove-program-exercise-btn"
+                      onClick={() => handleRemoveExercise(index)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )
+              ))}
+            </div>
+          )}
+        </>
       )}
       
       <AddExerciseToProgramDialog

@@ -26,6 +26,7 @@ export const LoggedSetsList = ({
             <th>Set</th>
             <th>Weight</th>
             <th>Reps</th>
+            <th>RIR</th>
             <th>Modifiers</th>
             {onDeleteSet && <th>Actions</th>}
           </tr>
@@ -36,6 +37,7 @@ export const LoggedSetsList = ({
               <td>{index + 1}</td>
               <td>{set.weight} kg</td>
               <td>{set.reps}</td>
+              <td>{set.rir != null ? set.rir : '–'}</td>
               <td>
                 {(set.isFailure || set.isPaused || set.isSlowEccentric) ? (
                   <div className="set-modifiers-list">

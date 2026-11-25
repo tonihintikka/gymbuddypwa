@@ -24,11 +24,15 @@ export const WorkoutDetailView = ({
     setEditedWorkout(workout);
   }, [workout]);
 
-  const handleSetChange = (exerciseIndex: number, setIndex: number, field: keyof SetLog, value: any) => {
+  const handleSetChange = (exerciseIndex: number, setIndex: number, field: keyof SetLog, value: SetLog[keyof SetLog]) => {
     const updatedWorkout = { ...editedWorkout };
     const updatedExercises = [...updatedWorkout.loggedExercises];
     const updatedSets = [...updatedExercises[exerciseIndex].sets];
-    updatedSets[setIndex] = { ...updatedSets[setIndex], [field]: value };
+    const nextSet: SetLog = { ...updatedSets[setIndex], [field]: value };
+    if (value === undefined) {
+      delete nextSet[field];
+    }
+    updatedSets[setIndex] = nextSet;
     updatedExercises[exerciseIndex] = { ...updatedExercises[exerciseIndex], sets: updatedSets };
     updatedWorkout.loggedExercises = updatedExercises;
     setEditedWorkout(updatedWorkout);
@@ -109,6 +113,7 @@ export const WorkoutDetailView = ({
                       <th>Set</th>
                       <th>Weight</th>
                       <th>Reps</th>
+                      <th>RIR</th>
                       <th>Modifiers</th>
                     </tr>
                   </thead>
@@ -128,6 +133,29 @@ export const WorkoutDetailView = ({
                             <input type="number" value={set.reps} onChange={(e) => handleSetChange(exerciseIndex, setIndex, 'reps', parseInt(e.target.value))}/>
                           ) : (
                             set.reps
+                          )}
+                        </td>
+                        <td>
+                          {isEditing ? (
+                            <input
+                              type="number"
+                              min="0"
+                              max="5"
+                              value={set.rir ?? ''}
+                              aria-label={`RIR set ${setIndex + 1}`}
+                              onChange={(e) => {
+                                const raw = e.target.value;
+                                if (raw === '') {
+                                  handleSetChange(exerciseIndex, setIndex, 'rir', undefined);
+                                  return;
+                                }
+                                const parsed = parseInt(raw, 10);
+                                if (Number.isNaN(parsed)) return;
+                                handleSetChange(exerciseIndex, setIndex, 'rir', Math.min(5, Math.max(0, parsed)));
+                              }}
+                            />
+                          ) : (
+                            set.rir != null ? set.rir : '–'
                           )}
                         </td>
                         <td>

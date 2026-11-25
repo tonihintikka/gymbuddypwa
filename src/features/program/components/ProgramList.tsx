@@ -53,7 +53,16 @@ export const ProgramList = ({
         </div>
       ) : (
         <ul className="program-list">
-          {filteredPrograms.map(program => (
+          {filteredPrograms.map(program => {
+            const hasDays = !!program.days && program.days.length > 0;
+            const exerciseCount = hasDays
+              ? program.days!.reduce((sum, day) => sum + day.exercises.length, 0)
+              : program.exercises.length;
+            const countLabel = hasDays
+              ? `${program.days!.length} days • ${exerciseCount} exercises`
+              : `${exerciseCount} ${exerciseCount === 1 ? 'exercise' : 'exercises'}`;
+
+            return (
             <li
               key={program.id}
               className="program-item"
@@ -62,7 +71,7 @@ export const ProgramList = ({
               <div className="program-info">
                 <span className="program-name">{program.name}</span>
                 <span className="program-exercises-count">
-                  {program.exercises.length} {program.exercises.length === 1 ? 'exercise' : 'exercises'}
+                  {countLabel}
                 </span>
               </div>
               {onDeleteProgram && (
@@ -77,7 +86,8 @@ export const ProgramList = ({
                 </button>
               )}
             </li>
-          ))}
+            );
+          })}
         </ul>
       )}
     </div>

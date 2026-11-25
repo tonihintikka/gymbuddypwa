@@ -12,7 +12,8 @@ Live demo: [https://gymbuddypwa.vercel.app](https://gymbuddypwa.vercel.app)
 
 ## Features
 
-- **Workout logging** — large controls, set modifiers (failure, pause, slow eccentric), exercise navigation
+- **Workout logging** — large controls, set modifiers (failure, pause, slow eccentric), optional reps in reserve, exercise navigation
+- **Set suggestions** — from the last logged RIR: keep the weight, ease off, or add 2.5 kg
 - **Programs** — built-in templates (including multi-day programs) and custom programs
 - **Multi-day support** — programs can define days; the start screen shows a day picker
 - **Exercise catalog** — 50+ built-in exercises with muscle group and category filtering, plus custom exercises

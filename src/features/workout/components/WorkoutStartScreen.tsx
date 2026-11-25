@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Program } from '../../../types/models';
+import { formatTargetRirRange } from '../rir';
 
 interface WorkoutStartScreenProps {
   programs: Program[];
@@ -41,7 +42,9 @@ export const WorkoutStartScreen = ({
         </div>
 
         <ul className="day-list">
-          {selectedProgram.days.map(day => (
+          {selectedProgram.days.map(day => {
+            const rirLabel = formatTargetRirRange(day.exercises);
+            return (
             <li
               key={day.id}
               className="day-card"
@@ -54,6 +57,7 @@ export const WorkoutStartScreen = ({
                 )}
                 <span className="day-card-meta">
                   {day.exercises.length} {day.exercises.length === 1 ? 'exercise' : 'exercises'}
+                  {rirLabel ? ` · ${rirLabel}` : ''}
                 </span>
               </div>
               <button
@@ -66,7 +70,8 @@ export const WorkoutStartScreen = ({
                 Start Day
               </button>
             </li>
-          ))}
+            );
+          })}
         </ul>
       </div>
     );

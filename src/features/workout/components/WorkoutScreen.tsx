@@ -57,8 +57,19 @@ export const WorkoutScreen = () => {
     setIsEmptyWorkout(true);
   };
 
-  const handleLogSet = (exerciseIndex: number, weight: number, reps: number, isFailure?: boolean, isPaused?: boolean, isSlowEccentric?: boolean) => {
+  const handleLogSet = (
+    exerciseIndex: number,
+    weight: number,
+    reps: number,
+    isFailure?: boolean,
+    isPaused?: boolean,
+    isSlowEccentric?: boolean,
+    rir?: number,
+  ) => {
     const setLog: SetLog = { weight, reps, isFailure, isPaused, isSlowEccentric };
+    if (rir != null && Number.isFinite(rir)) {
+      setLog.rir = rir;
+    }
     logSet(exerciseIndex, setLog);
   };
 

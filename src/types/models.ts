@@ -27,6 +27,8 @@ export interface SetLog {
   isFailure?: boolean;
   isPaused?: boolean;
   isSlowEccentric?: boolean;
+  /** Reps in reserve, 0–5. Absent on sets logged before RIR existed. */
+  rir?: number;
 }
 
 /**
@@ -56,6 +58,8 @@ export interface ProgramExercise {
   targetSets?: number;
   targetReps?: string; // e.g., "5" or "8-12"
   notes?: string;
+  /** How many reps to leave in the tank. Absent on older templates. */
+  targetRir?: number;
 }
 
 /**

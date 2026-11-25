@@ -56,13 +56,14 @@ export const ProgramScreen = () => {
     exerciseId: string,
     targetSets?: number,
     targetReps?: string,
-    notes?: string
+    notes?: string,
+    targetRir?: number,
   ) => {
-    const ok = await addExerciseToProgram(programId, exerciseId, targetSets, targetReps, notes);
+    const ok = await addExerciseToProgram(programId, exerciseId, targetSets, targetReps, notes, targetRir);
     if (ok) {
       setSelectedProgram(prev => {
         if (!prev || prev.id !== programId) return prev;
-        const newExercise = { exerciseId, targetSets, targetReps, notes };
+        const newExercise = { exerciseId, targetSets, targetReps, notes, targetRir };
         return { ...prev, exercises: [...prev.exercises, newExercise] };
       });
     }

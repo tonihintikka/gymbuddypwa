@@ -28,6 +28,11 @@ export const ProgramExerciseItem = ({
               {programExercise.targetReps} reps
             </span>
           )}
+          {programExercise.targetRir != null && (
+            <span className="program-exercise-rir">
+              RIR {programExercise.targetRir}
+            </span>
+          )}
         </div>
         {programExercise.notes && (
           <p className="program-exercise-notes">{programExercise.notes}</p>

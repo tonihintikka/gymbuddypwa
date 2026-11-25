@@ -3,7 +3,13 @@ import { Exercise } from '../../../types/models';
 
 interface AddExerciseToProgramFormProps {
   exercises: Exercise[];
-  onAdd: (exerciseId: string, targetSets?: number, targetReps?: string, notes?: string) => Promise<boolean>;
+  onAdd: (
+    exerciseId: string,
+    targetSets?: number,
+    targetReps?: string,
+    notes?: string,
+    targetRir?: number,
+  ) => Promise<boolean>;
   onCancel?: () => void;
 }
 
@@ -16,6 +22,7 @@ export const AddExerciseToProgramForm = ({
   const [targetSets, setTargetSets] = useState('');
   const [targetReps, setTargetReps] = useState('');
   const [notes, setNotes] = useState('');
+  const [targetRir, setTargetRir] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState('');
@@ -33,6 +40,12 @@ export const AddExerciseToProgramForm = ({
       return;
     }
 
+    const parsedRir = targetRir === '' ? undefined : parseInt(targetRir, 10);
+    if (parsedRir != null && (Number.isNaN(parsedRir) || parsedRir < 0 || parsedRir > 5)) {
+      setError('Target RIR must be a number from 0 to 5');
+      return;
+    }
+
     setIsSubmitting(true);
     setError(null);
     
@@ -41,7 +54,8 @@ export const AddExerciseToProgramForm = ({
         selectedExerciseId,
         targetSets ? parseInt(targetSets, 10) : undefined,
         targetReps || undefined,
-        notes || undefined
+        notes || undefined,
+        parsedRir,
       );
       
       if (success) {
@@ -49,6 +63,7 @@ export const AddExerciseToProgramForm = ({
         setTargetSets('');
         setTargetReps('');
         setNotes('');
+        setTargetRir('');
         if (onCancel) {
           onCancel();
         }
@@ -119,6 +134,21 @@ export const AddExerciseToProgramForm = ({
           />
         </div>
         
+        <div className="form-group">
+          <label htmlFor="target-rir">Target RIR (Optional)</label>
+          <input
+            id="target-rir"
+            type="number"
+            min="0"
+            max="5"
+            step="1"
+            value={targetRir}
+            onChange={(e) => setTargetRir(e.target.value)}
+            placeholder="e.g., 3"
+            disabled={isSubmitting}
+          />
+        </div>
+
         <div className="form-group">
           <label htmlFor="exercise-notes">Notes (Optional)</label>
           <textarea

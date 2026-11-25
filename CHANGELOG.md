@@ -2,6 +2,14 @@
 
 All notable changes to GymTrack PWA are documented here.
 
+## 2026-11-25
+
+### Added
+- Optional `rir` on each logged set (0–5 picker) and optional `targetRir` on program exercises.
+- The 5-day recovery program now targets RIR 2–3. Existing saved copies gain the missing targets without a full overwrite.
+- A next-session suggestion from the last logged RIR: hold and ease off at 0–1, keep the weight at 2, add 2.5 kg at 3 or more.
+- Wiki page `wiki/rir-tracking.md`.
+
 ## 2026-11-24
 
 ### Added

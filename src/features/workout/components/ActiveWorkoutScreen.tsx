@@ -1,13 +1,22 @@
 import { useState, useEffect } from 'react';
 import { WorkoutLog, Program, Exercise } from '../../../types/models';
 import { ExerciseView } from './ExerciseView';
+import { resolveProgramExercise } from '../resolveProgramExercise';
 
 interface ActiveWorkoutScreenProps {
   workout: WorkoutLog;
   program?: Program | null;
   exercises: Exercise[];
   activeExerciseIndex: number;
-  onLogSet: (exerciseIndex: number, weight: number, reps: number, isFailure?: boolean, isPaused?: boolean, isSlowEccentric?: boolean) => void;
+  onLogSet: (
+    exerciseIndex: number,
+    weight: number,
+    reps: number,
+    isFailure?: boolean,
+    isPaused?: boolean,
+    isSlowEccentric?: boolean,
+    rir?: number,
+  ) => void;
   onDeleteSet: (exerciseIndex: number, setIndex: number) => void;
   onNextExercise: () => void;
   onPreviousExercise: () => void;
@@ -71,8 +80,13 @@ export const ActiveWorkoutScreen = ({
     );
   }
 
-  // Find program exercise if available
-  const programExercise = program?.exercises[activeExerciseIndex];
+  // Day programs store targets on the day. The flat list is often empty.
+  const programExercise = resolveProgramExercise(
+    program,
+    workout.dayId,
+    activeExerciseIndex,
+    currentLoggedExercise.exerciseId,
+  );
 
   // Resolve day name if workout was started from a specific day
   const dayName = workout.dayId && program?.days
@@ -80,8 +94,15 @@ export const ActiveWorkoutScreen = ({
     : null;
 
   // Handle logging a set for the current exercise
-  const handleLogSet = (weight: number, reps: number, isFailure?: boolean, isPaused?: boolean, isSlowEccentric?: boolean) => {
-    onLogSet(activeExerciseIndex, weight, reps, isFailure, isPaused, isSlowEccentric);
+  const handleLogSet = (
+    weight: number,
+    reps: number,
+    isFailure?: boolean,
+    isPaused?: boolean,
+    isSlowEccentric?: boolean,
+    rir?: number,
+  ) => {
+    onLogSet(activeExerciseIndex, weight, reps, isFailure, isPaused, isSlowEccentric, rir);
   };
 
   // Handle deleting a set from the current exercise

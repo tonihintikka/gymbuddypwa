@@ -11,6 +11,7 @@ This is a dense, hierarchical map of how the application is structured and how d
 - [[storage]] — IndexedDB, object stores, migration of built-in programs
 - [[workout-flow]] — how a workout is started, logged, and finished
 - [[pwa]] — service worker, offline, iOS specifics
+- [[rir-tracking]] — RIR on sets, target RIR on programs, next-session load hint
 
 ## Feature Modules
 

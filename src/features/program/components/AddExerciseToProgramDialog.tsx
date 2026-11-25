@@ -5,7 +5,13 @@ interface AddExerciseToProgramDialogProps {
   isOpen: boolean;
   onClose: () => void;
   exercises: Exercise[];
-  onAdd: (exerciseId: string, targetSets?: number, targetReps?: string, notes?: string) => Promise<boolean>;
+  onAdd: (
+    exerciseId: string,
+    targetSets?: number,
+    targetReps?: string,
+    notes?: string,
+    targetRir?: number,
+  ) => Promise<boolean>;
 }
 
 export const AddExerciseToProgramDialog = ({ 

@@ -6,9 +6,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { useIndexedDB } from '../../../hooks/useIndexedDB';
 import { Program, ProgramExercise, ProgramDay } from '../../../types/models';
 import { STORES } from '../../../services/db';
+import { mergeMissingTargetRir } from '../mergeProgramTargets';
 
 // Built-in workout programs
-const builtInPrograms: Program[] = [
+export const builtInPrograms: Program[] = [
   {
     id: 'three-day-split',
     name: '3-Day Training Split',
@@ -130,64 +131,64 @@ const builtInPrograms: Program[] = [
   {
     id: 'five-day-40plus',
     name: '5-Day Recovery-Friendly (40+)',
-    description: 'A 5-day program designed for beginners over 40 with limited time. Focus on compounds, recovery, and leaving 1-2 reps in the tank. Upper/Lower style with lighter fifth day.',
+    description: 'A 5-day program for beginners over 40 with limited time. Compounds, short sessions, and RIR 2–3 so most sets stop with reps left. Upper/Lower, with a lighter fifth day.',
     exercises: [], // Flat list empty when using days
     days: [
       {
         id: 'day1',
         name: 'Day 1 - Upper A',
         exercises: [
-          { exerciseId: 'bench-press', targetSets: 3, targetReps: '8-10' },
-          { exerciseId: 'angled-t-bar-row', targetSets: 3, targetReps: '8-10' },
-          { exerciseId: 'overhead-press', targetSets: 3, targetReps: '8-10' },
-          { exerciseId: 'lat-pulldown', targetSets: 3, targetReps: '10-12' },
-          { exerciseId: 'dumbbell-curl', targetSets: 2, targetReps: '10-12' },
-          { exerciseId: 'tricep-pushdown', targetSets: 2, targetReps: '10-12' },
+          { exerciseId: 'bench-press', targetSets: 3, targetReps: '8-10', targetRir: 3 },
+          { exerciseId: 'angled-t-bar-row', targetSets: 3, targetReps: '8-10', targetRir: 3 },
+          { exerciseId: 'overhead-press', targetSets: 3, targetReps: '8-10', targetRir: 3 },
+          { exerciseId: 'lat-pulldown', targetSets: 3, targetReps: '10-12', targetRir: 3 },
+          { exerciseId: 'dumbbell-curl', targetSets: 2, targetReps: '10-12', targetRir: 2 },
+          { exerciseId: 'tricep-pushdown', targetSets: 2, targetReps: '10-12', targetRir: 2 },
         ]
       },
       {
         id: 'day2',
         name: 'Day 2 - Lower A',
         exercises: [
-          { exerciseId: 'squat', targetSets: 3, targetReps: '8-10' },
-          { exerciseId: 'hack-squat', targetSets: 3, targetReps: '8-10' },
-          { exerciseId: 'romanian-deadlift', targetSets: 3, targetReps: '8-10' },
-          { exerciseId: 'calf-raise', targetSets: 3, targetReps: '12-15' },
-          { exerciseId: 'plank', targetSets: 2, targetReps: '20-40s' },
+          { exerciseId: 'squat', targetSets: 3, targetReps: '8-10', targetRir: 3 },
+          { exerciseId: 'hack-squat', targetSets: 3, targetReps: '8-10', targetRir: 3 },
+          { exerciseId: 'romanian-deadlift', targetSets: 3, targetReps: '8-10', targetRir: 3 },
+          { exerciseId: 'calf-raise', targetSets: 3, targetReps: '12-15', targetRir: 2 },
+          { exerciseId: 'plank', targetSets: 2, targetReps: '20-40s', targetRir: 2 },
         ]
       },
       {
         id: 'day3',
         name: 'Day 3 - Upper B',
         exercises: [
-          { exerciseId: 'incline-bench-press', targetSets: 3, targetReps: '10-12' },
-          { exerciseId: 'lat-pulldown', targetSets: 3, targetReps: '10-12' },
-          { exerciseId: 't-bar-row', targetSets: 3, targetReps: '10-12' },
-          { exerciseId: 'lateral-raise', targetSets: 3, targetReps: '12-15' },
-          { exerciseId: 'face-pull', targetSets: 2, targetReps: '12-15' },
+          { exerciseId: 'incline-bench-press', targetSets: 3, targetReps: '10-12', targetRir: 3 },
+          { exerciseId: 'lat-pulldown', targetSets: 3, targetReps: '10-12', targetRir: 3 },
+          { exerciseId: 't-bar-row', targetSets: 3, targetReps: '10-12', targetRir: 3 },
+          { exerciseId: 'lateral-raise', targetSets: 3, targetReps: '12-15', targetRir: 2 },
+          { exerciseId: 'face-pull', targetSets: 2, targetReps: '12-15', targetRir: 2 },
         ]
       },
       {
         id: 'day4',
         name: 'Day 4 - Lower B',
         exercises: [
-          { exerciseId: 'hack-squat', targetSets: 3, targetReps: '10-12' },
-          { exerciseId: 'leg-curl', targetSets: 3, targetReps: '10-12' },
-          { exerciseId: 'leg-extension', targetSets: 3, targetReps: '10-12' },
-          { exerciseId: 'romanian-deadlift', targetSets: 3, targetReps: '10-12' },
-          { exerciseId: 'plank', targetSets: 2, targetReps: '20-40s' },
+          { exerciseId: 'hack-squat', targetSets: 3, targetReps: '10-12', targetRir: 3 },
+          { exerciseId: 'leg-curl', targetSets: 3, targetReps: '10-12', targetRir: 2 },
+          { exerciseId: 'leg-extension', targetSets: 3, targetReps: '10-12', targetRir: 2 },
+          { exerciseId: 'romanian-deadlift', targetSets: 3, targetReps: '10-12', targetRir: 3 },
+          { exerciseId: 'plank', targetSets: 2, targetReps: '20-40s', targetRir: 2 },
         ]
       },
       {
         id: 'day5',
         name: 'Day 5 - Upper C',
         exercises: [
-          { exerciseId: 'dumbbell-bench-press', targetSets: 3, targetReps: '10-12' },
-          { exerciseId: 't-bar-row-close-grip', targetSets: 3, targetReps: '10-12' },
-          { exerciseId: 'dumbbell-shoulder-press', targetSets: 3, targetReps: '10-12' },
-          { exerciseId: 'dumbbell-curl', targetSets: 2, targetReps: '10-12' },
-          { exerciseId: 'tricep-pushdown', targetSets: 2, targetReps: '10-12' },
-          { exerciseId: 'face-pull', targetSets: 2, targetReps: '15' },
+          { exerciseId: 'dumbbell-bench-press', targetSets: 3, targetReps: '10-12', targetRir: 3 },
+          { exerciseId: 't-bar-row-close-grip', targetSets: 3, targetReps: '10-12', targetRir: 3 },
+          { exerciseId: 'dumbbell-shoulder-press', targetSets: 3, targetReps: '10-12', targetRir: 3 },
+          { exerciseId: 'dumbbell-curl', targetSets: 2, targetReps: '10-12', targetRir: 3 },
+          { exerciseId: 'tricep-pushdown', targetSets: 2, targetReps: '10-12', targetRir: 3 },
+          { exerciseId: 'face-pull', targetSets: 2, targetReps: '15', targetRir: 3 },
         ]
       },
     ] as ProgramDay[]
@@ -255,6 +256,16 @@ export function usePrograms() {
           console.log(`Migrating built-in program to days structure: ${builtIn.id}`);
           await saveItem(builtIn);
           needsReload = true;
+          continue;
+        }
+
+        // Optional fields (targetRir) are filled in place. A full overwrite
+        // would drop exercises the user added to a built-in program.
+        const withTargets = mergeMissingTargetRir(saved, builtIn);
+        if (withTargets) {
+          console.log(`Filling missing target RIR on built-in program: ${builtIn.id}`);
+          await saveItem(withTargets);
+          needsReload = true;
         }
       }
 
@@ -293,7 +304,8 @@ export function usePrograms() {
     exerciseId: string, 
     targetSets?: number, 
     targetReps?: string,
-    notes?: string
+    notes?: string,
+    targetRir?: number,
   ) => {
     const program = await getItem(programId);
     
@@ -307,6 +319,9 @@ export function usePrograms() {
       targetReps,
       notes,
     };
+    if (targetRir != null && Number.isFinite(targetRir)) {
+      programExercise.targetRir = targetRir;
+    }
 
     const updatedProgram: Program = {
       ...program,

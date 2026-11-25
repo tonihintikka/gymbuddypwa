@@ -56,6 +56,23 @@ describe('ProgramList', () => {
     expect(screen.getByText('0 exercises')).toBeInTheDocument();
   });
 
+  it('counts exercises inside days instead of the empty flat list', () => {
+    const multiDay: Program = {
+      id: 'five',
+      name: '5-Day Recovery-Friendly (40+)',
+      exercises: [],
+      days: [
+        { id: 'day1', name: 'Day 1', exercises: [{ exerciseId: 'bench-press', targetRir: 3 }] },
+        { id: 'day2', name: 'Day 2', exercises: [{ exerciseId: 'squat', targetRir: 3 }, { exerciseId: 'plank', targetRir: 2 }] },
+      ],
+    };
+
+    render(<ProgramList programs={[multiDay]} />);
+
+    expect(screen.getByText('2 days • 3 exercises')).toBeInTheDocument();
+    expect(screen.queryByText('0 exercises')).not.toBeInTheDocument();
+  });
+
   it('filters programs based on search input', () => {
     render(<ProgramList programs={mockPrograms} />);
     

@@ -101,6 +101,7 @@ export const WorkoutSummary = ({
                       <span className="set-number">Set {setIndex + 1}:</span>
                       <span className="set-details">
                         {set.weight} kg × {set.reps} reps
+                        {set.rir != null && ` · RIR ${set.rir}`}
                         {(set.isFailure || set.isPaused || set.isSlowEccentric) && (
                           <span className="set-modifiers">
                             {set.isFailure && ' (Failure)'}

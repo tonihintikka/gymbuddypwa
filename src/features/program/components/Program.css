@@ -128,6 +128,20 @@
   gap: 0.5rem;
 }
 
+.program-day {
+  margin-bottom: 1.5rem;
+}
+
+.program-day-name {
+  margin: 0 0 0.25rem 0;
+}
+
+.program-day-rir {
+  margin: 0 0 0.75rem 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
 .program-exercise-item {
   display: flex;
   justify-content: space-between;

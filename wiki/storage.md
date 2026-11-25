@@ -28,8 +28,11 @@ On mount (after loading finishes):
 
 1. Missing built-in programs are written to IndexedDB.
 2. If the code version has `days` but the saved version does not, the program is overwritten (migration).
-3. Custom programs (non-matching IDs) are left alone.
-4. Built-in programs cannot be deleted via the UI.
+3. If a saved built-in is missing `targetRir` where the code definition has one, `mergeMissingTargetRir` copies that number onto the matching exercise and leaves user-added exercises alone. See [[rir-tracking]].
+4. Custom programs (non-matching IDs) are left alone.
+5. Built-in programs cannot be deleted via the UI.
+
+`rir` on a set and `targetRir` on a template are optional fields on the existing objects. Database version stays 1. Old records load without those keys.
 
 This is how the 5-day program and day structure reached existing users.
 

@@ -24,7 +24,9 @@
 
 - Header shows program name and, if `dayId` is present, the resolved day name.
 - Previous / Next change `activeExerciseIndex`.
-- Logging a set appends to the current exercise's `sets` array in React state.
+- `resolveProgramExercise` loads that day's template row (targets, including `targetRir`). The flat `exercises` array is not used when the program has days.
+- Logging a set appends to the current exercise's `sets` array in React state. RIR is optional (0–5 buttons).
+- `useSetRecommendation` shows a one-line load hint from the last saved set of this exercise that has an RIR. See [[rir-tracking]].
 - "Add Exercise" appends a new empty `LoggedExercise`.
 
 Nothing is persisted until finish.

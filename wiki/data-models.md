@@ -30,7 +30,7 @@ interface Program {
 }
 ```
 
-`ProgramExercise` carries `targetSets`, `targetReps`, and optional `notes`.
+`ProgramExercise` carries `targetSets`, `targetReps`, optional `notes`, and optional `targetRir` (reps in reserve the set should finish with).
 
 `ProgramDay` has its own `id`, `name`, optional `description`, and `exercises`.
 
@@ -52,7 +52,7 @@ interface WorkoutLog {
 
 `LoggedExercise` holds `exerciseId` + an array of `SetLog`.
 
-`SetLog` stores `weight`, `reps`, and optional modifiers: `isFailure`, `isPaused`, `isSlowEccentric`.
+`SetLog` stores `weight`, `reps`, optional modifiers (`isFailure`, `isPaused`, `isSlowEccentric`), and optional `rir` (0–5). Older logs simply omit `rir`. See [[rir-tracking]].
 
 ## Relationships
 
