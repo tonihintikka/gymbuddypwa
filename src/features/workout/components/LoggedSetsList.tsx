@@ -20,6 +20,7 @@ export const LoggedSetsList = ({
   return (
     <div className="logged-sets-list">
       <h4>Logged Sets</h4>
+      <div className="sets-table-scroll">
       <table className="sets-table">
         <thead>
           <tr>
@@ -63,6 +64,7 @@ export const LoggedSetsList = ({
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };

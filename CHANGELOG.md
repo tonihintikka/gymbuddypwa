@@ -2,6 +2,11 @@
 
 All notable changes to GymTrack PWA are documented here.
 
+## 2026-11-26
+
+### Fixed
+- Bottom navigation stays fixed on iOS after the RIR column made the logged-sets table wider than the phone. The document no longer scrolls; the sets table scrolls inside itself. See `wiki/bugs/bottom-nav-not-fixed.md`.
+
 ## 2026-11-25
 
 ### Added

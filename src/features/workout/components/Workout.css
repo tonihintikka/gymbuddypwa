@@ -200,7 +200,9 @@
 /* Active Workout Screen Styles */
 .active-workout-screen {
   width: 100%;
-  padding-bottom: env(safe-area-inset-bottom);
+  max-width: 100%;
+  min-width: 0;
+  padding-bottom: 0.5rem;
 }
 
 .workout-header {
@@ -284,8 +286,10 @@
 .exercise-view {
   background-color: var(--card-color);
   border-radius: 4px;
-  padding: 1.5rem;
+  padding: 1rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  max-width: 100%;
+  min-width: 0;
 }
 
 .exercise-header {
@@ -487,22 +491,35 @@
 /* Logged Sets List Styles */
 .logged-sets-list {
   margin-top: 2rem;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .logged-sets-list h4 {
   margin-bottom: 1rem;
 }
 
-.sets-table {
+/* The table scrolls inside this box. It must not widen the page:
+   horizontal overflow makes iOS Safari un-fix the bottom nav. */
+.sets-table-scroll {
   width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.sets-table {
+  width: max-content;
+  min-width: 100%;
   border-collapse: collapse;
 }
 
 .sets-table th,
 .sets-table td {
-  padding: 0.75rem;
+  padding: 0.4rem 0.35rem;
   text-align: left;
   border-bottom: 1px solid var(--divider-color);
+  white-space: nowrap;
 }
 
 .sets-table th {
@@ -546,8 +563,9 @@
   border: none;
   color: var(--error-color);
   cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.9rem;
+  padding: 0.25rem 0.35rem;
+  font-size: 0.8rem;
+  white-space: nowrap;
 }
 
 .delete-set-btn:hover {

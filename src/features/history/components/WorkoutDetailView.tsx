@@ -107,6 +107,7 @@ export const WorkoutDetailView = ({
             return (
               <div key={exerciseIndex} className="exercise-detail">
                 <h4 className="exercise-name">{exercise.name}</h4>
+                <div className="sets-table-scroll">
                 <table className="sets-table">
                   <thead>
                     <tr>
@@ -173,6 +174,7 @@ export const WorkoutDetailView = ({
                     ))}
                   </tbody>
                 </table>
+                </div>
               </div>
             );
           })}

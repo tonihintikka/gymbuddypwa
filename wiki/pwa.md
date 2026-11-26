@@ -20,7 +20,9 @@ Important settings:
 - `apple-mobile-web-app-title`
 - `viewport-fit=cover`
 
-CSS uses `env(safe-area-inset-*)` on headers and the offline banner.
+CSS uses `env(safe-area-inset-*)` on the header, the bottom nav, and the offline banner.
+
+The bottom nav is `position: fixed` and the document itself does not scroll. A table wider than the phone (the RIR column did this) makes iOS Safari un-fix that bar. See [[bugs/bottom-nav-not-fixed]].
 
 ## Offline Indicator
 
