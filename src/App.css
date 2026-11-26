@@ -230,6 +230,9 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 button {
+  /* index.css sets `button { all: unset }`, which wins over `* { box-sizing }`
+     and leaves buttons content-box. width:100% then adds padding outside the box. */
+  box-sizing: border-box;
   background-color: var(--primary-color);
   color: white;
   border: none;

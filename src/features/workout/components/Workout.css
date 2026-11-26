@@ -271,6 +271,15 @@
   margin-top: 2rem;
   display: flex;
   justify-content: center;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.workout-actions .add-exercise-btn {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
 }
 
 .no-exercises-message,
@@ -391,6 +400,9 @@
   padding: 1rem;
   background-color: var(--background-color);
   border-radius: 4px;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .set-input-row {
@@ -484,7 +496,10 @@
 }
 
 .log-set-btn {
+  display: block;
+  box-sizing: border-box;
   width: 100%;
+  max-width: 100%;
   margin-top: 1rem;
 }
 
