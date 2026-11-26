@@ -36,7 +36,7 @@ From the start screen to a saved log. Types: [data models](data-models.md). Load
 - Previous / Next change `activeExerciseIndex`.
 - `resolveProgramExercise` loads that day's template row (targets, including `targetRir`). The flat `exercises` array is not used when the program has days.
 - Logging a set appends to the current exercise's `sets` array in React state. RIR is optional (0–5 buttons).
-- [Log Set](../src/features/workout/components/SetInputForm.tsx) is `width: 100%` inside `.set-input-form`. [index.css](../src/index.css) resets buttons with `all: unset`, which leaves them `content-box`, so that 100% plus the horizontal padding ran past the form and the card. [App.css](../src/App.css) sets `box-sizing: border-box` on `button`, and `.log-set-btn` repeats it. Add Exercise under the card uses the same rule.
+- [Log Set](../src/features/workout/components/SetInputForm.tsx) stretches to the form's content box (`align-self: stretch`, no horizontal padding, no `width: 100%`). WebKit still overflows a content-box button that is `width: 100%` plus padding. See [Safari and WebKit](safari-webkit.md).
 - [useSetRecommendation](../src/features/workout/hooks/useSetRecommendation.ts) shows a one-line load hint from the last saved set of this exercise that has an RIR. See [RIR tracking](rir-tracking.md).
 - "Add Exercise" appends a new empty `LoggedExercise`.
 

@@ -23,3 +23,7 @@ Replaced double-bracket links with relative Markdown links. Split the feature no
 ## [2026-11-26] fix | Log Set button wider than the form
 
 `button { all: unset }` in [index.css](../src/index.css) beat `* { box-sizing: border-box }`, so `.log-set-btn` at `width: 100%` added its padding outside the grey form and the card. Buttons are border-box again. See [workout flow](workout-flow.md).
+
+## [2026-11-26] fix | Log Set still wide in iOS Safari
+
+WebKit does not honor a later `box-sizing` the way Chromium did, and `width: 100%` plus horizontal padding on a `<button>` paints past the form. Log Set now stretches inside the form with no horizontal padding. The injected `registerSW.js` never reloaded an installed PWA, so the old CSS stayed on screen. Registration in [main.tsx](../src/main.tsx) reloads when the new worker activates. Page: [safari-webkit.md](safari-webkit.md).

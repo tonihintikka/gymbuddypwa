@@ -24,6 +24,7 @@ Mirrors `src/features/`.
 ## PWA
 
 - [PWA and offline](pwa.md) — service worker, install metadata, and what works with no network.
+- [Safari and WebKit](safari-webkit.md) — button box model, the fixed tab bar, and how an installed PWA picks up new CSS.
 
 ## Bugs and decisions
 

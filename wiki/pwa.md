@@ -2,14 +2,17 @@
 
 ## Configuration
 
-[vite.config.ts](../vite.config.ts) uses `vite-plugin-pwa` with Workbox. The manifest and service worker are generated at build time, and the plugin injects registration. [src/pwa.ts](../src/pwa.ts) also defines `registerServiceWorker`, but nothing imports that module.
+[vite.config.ts](../vite.config.ts) uses `vite-plugin-pwa` with Workbox. The manifest and service worker are generated at build time. [main.tsx](../src/main.tsx) registers the worker with `virtual:pwa-register` and reloads when an update activates. The plugin no longer injects `registerSW.js`, which registered the worker and left the open page on the old CSS. [src/pwa.ts](../src/pwa.ts) also defines `registerServiceWorker`, but nothing imports that module.
 
 Important settings:
 
-- `registerType: 'autoUpdate'`
+- `registerType: 'autoUpdate'` (new worker calls `skipWaiting` and `clientsClaim`; the client reloads on an update)
 - `navigateFallback: '/index.html'` (SPA routes work offline)
-- `cleanupOutdatedCaches: true`
+- `cleanupOutdatedCaches: true` (the previous precache is deleted once the new worker activates)
+- `registration.update()` on load, on `visibilitychange`, and hourly (iOS standalone does not check by itself)
 - Runtime caching for Google Fonts and images
+
+Safari button and nav rules: [safari-webkit.md](safari-webkit.md).
 
 ## iOS Specifics
 

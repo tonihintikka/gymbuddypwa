@@ -51,9 +51,23 @@ describe('SetInputForm RIR', () => {
     expect(form.contains(weight)).toBe(true);
 
     const workoutCss = readFileSync(resolve(process.cwd(), 'src/features/workout/components/Workout.css'), 'utf8');
-    const rule = workoutCss.slice(workoutCss.indexOf('.log-set-btn {'), workoutCss.indexOf('}', workoutCss.indexOf('.log-set-btn {')));
+    const start = workoutCss.indexOf('.set-input-form > .log-set-btn {');
+    const rule = workoutCss.slice(start, workoutCss.indexOf('}', start));
     expect(rule).toContain('box-sizing: border-box');
-    expect(rule).toContain('max-width: 100%');
-    expect(rule).toContain('width: 100%');
+    expect(rule).toContain('align-self: stretch');
+    expect(rule).toContain('min-width: 0');
+    expect(rule).toContain('padding-left: 0');
+    expect(rule).toContain('padding-right: 0');
+    expect(rule).toContain('width: auto');
+    expect(rule.split('\n').some(line => line.trim() === 'width: 100%;')).toBe(false);
+
+    const indexCss = readFileSync(resolve(process.cwd(), 'src/index.css'), 'utf8');
+    const buttonStart = indexCss.indexOf('button {');
+    const buttonRule = indexCss.slice(buttonStart, indexCss.indexOf('}', buttonStart));
+    const allAt = buttonRule.indexOf('all: unset');
+    const boxAt = buttonRule.indexOf('box-sizing: border-box');
+    expect(allAt).toBeGreaterThanOrEqual(0);
+    expect(boxAt).toBeGreaterThan(allAt);
+    expect(buttonRule).toContain('-webkit-appearance: none');
   });
 });

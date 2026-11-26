@@ -8,6 +8,10 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // Registration lives in main.tsx (virtual:pwa-register) so an update reloads the page.
+      // The generated registerSW.js only calls navigator.serviceWorker.register and leaves
+      // an installed iOS PWA on the old document.
+      injectRegister: null,
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg', 'icons/*.png', 'icons/*.svg'],
       manifest: {
         name: 'GymTrack PWA',

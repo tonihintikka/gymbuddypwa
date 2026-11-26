@@ -41,8 +41,21 @@ h1 {
   line-height: 1.1;
 }
 
-/* Let App.css control button styles */
-button { all: unset; }
-button { display: inline-block; }
+/*
+ * One rule. `all: unset` resets box-sizing to content-box and appearance
+ * to the initial value. Longhands after `all` in this same block win in
+ * WebKit; a later stylesheet does not, if `all` is reapplied or the
+ * bundle order shifts. width:100% on a content-box button adds padding
+ * outside the form.
+ */
+button {
+  all: unset;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-block;
+  min-width: 0;
+  max-width: 100%;
+}
 
 /* Remove default dark-mode overrides; handled via CSS variables in App.css */

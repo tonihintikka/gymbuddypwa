@@ -17,8 +17,9 @@ export const PWAUpdateNotification = () => {
       setShowUpdateNotification(true);
     };
 
-    // Register event listener for update found
-    if ('serviceWorker' in navigator) {
+    // First install also fires controllerchange when the worker claims the page.
+    // That is not an update. Only a page that already had a controller should prompt.
+    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
       navigator.serviceWorker.addEventListener('controllerchange', handleServiceWorkerUpdate);
     }
 
