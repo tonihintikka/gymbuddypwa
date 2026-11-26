@@ -1,6 +1,6 @@
 # Data Models
 
-Source of truth: `src/types/models.ts`.
+Source of truth: [src/types/models.ts](../src/types/models.ts).
 
 ## Exercise
 
@@ -16,7 +16,7 @@ interface Exercise {
 }
 ```
 
-Built-in exercises live in `useExercises`. Custom exercises are stored in IndexedDB and merged at runtime.
+Built-in exercises live in [useExercises](../src/features/exercise/hooks/useExercises.ts). Custom exercises are stored in IndexedDB and merged at runtime. See [exercises](exercise.md).
 
 ## Program
 
@@ -52,7 +52,7 @@ interface WorkoutLog {
 
 `LoggedExercise` holds `exerciseId` + an array of `SetLog`.
 
-`SetLog` stores `weight`, `reps`, optional modifiers (`isFailure`, `isPaused`, `isSlowEccentric`), and optional `rir` (0–5). Older logs simply omit `rir`. See [[rir-tracking]].
+`SetLog` stores `weight`, `reps`, optional modifiers (`isFailure`, `isPaused`, `isSlowEccentric`), and optional `rir` (0–5). Older logs simply omit `rir`. See [RIR tracking](rir-tracking.md).
 
 ## Relationships
 

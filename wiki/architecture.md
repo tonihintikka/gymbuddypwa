@@ -1,5 +1,7 @@
 # Architecture
 
+How the app is split. The shell is [App.tsx](../src/App.tsx) and [App.css](../src/App.css).
+
 ## Stack
 
 - React 19 + TypeScript
@@ -49,11 +51,13 @@ Screens are thin. Logic lives in hooks. Components receive data and callbacks.
 
 ## Navigation
 
-`App.tsx` owns the bottom tab bar. Active tab is stored in `localStorage` and mirrored to the hash. There is no router.
+[App.tsx](../src/App.tsx) owns the bottom tab bar. The active tab is stored in `localStorage` and mirrored to the hash. There is no router.
+
+The document does not scroll. [`.app-content`](../src/App.css) is the scroller, and `.app-nav` is `position: fixed`. A page wider than the phone makes iOS Safari un-fix that bar. See [bottom nav](bugs/bottom-nav-not-fixed.md) and [PWA](pwa.md).
 
 ## Workout Context
 
-`WorkoutProvider` wraps the app so the active workout survives tab switches. `useWorkoutContext` exposes the same interface as `useWorkout`.
+[WorkoutProvider](../src/features/workout/context/WorkoutContext.tsx) wraps the app so the active workout survives tab switches. `useWorkoutContext` exposes the same interface as [useWorkout](../src/features/workout/hooks/useWorkout.ts). The flow is [workout flow](workout-flow.md).
 
 ## Key Invariants
 

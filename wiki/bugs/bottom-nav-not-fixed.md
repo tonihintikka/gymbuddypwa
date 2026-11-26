@@ -1,6 +1,6 @@
 # Bottom nav scrolls away on iOS
 
-Symptom, cause, and the rule that keeps it fixed. The bug is old. It was fixed once, then the RIR column brought it back.
+Symptom, cause, and the rule that keeps it fixed. The bug is old. It was fixed once, then the RIR column brought it back. Shell: [App.css](../../src/App.css). Table: [LoggedSetsList](../../src/features/workout/components/LoggedSetsList.tsx). Related: [PWA](../pwa.md), [architecture](../architecture.md).
 
 ## Symptom
 
@@ -44,7 +44,7 @@ The document does not scroll. Only `.app-content` does.
 
 | Rule | Where |
 |------|--------|
-| `html`, `body`, `#root` are `height: 100%`, `max-height: 100dvh`, `overflow: hidden` | `src/App.css` |
+| `html`, `body`, `#root` are `height: 100%`, `max-height: 100dvh`, `overflow: hidden` | [App.css](../../src/App.css) |
 | `.app-container` is `height: 100dvh` and `overflow: hidden` | `src/App.css` |
 | `.app-nav` is `position: fixed; bottom: 0; left: 0; right: 0`, height and `padding-bottom` use `env(safe-area-inset-bottom)` | `src/App.css` |
 | `.app-content` is the scroller (`overflow-y: auto`, `min-width: 0`) and its `padding-bottom` is `56px + env(safe-area-inset-bottom)` so the last row clears the bar | `src/App.css` |

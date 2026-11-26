@@ -2,7 +2,7 @@
 
 ## Configuration
 
-`vite.config.ts` uses `vite-plugin-pwa` with Workbox.
+[vite.config.ts](../vite.config.ts) uses `vite-plugin-pwa` with Workbox. The manifest and service worker are generated at build time, and the plugin injects registration. [src/pwa.ts](../src/pwa.ts) also defines `registerServiceWorker`, but nothing imports that module.
 
 Important settings:
 
@@ -13,7 +13,7 @@ Important settings:
 
 ## iOS Specifics
 
-`index.html` includes:
+[index.html](../index.html) includes:
 
 - `apple-mobile-web-app-capable`
 - `apple-mobile-web-app-status-bar-style`
@@ -22,15 +22,15 @@ Important settings:
 
 CSS uses `env(safe-area-inset-*)` on the header, the bottom nav, and the offline banner.
 
-The bottom nav is `position: fixed` and the document itself does not scroll. A table wider than the phone (the RIR column did this) makes iOS Safari un-fix that bar. See [[bugs/bottom-nav-not-fixed]].
+The bottom nav is `position: fixed` and the document itself does not scroll. A table wider than the phone (the RIR column did this) makes iOS Safari un-fix that bar. See [bottom nav not fixed](bugs/bottom-nav-not-fixed.md). Layout rules are in [App.css](../src/App.css).
 
 ## Offline Indicator
 
-`OfflineIndicator` listens to `online` / `offline` events and shows a banner when offline. The message notes that data is local.
+[OfflineIndicator](../src/components/OfflineIndicator.tsx) listens to `online` / `offline` events and shows a banner when offline. The message notes that data is local.
 
 ## Export on iOS
 
-`exportWorkoutLogs` in `useHistory`:
+`exportWorkoutLogs` in [useHistory](../src/features/history/hooks/useHistory.ts):
 
 1. Prefers `navigator.share` with a `File` (works in installed iOS PWAs).
 2. Falls back to `URL.createObjectURL` + hidden `<a download>`.

@@ -1,6 +1,14 @@
 # RIR Tracking and Set Recommendations
 
-Feature plan, written against the code that implements it. RIR means reps in reserve: how many more reps you could have done before you could not complete another one.
+RIR means reps in reserve: how many more reps you could have done before you could not complete another one. Compiled from the workout and program code. Types: [data models](data-models.md). The seeded program: [programs](program.md). The logging screen: [workout flow](workout-flow.md).
+
+## Source
+
+- [rir.ts](../src/features/workout/rir.ts) — `findLastSetWithRir`, `recommendFromLastRir`, `DEFAULT_WEIGHT_INCREMENT_KG` (2.5).
+- [useSetRecommendation](../src/features/workout/hooks/useSetRecommendation.ts)
+- [SetInputForm](../src/features/workout/components/SetInputForm.tsx), [ExerciseView](../src/features/workout/components/ExerciseView.tsx)
+- [resolveProgramExercise](../src/features/workout/resolveProgramExercise.ts)
+- [usePrograms](../src/features/program/hooks/usePrograms.ts), [mergeProgramTargets](../src/features/program/mergeProgramTargets.ts)
 
 ## Goal
 
@@ -18,7 +26,7 @@ The seeded program follows that split. Primary compounds are target RIR 3. Small
 
 ## Data model
 
-Source: `src/types/models.ts`.
+Source: [src/types/models.ts](../src/types/models.ts).
 
 ```ts
 interface SetLog {
@@ -39,9 +47,9 @@ interface ProgramExercise {
 }
 ```
 
-Both fields are optional. Logs and programs saved before this change do not have them. IndexedDB stores the object as-is (`src/services/db.ts`, still version 1). No schema upgrade. A missing field reads back as `undefined`.
+Both fields are optional. Logs and programs saved before this change do not have them. IndexedDB stores the object as-is ([db.ts](../src/services/db.ts), still version 1). No schema upgrade. A missing field reads back as `undefined`.
 
-`rir` is written only when the user picks a number (`WorkoutScreen.handleLogSet`). Clearing it in history deletes the key so `undefined` is not put into IndexedDB.
+`rir` is written only when the user picks a number ([WorkoutScreen.handleLogSet](../src/features/workout/components/WorkoutScreen.tsx)). Clearing it in [history](history.md) deletes the key so `undefined` is not put into IndexedDB.
 
 ## Where it shows up
 
@@ -59,7 +67,7 @@ Adding an exercise to a flat program accepts an optional target RIR (`AddExercis
 
 ## Recommendation
 
-Pure functions in `src/features/workout/rir.ts`. The hook `useSetRecommendation` reads `workoutLogs` and calls them. The in-progress workout is not saved yet, so today's sets do not change the hint.
+Pure functions in [rir.ts](../src/features/workout/rir.ts). [useSetRecommendation](../src/features/workout/hooks/useSetRecommendation.ts) reads `workoutLogs` and calls them. The in-progress workout is not saved yet, so today's sets do not change the hint.
 
 1. Find the newest saved workout that contains this exercise and at least one set with `rir` in 0–5. Sessions that skipped RIR are ignored.
 2. Inside that session, use the last set that has an RIR.
@@ -77,7 +85,7 @@ No previous RIR means no banner.
 
 ## Seed and migration
 
-The program is `five-day-40plus` in `builtInPrograms` (`src/features/program/hooks/usePrograms.ts`).
+The program is `five-day-40plus` in `builtInPrograms` ([usePrograms.ts](../src/features/program/hooks/usePrograms.ts)).
 
 On load, `usePrograms` still inserts a missing built-in and still replaces a saved copy that has no `days` with the code copy. After that, `mergeMissingTargetRir` copies `targetRir` onto saved exercises that lack it.
 
@@ -96,6 +104,6 @@ Not built. Do not treat these as current behavior.
 - Per-equipment jumps (dumbbells often move 2 kg, some machines 5 kg). Bodyweight exercises could suggest a rep instead of 2.5 kg.
 - Look at more than the last session: several RIR 0 workouts in a row, or a week off, should suggest a deload rather than another increase.
 - Double progression inside the rep range: add a rep first, add weight only at the top of the range.
-- Fold RIR into estimated 1RM (the progress charts still use raw reps).
+- Fold RIR into estimated 1RM (the [progress](progress.md) charts still use raw reps).
 - Edit `targetRir` on a day of a built-in program from the program screen.
 - A rest timer that lengthens after a low RIR set.

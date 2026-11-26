@@ -48,7 +48,7 @@ Everything stays on the device. Clearing browser data removes workouts and progr
 
 ## Project Structure
 
-For architecture, data models, workout flow, and storage details, see the **[wiki](wiki/index.md)**.
+For the compiled map of the code (architecture, features, storage, PWA), see the **[wiki](wiki/index.md)**.
 
 Key locations:
 

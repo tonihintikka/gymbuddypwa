@@ -2,7 +2,7 @@
 
 ## IndexedDB
 
-Defined in `src/services/db.ts`.
+Defined in [src/services/db.ts](../src/services/db.ts).
 
 - Database name: `gymtrack-db`
 - Version: 1
@@ -13,7 +13,7 @@ The service exposes a singleton connection (`getDatabase`) and CRUD helpers (`sa
 
 ## React Hook
 
-`useIndexedDB<T>(storeName)` wraps the service:
+[useIndexedDB](../src/hooks/useIndexedDB.ts) wraps the service:
 
 - Loads all items on mount
 - Exposes `items`, `loading`, `error`
@@ -22,13 +22,13 @@ The service exposes a singleton connection (`getDatabase`) and CRUD helpers (`sa
 
 ## Built-in Program Seeding
 
-`usePrograms` contains a static `builtInPrograms` array.
+[usePrograms](../src/features/program/hooks/usePrograms.ts) contains a static `builtInPrograms` array. See [programs](program.md).
 
 On mount (after loading finishes):
 
 1. Missing built-in programs are written to IndexedDB.
 2. If the code version has `days` but the saved version does not, the program is overwritten (migration).
-3. If a saved built-in is missing `targetRir` where the code definition has one, `mergeMissingTargetRir` copies that number onto the matching exercise and leaves user-added exercises alone. See [[rir-tracking]].
+3. If a saved built-in is missing `targetRir` where the code definition has one, [mergeMissingTargetRir](../src/features/program/mergeProgramTargets.ts) copies that number onto the matching exercise and leaves user-added exercises alone. See [RIR tracking](rir-tracking.md).
 4. Custom programs (non-matching IDs) are left alone.
 5. Built-in programs cannot be deleted via the UI.
 
