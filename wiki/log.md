@@ -27,3 +27,7 @@ Replaced double-bracket links with relative Markdown links. Split the feature no
 ## [2026-11-26] fix | Log Set still wide in iOS Safari
 
 WebKit does not honor a later `box-sizing` the way Chromium did, and `width: 100%` plus horizontal padding on a `<button>` paints past the form. Log Set now stretches inside the form with no horizontal padding. The injected `registerSW.js` never reloaded an installed PWA, so the old CSS stayed on screen. Registration in [main.tsx](../src/main.tsx) reloads when the new worker activates. Page: [safari-webkit.md](safari-webkit.md).
+
+## [2026-11-27] ingest | backup file and persistent storage
+
+History’s Backup & data screen exports every IndexedDB store to `gymbuddy-backup-YYYY-MM-DD.json` and can merge or replace from that file. Startup asks for persistent storage. Page: [backup-and-storage.md](backup-and-storage.md).

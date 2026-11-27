@@ -65,3 +65,5 @@ LoggedExercise → WorkoutLog (instance)
 ```
 
 Nothing is relational at the database level. All foreign keys are plain string IDs resolved in memory.
+
+A backup file is not a fifth model. It is `{ app: 'gymbuddy', schemaVersion, exportedAt, data }` where `data` holds the four IndexedDB stores. Sets and program exercises may omit `rir` and `targetRir`. See [backup and storage](backup-and-storage.md).

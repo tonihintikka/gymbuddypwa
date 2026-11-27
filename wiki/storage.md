@@ -36,6 +36,12 @@ On mount (after loading finishes):
 
 This is how the 5-day program and day structure reached existing users.
 
+## Backup
+
+A backup is one JSON file, not a fifth object store. Shape and merge rules: [backup and storage](backup-and-storage.md). The four stores above are what the file contains. `settings` holds `{ id: 'backup-meta', lastBackupAt }` after a successful export.
+
+On startup [App.tsx](../src/App.tsx) calls `navigator.storage.persist()` when the origin is not already persisted.
+
 ## What Is Not Stored
 
 - Active workout state (React only, until finish).

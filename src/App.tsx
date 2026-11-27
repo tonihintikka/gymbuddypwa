@@ -21,6 +21,7 @@ import './features/history/components/History.css'
 
 // Import database initialization
 import { initDatabase } from './services/db'
+import { ensurePersistentStorage } from './features/backup/persistentStorage'
 
 function App() {
   const [initialized, setInitialized] = useState(false)
@@ -36,6 +37,7 @@ function App() {
       try {
         await initDatabase()
         setInitialized(true)
+        ensurePersistentStorage().catch(() => {})
       } catch (error) {
         console.error('Failed to initialize database:', error)
       }

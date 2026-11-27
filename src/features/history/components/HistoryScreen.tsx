@@ -4,7 +4,7 @@ import { useExercises } from '../../exercise/hooks/useExercises';
 import { usePrograms } from '../../program/hooks/usePrograms';
 import { HistoryList } from './HistoryList';
 import { WorkoutDetailView } from './WorkoutDetailView';
-import { WorkoutLog } from '../../../types/models';
+import { DataSection } from '../../backup/components/DataSection';
 
 export const HistoryScreen = () => {
   const {
@@ -13,7 +13,6 @@ export const HistoryScreen = () => {
     error,
     refreshHistory,
     deleteWorkoutLog,
-    exportWorkoutLogs,
     updateWorkoutLog
   } = useHistory();
 
@@ -21,6 +20,7 @@ export const HistoryScreen = () => {
   const { programs } = usePrograms();
 
   const [selectedWorkoutId, setSelectedWorkoutId] = useState<string | null>(null);
+  const [showData, setShowData] = useState(false);
 
   // Find the selected workout
   const selectedWorkout = selectedWorkoutId
@@ -61,7 +61,9 @@ export const HistoryScreen = () => {
         </div>
       )}
 
-      {selectedWorkout ? (
+      {showData ? (
+        <DataSection onBack={() => setShowData(false)} />
+      ) : selectedWorkout ? (
         <WorkoutDetailView
           workout={selectedWorkout}
           exercises={exercises}
@@ -79,16 +81,15 @@ export const HistoryScreen = () => {
             onDeleteWorkout={handleDeleteWorkout}
           />
 
-          {workoutLogs.length > 0 && (
-            <div className="history-actions">
-              <button
-                className="export-btn"
-                onClick={exportWorkoutLogs}
-              >
-                Export Workout History
-              </button>
-            </div>
-          )}
+          <div className="history-actions">
+            <button
+              type="button"
+              className="data-action-btn"
+              onClick={() => setShowData(true)}
+            >
+              Backup & data
+            </button>
+          </div>
         </>
       )}
     </div>

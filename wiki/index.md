@@ -9,6 +9,7 @@ How the wiki stays current: [AGENTS.md](../AGENTS.md). What changed, and when: [
 - [Architecture](architecture.md) — tab shell, feature folders, where state lives.
 - [Data models](data-models.md) — `Exercise`, `Program`, `WorkoutLog`, and `SetLog` in `src/types/models.ts`.
 - [Storage](storage.md) — IndexedDB stores, the React hook, and built-in program seeding.
+- [Backup and storage](backup-and-storage.md) — export every store, merge or replace on import, and persistent storage.
 
 ## Features
 
