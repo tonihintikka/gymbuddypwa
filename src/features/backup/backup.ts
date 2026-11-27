@@ -22,6 +22,8 @@ export interface BackupFile {
   app: typeof BACKUP_APP;
   schemaVersion: number;
   exportedAt: string;
+  /** True when the file was the old top-level array of workout logs. */
+  legacyHistoryOnly?: boolean;
   data: {
     exercises: Exercise[];
     programs: Program[];
@@ -221,10 +223,7 @@ export function parseBackup(input: unknown): ParseResult {
     }
   }
   if (Array.isArray(value)) {
-    return {
-      ok: false,
-      error: 'That file is a history-only export. Use a gymbuddy backup (schemaVersion 1).',
-    };
+    return parseLegacyHistory(value);
   }
   if (!isRecord(value)) return { ok: false, error: 'That file is not a backup object.' };
   if (value.app !== BACKUP_APP) {
@@ -263,6 +262,48 @@ export function parseBackup(input: unknown): ParseResult {
       schemaVersion: value.schemaVersion,
       exportedAt: value.exportedAt,
       data: { exercises, programs, workoutLogs, settings },
+    },
+  };
+}
+
+function parseLegacyHistory(value: unknown[]): ParseResult {
+  const workoutLogs = parseWorkouts(value);
+  if (!Array.isArray(workoutLogs)) return workoutLogs;
+  const times = workoutLogs
+    .map(workout => new Date(workout.date).getTime())
+    .filter(time => !Number.isNaN(time));
+  const exportedAt = times.length
+    ? new Date(Math.max(...times)).toISOString()
+    : new Date(0).toISOString();
+  return {
+    ok: true,
+    backup: {
+      app: BACKUP_APP,
+      schemaVersion: BACKUP_SCHEMA_VERSION,
+      exportedAt,
+      legacyHistoryOnly: true,
+      data: {
+        exercises: [],
+        programs: [],
+        workoutLogs,
+        settings: [],
+      },
+    },
+  };
+}
+
+export function workoutHasSets(workout: WorkoutLog): boolean {
+  return workout.loggedExercises.some(logged => logged.sets.length > 0);
+}
+
+/** Drop workouts whose every exercise has an empty set list. */
+export function omitEmptyWorkouts(backup: BackupFile): { backup: BackupFile; skippedEmpty: number } {
+  const kept = backup.data.workoutLogs.filter(workoutHasSets);
+  return {
+    skippedEmpty: backup.data.workoutLogs.length - kept.length,
+    backup: {
+      ...backup,
+      data: { ...backup.data, workoutLogs: kept },
     },
   };
 }

@@ -251,6 +251,20 @@
   box-sizing: border-box;
 }
 
+.data-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  min-width: 0;
+}
+
+.data-check input {
+  width: auto;
+  margin: 0;
+  flex: 0 0 auto;
+}
+
 .data-action-btn-danger {
   background-color: var(--error-color);
   margin-top: 0.5rem;

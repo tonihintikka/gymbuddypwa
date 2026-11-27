@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 import {
   BACKUP_SCHEMA_VERSION,
@@ -5,6 +7,7 @@ import {
   backupReminder,
   buildBackup,
   mergeAction,
+  omitEmptyWorkouts,
   parseBackup,
   planMerge,
   summarizeBackup,
@@ -69,7 +72,37 @@ describe('backup file', () => {
     future.schemaVersion = 99;
     expect(parseBackup(future).ok).toBe(false);
     expect(parseBackup(future)).toMatchObject({ error: expect.stringContaining('schema 99') });
-    expect(parseBackup([{ id: 'w1' }])).toMatchObject({ error: expect.stringContaining('history-only') });
+    expect(parseBackup([{ id: 'w1', loggedExercises: 'nope' }]).ok).toBe(false);
+  });
+
+  it('accepts a legacy history-only array, keeps unknown exercise ids, and can drop empty logs', () => {
+    const raw = readFileSync(resolve(process.cwd(), 'src/features/backup/__tests__/legacy-history.json'), 'utf8');
+    const parsed = parseBackup(raw);
+    expect(parsed.ok).toBe(true);
+    if (!parsed.ok) return;
+    expect(parsed.backup.legacyHistoryOnly).toBe(true);
+    expect(parsed.backup.data.programs).toEqual([]);
+    expect(parsed.backup.data.exercises).toEqual([]);
+    expect(parsed.backup.data.workoutLogs).toHaveLength(2);
+    expect(parsed.backup.data.workoutLogs[0].loggedExercises[1].exerciseId).toBe('a1b2c3d4-e5f6-7890-abcd-ef1234567890');
+    expect(parsed.backup.data.workoutLogs[0].loggedExercises[1].sets[0].rir).toBeUndefined();
+    expect(parsed.backup.data.workoutLogs[0].loggedExercises[0].sets[0].rir).toBe(3);
+
+    const summary = summarizeBackup(parsed.backup);
+    expect(summary).toMatchObject({ workoutLogs: 2, programs: 0, exercises: 0 });
+
+    const trimmed = omitEmptyWorkouts(parsed.backup);
+    expect(trimmed.skippedEmpty).toBe(1);
+    expect(trimmed.backup.data.workoutLogs.map(row => row.id)).toEqual(['log-1']);
+
+    const plan = planMerge({
+      exercises: [],
+      programs: [],
+      workoutLogs: [{ id: 'log-1', date: '2026-06-01T18:00:00.000Z' }],
+      settings: [],
+    }, trimmed.backup);
+    expect(plan.skipped.workoutLogs).toBe(1);
+    expect(plan.inserts.workoutLogs).toHaveLength(0);
   });
 
   it('merges by id: inserts new rows, skips older or equal workouts, updates a later workout date', () => {

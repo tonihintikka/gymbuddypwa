@@ -34,7 +34,9 @@ The data screen says when the last backup was, and nags if that was 14 days ago 
 
 ## Import
 
-Pick a `.json` file. [parseBackup](../src/features/backup/backup.ts) checks `app`, integer `schemaVersion` (only 1 today), `exportedAt`, and that each list is an array of records with ids. A set must have numeric `weight` and `reps`. `rir` and `targetRir` may be missing. A future schema version is rejected with a message to update the app. The old history-only export (a bare array) is rejected and named as such.
+Pick a `.json` file. [parseBackup](../src/features/backup/backup.ts) checks `app`, integer `schemaVersion` (only 1 today), `exportedAt`, and that each list is an array of records with ids. A set must have numeric `weight` and `reps`. `rir` and `targetRir` may be missing. A future schema version is rejected with a message to update the app. The old history-only export is a top-level JSON array of workout logs. Import detects that array, validates each log, and treats the file as workouts only (`legacyHistoryOnly`). Programs and custom exercises are not in it, so Replace all is not offered. `rir` may be missing. An exercise id that is not in the catalog (a custom UUID from another phone) is still stored. History, the workout summary, and an active session show that row as “Unknown exercise” instead of dropping it.
+
+Workouts whose every exercise has an empty `sets` array can be skipped. The import screen checkbox defaults to skip. Uncheck it to keep those logs.
 
 The screen then shows counts and the workout date range. Nothing is written until the user picks one of:
 

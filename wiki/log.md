@@ -31,3 +31,7 @@ WebKit does not honor a later `box-sizing` the way Chromium did, and `width: 100
 ## [2026-11-27] ingest | backup file and persistent storage
 
 History’s Backup & data screen exports every IndexedDB store to `gymbuddy-backup-YYYY-MM-DD.json` and can merge or replace from that file. Startup asks for persistent storage. Page: [backup-and-storage.md](backup-and-storage.md).
+
+## [2026-11-27] fix | import the old history-only export
+
+A top-level JSON array of workout logs is accepted as history only. Empty workouts are skipped unless the user unchecks that box. An unknown exercise id still imports and is labeled “Unknown exercise”.

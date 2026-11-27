@@ -102,11 +102,10 @@ export const WorkoutDetailView = ({
           <h3>Exercises</h3>
           {editedWorkout.loggedExercises.map((loggedExercise, exerciseIndex) => {
             const exercise = exercises.find(e => e.id === loggedExercise.exerciseId);
-            if (!exercise) return <div key={exerciseIndex}>Exercise not found</div>;
 
             return (
               <div key={exerciseIndex} className="exercise-detail">
-                <h4 className="exercise-name">{exercise.name}</h4>
+                <h4 className="exercise-name">{exercise?.name ?? 'Unknown exercise'}</h4>
                 <div className="sets-table-scroll">
                 <table className="sets-table">
                   <thead>

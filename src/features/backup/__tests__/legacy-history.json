@@ -1,0 +1,42 @@
+[
+  {
+    "id": "log-1",
+    "date": "2026-06-01T18:00:00.000Z",
+    "programId": "five-day-40plus",
+    "dayId": "day5",
+    "loggedExercises": [
+      {
+        "exerciseId": "dumbbell-bench-press",
+        "sets": [
+          {
+            "weight": 20,
+            "reps": 10,
+            "isFailure": false,
+            "isPaused": false,
+            "isSlowEccentric": false,
+            "rir": 3
+          }
+        ]
+      },
+      {
+        "exerciseId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+        "sets": [
+          {
+            "weight": 12,
+            "reps": 8,
+            "isFailure": false,
+            "isPaused": true,
+            "isSlowEccentric": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "log-empty",
+    "date": "2026-06-02T18:00:00.000Z",
+    "loggedExercises": [
+      { "exerciseId": "squat", "sets": [] }
+    ]
+  }
+]

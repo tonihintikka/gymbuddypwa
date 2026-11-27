@@ -3,6 +3,7 @@ import {
   backupFileName,
   backupReminder,
   formatBytes,
+  omitEmptyWorkouts,
   parseBackup,
   summarizeBackup,
   BackupFile,
@@ -29,6 +30,7 @@ export const DataSection = ({ onBack }: DataSectionProps) => {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [preview, setPreview] = useState<{ backup: BackupFile; summary: BackupSummary } | null>(null);
+  const [skipEmpty, setSkipEmpty] = useState(true);
 
   const refreshMeta = async () => {
     const [storage, last] = await Promise.all([ensurePersistentStorage(), readLastBackupAt()]);
@@ -82,8 +84,13 @@ export const DataSection = ({ onBack }: DataSectionProps) => {
     setPreview({ backup: parsed.backup, summary: summarizeBackup(parsed.backup) });
   };
 
+  const emptySplit = preview ? omitEmptyWorkouts(preview.backup) : null;
+  const importBackup = preview
+    ? (skipEmpty ? emptySplit!.backup : preview.backup)
+    : null;
+
   const handleApply = async (mode: 'merge' | 'replace') => {
-    if (!preview) return;
+    if (!importBackup) return;
     if (mode === 'replace') {
       const confirmed = window.confirm(
         'Replace all data on this phone with the backup? Workouts, programs, and custom exercises that are not in the file will be deleted.',
@@ -93,7 +100,7 @@ export const DataSection = ({ onBack }: DataSectionProps) => {
     setBusy(true);
     setError(null);
     try {
-      const result = await applyBackup(preview.backup, mode);
+      const result = await applyBackup(importBackup, mode);
       const inserted = Object.values(result.inserted).reduce((sum, n) => sum + n, 0);
       const updated = Object.values(result.updated).reduce((sum, n) => sum + n, 0);
       const skipped = Object.values(result.skipped).reduce((sum, n) => sum + n, 0);
@@ -172,15 +179,30 @@ export const DataSection = ({ onBack }: DataSectionProps) => {
                 ? `Dates ${formatWhen(preview.summary.earliest)} – ${formatWhen(preview.summary.latest)}.`
                 : 'No workouts in this file.'}
             </p>
+            {preview.backup.legacyHistoryOnly && (
+              <p className="data-note">
+                This is an older history-only export. Programs and custom exercises are not in this file. Unknown exercises still import and show as “Unknown exercise”.
+              </p>
+            )}
+            <label className="data-check">
+              <input
+                type="checkbox"
+                checked={skipEmpty}
+                onChange={(event) => setSkipEmpty(event.target.checked)}
+              />
+              Skip workouts with no sets{emptySplit && emptySplit.skippedEmpty > 0 ? ` (${emptySplit.skippedEmpty} in this file)` : ''}
+            </label>
             <p className="data-note">
               Merge keeps this phone’s copy when the same id is already here. A workout is replaced only when the backup date is later.
             </p>
             <button type="button" className="data-action-btn" disabled={busy} onClick={() => handleApply('merge')}>
               Merge into this phone
             </button>
-            <button type="button" className="data-action-btn data-action-btn-danger" disabled={busy} onClick={() => handleApply('replace')}>
-              Replace all
-            </button>
+            {!preview.backup.legacyHistoryOnly && (
+              <button type="button" className="data-action-btn data-action-btn-danger" disabled={busy} onClick={() => handleApply('replace')}>
+                Replace all
+              </button>
+            )}
           </div>
         )}
       </div>

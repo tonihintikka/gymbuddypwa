@@ -69,16 +69,11 @@ export const ActiveWorkoutScreen = ({
     );
   }
 
-  const currentExercise = exercises.find(e => e.id === currentLoggedExercise.exerciseId);
-
-  if (!currentExercise) {
-    return (
-      <div className="error-message">
-        <p>Exercise not found.</p>
-        <button onClick={onNextExercise}>Skip to Next</button>
-      </div>
-    );
-  }
+  const currentExercise = exercises.find(e => e.id === currentLoggedExercise.exerciseId) ?? {
+    id: currentLoggedExercise.exerciseId,
+    name: 'Unknown exercise',
+    isCustom: true,
+  };
 
   // Day programs store targets on the day. The flat list is often empty.
   const programExercise = resolveProgramExercise(

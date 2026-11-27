@@ -89,11 +89,9 @@ export const WorkoutSummary = ({
         {workout.loggedExercises.map((loggedExercise, index) => {
           const exercise = exercises.find(e => e.id === loggedExercise.exerciseId);
 
-          if (!exercise) return null;
-
           return (
             <div key={index} className="exercise-summary-item">
-              <h4>{exercise.name}</h4>
+              <h4>{exercise?.name ?? 'Unknown exercise'}</h4>
               <div className="sets-summary">
                 {loggedExercise.sets.length > 0 ? (
                   loggedExercise.sets.map((set, setIndex) => (

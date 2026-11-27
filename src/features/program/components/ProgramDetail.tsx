@@ -121,7 +121,7 @@ export const ProgramDetail = ({
                     if (!exercise) {
                       return (
                         <div key={`${day.id}-${index}`} className="missing-exercise">
-                          Exercise not found
+                          Unknown exercise
                         </div>
                       );
                     }
@@ -166,7 +166,7 @@ export const ProgramDetail = ({
                   />
                 ) : (
                   <div key={`${program.id}-${index}`} className="missing-exercise">
-                    Exercise not found
+                    Unknown exercise
                     <button
                       className="remove-program-exercise-btn"
                       onClick={() => handleRemoveExercise(index)}
